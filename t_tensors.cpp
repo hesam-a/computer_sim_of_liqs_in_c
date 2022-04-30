@@ -4,7 +4,7 @@
 // dipole-quadrupole and quadrupole-quadrupole, using T tensors and Euler angles.
 
 // While the book itself does not provide detailed discussion about the equations, "The theory of intermolecular 
-// forces" by Anthony Stones is a good source for derivations and deeper background.
+// forces" by Anthony Stones is a good source for derivations and further discussion.
 
 // some expalanations from Allen-Tildesley:
 
@@ -21,5 +21,12 @@
    where ijkl are Cartesian indices and epsilon is the Levi-Civita symbol
    It is just necessary to identify the constants g_i, G_ij, in terms of the T tensor and the
    multipole on the other molecule. */
-   
+#include <iostream>
+
    // First the tensor functions will be defined
+int t2_tensor (r,r3){
+/* Returns second-rank 3x3 interaction tensor.
+    Supplied arguments should be the unit vector from 2 to 1 and
+    the third power of the modulus of that vector.*/
+   
+}
