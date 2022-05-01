@@ -39,7 +39,7 @@
 double alpha = 1.0, beta = 0.0;
 double *C;
 C = (double*) malloc(nRows * nCols * sizeof(double));
-for (i = 0; i < nRows*nCols; i++) C[i] = 0.0;
+for (int i = 0; i < nRows*nCols; i++) C[i] = 0.0;
 
 cblas_dger(CblasRowMajor, nRows, nCols, alpha, A, 1, B, 1, C, nCols);
 
