@@ -30,9 +30,9 @@
 #include <math.h>
 #include <mkl.h>
 
-#define nCols 5
-#define nRows 19
-#define k 1
+#define nCols ???
+#define nRows ???
+#define k ???
 
 
 
