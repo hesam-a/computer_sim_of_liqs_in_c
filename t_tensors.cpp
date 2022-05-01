@@ -34,7 +34,7 @@
 #define nRows ???
 #define k ???
 
-
+// outer function for vectors:
 
 double alpha = 1.0, beta = 0.0;
 double *C;
