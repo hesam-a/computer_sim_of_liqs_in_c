@@ -36,14 +36,18 @@
 
 // outer function for vectors:
 
-double alpha = 1.0, beta = 0.0;
-double *C;
-C = (double*) malloc(nRows * nCols * sizeof(double));
-for (int i = 0; i < nRows*nCols; i++) C[i] = 0.0;
+double * outer(int nCols, int nRows, int k, double A[], double B[]){
 
-cblas_dger(CblasRowMajor, nRows, nCols, alpha, A, 1, B, 1, C, nCols);
+    double alpha = 1.0, beta = 0.0;
+    double *C;
+    C = (double*) malloc(nRows * nCols * sizeof(double));
 
+    for (int i = 0; i < nRows*nCols; i++) C[i] = 0.0;
 
+    cblas_dger(CblasRowMajor, nRows, nCols, alpha, A, 1, B, 1, C, nCols);
+
+    return C;
+}
 
 // The tensor functions are defined here in order
 
@@ -51,7 +55,15 @@ int t2_tensor (r,r3){
 /* Returns second-rank 3x3 interaction tensor.
     Supplied arguments should be the unit vector from 2 to 1 and
     the third power of the modulus of that vector.*/
-   
+ 
+    int nRows = 19;
+    int nCols = 5;
+    int k = 1;
+
+    double *mat;
+    mat = (double*) malloc(nRows * nCols * sizeof(double));
+    mat = outer(nCols, nRows, k, A, B);
+
 }
 
 int main(int agrc, char* argv[]){
