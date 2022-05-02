@@ -30,10 +30,6 @@
 #include <math.h>
 #include <mkl.h>
 
-#define nCols ???
-#define nRows ???
-#define k ???
-
 // outer function for vectors:
 
 double * outer(int nCols, int nRows, int k, double A[], double B[]){
@@ -56,8 +52,8 @@ int t2_tensor (r,r3){
     Supplied arguments should be the unit vector from 2 to 1 and
     the third power of the modulus of that vector.*/
  
-    int nRows = 19;
-    int nCols = 5;
+    int nRows = 1;
+    int nCols = 3;
     int k = 1;
 
     double *mat;
