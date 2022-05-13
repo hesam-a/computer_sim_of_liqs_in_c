@@ -21,6 +21,7 @@
    where ijkl are Cartesian indices and epsilon is the Levi-Civita symbol
    It is just necessary to identify the constants g_i, G_ij, in terms of the T tensor and the
    multipole on the other molecule. */
+
 #include <iostream>
 #include <stdio.h>
 #include <time.h>
@@ -29,6 +30,30 @@
 
 #include <math.h>
 #include <mkl.h>
+
+// to allocate memory for a matrix [m x n]
+
+double** allocateMatrix(int m,int n) {
+    double *space;
+    double **array;
+    array = new double*[m];
+    space = new double[m*n];
+    for (int i=0; i<m; i++) {
+        array[i] = space;
+        space += n;
+    }
+    return array;
+}
+
+//to deallocate the memory:
+void freeMatrix(double **array) {
+    free(array[0]);
+    //free array;
+}
+
+// some functions for matrix operations
+
+
 
 // outer function for vectors:
 
