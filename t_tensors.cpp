@@ -79,6 +79,23 @@ void identMatrix(int m,int n, double **A) {
 }
 
 
+void scalarMultip(int m,int n,double p, double** A) {
+    for (int i=0;i<m;i++) {
+        for (int j=0;j<n;j++) {
+            A[i][j] *= p;
+        }
+    }
+}
+
+void matSubtract(int m,int n, double** A, double** B) {
+    for (int i=0;i<m;i++) {
+        for (int j=0;j<n;j++) {
+            A[i][j] -= B[i][j];
+        }
+    }
+}
+
+
 
 
 // outer function for vectors:
