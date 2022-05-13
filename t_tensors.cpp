@@ -70,6 +70,16 @@ void zeroMatrix(int m,int n, double **A) {
 }
 
 
+void identMatrix(int m,int n, double **A) {
+    for (int i=0;i<m;i++) {
+        for (int j=0;j<n;j++) {
+            A[i][j] = 1.;
+        }
+    }
+}
+
+
+
 // outer function for vectors:
 
 double * outer(int nCols, int nRows, int k, double A[], double B[]){
