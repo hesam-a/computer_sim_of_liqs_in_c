@@ -95,18 +95,30 @@ void matSubtract(int m,int n, double** A, double** B) {
     }
 }
 
+void scalarDivision(int m,int n,double p, double** A) {
+    for (int i=0;i<m;i++) {
+        for (int j=0;j<n;j++) {
+            A[i][j] /= p;
+        }
+    }
+}
+
+void printMatrix(int m,int n, double** A){
+    for (int i=0;i<m;i++) {
+        for (int j=0;j<n;j++) {
+            printf("%15.10f  ",A[i][j]);
+            //std::cout << A[i][j] << " ";
+        }
+        std::cout << '\n';
+    }
+}
 
 
+// outer function
 
-// outer function for vectors:
-
-double * outer(int nCols, int nRows, int k, double A[], double B[]){
+double * outer(int nCols, int nRows, double** A, double** B, double** C){
 
     double alpha = 1.0, beta = 0.0;
-    double *C;
-    C = (double*) malloc(nRows * nCols * sizeof(double));
-
-    for (int i = 0; i < nRows*nCols; i++) C[i] = 0.0;
 
     cblas_dger(CblasRowMajor, nRows, nCols, alpha, A, 1, B, 1, C, nCols);
 
