@@ -113,7 +113,6 @@ void printMatrix(int m,int n, double** A){
     }
 }
 
-
 // outer function
 
 double * outer(int nCols, int nRows, double** A, double** B, double** C){
@@ -125,20 +124,13 @@ double * outer(int nCols, int nRows, double** A, double** B, double** C){
     return C;
 }
 
-// The tensor functions are defined here in order
+// The t2 tensor functions 
 
 int t2_tensor (r,r3){
 /* Returns second-rank 3x3 interaction tensor.
     Supplied arguments should be the unit vector from 2 to 1 and
     the third power of the modulus of that vector.*/
- 
-    int nRows = 1;
-    int nCols = 3;
-    int k = 1;
 
-    double *mat;
-    mat = (double*) malloc(nRows * nCols * sizeof(double));
-    mat = outer(nCols, nRows, k, A, B);
 
 }
 
