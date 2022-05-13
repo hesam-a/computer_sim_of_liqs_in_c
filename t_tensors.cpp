@@ -80,6 +80,7 @@ void identMatrix(int m,int n, double **A) {
 
 
 
+
 // outer function for vectors:
 
 double * outer(int nCols, int nRows, int k, double A[], double B[]){
