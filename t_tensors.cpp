@@ -122,7 +122,7 @@ double* outer(int nCols, int nRows, double** A, double** B, double** C){
     return C;
 }
 
-// The t2 tensor functions 
+// The t2 tensor function
 
 double t2_tensor (r,r3){
 /* Returns second-rank 3x3 interaction tensor.
