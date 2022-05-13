@@ -124,17 +124,50 @@ double* outer(int nCols, int nRows, double** A, double** B, double** C){
 
 // The t2 tensor functions 
 
-int t2_tensor (r,r3){
+double t2_tensor (r,r3){
 /* Returns second-rank 3x3 interaction tensor.
     Supplied arguments should be the unit vector from 2 to 1 and
     the third power of the modulus of that vector.*/
 
+    int nRows=3;
+    int nCols=3;
 
+    double** A  = allocateMatrix(nRows,nCols);
+    double** t2 = allocateMatrix(nRows,nCols);
+
+    outer(nCols,nRows, mat, mat, t2);
+    scalarMultip(nRows,nCols,3,t2);
+
+    identMatrix(nRows,nCols,A);
+
+    matSubtract(nRows, nCols, t2, A);
+
+    scalarDivision(nRows,nCols, r3, t2);
+
+    return t2;
 }
 
-int main(int agrc, char* argv[]){
+int main()
+{
+    int nRows=3 ;
+    int nCols=3;
+    double r3 = 4.;
 
-    free(C);
+    double** r=allocateMatrix(nRows,nCols);
+    double** B=allocateMatrix(nRows,nCols);
+    double** C=allocateMatrix(nRows,nCols);
+
+    randMatrix(nRows,nCols,r);
+
+    printMatrix(nRows,nCols,r);
+    std::cout << '\n';
+    B = t2_tensor(r,r3);
+    printMatrix(nRows,nCols,B);
+    std::cout << '\n';
+
+    freeMatrix(r);
+    freeMatrix(B);
+    freeMatrix(C);
 
     return 0;
 }
