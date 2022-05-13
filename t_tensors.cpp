@@ -46,14 +46,14 @@ double** allocateMatrix(int m,int n) {
 }
 
 //to deallocate the memory:
-void freeMatrix(double **array) {
+void freeMatrix(double** array) {
     free(array[0]);
     //free array;
 }
 
 // some functions for matrix operations
 
-void randMatrix(int m,int n, double **A) {
+void randMatrix(int m,int n, double** A) {
     for (int i=0;i<m;i++) {
         for (int j=0;j<n;j++) {
             A[i][j] = (double) rand()/RAND_MAX;
@@ -61,7 +61,7 @@ void randMatrix(int m,int n, double **A) {
     }
 }
 
-void zeroMatrix(int m,int n, double **A) {
+void zeroMatrix(int m,int n, double** A) {
     for (int i=0;i<m;i++) {
         for (int j=0;j<n;j++) {
             A[i][j] = 0.;
@@ -69,15 +69,13 @@ void zeroMatrix(int m,int n, double **A) {
     }
 }
 
-
-void identMatrix(int m,int n, double **A) {
+void identMatrix(int m,int n, double** A) {
     for (int i=0;i<m;i++) {
         for (int j=0;j<n;j++) {
             A[i][j] = 1.;
         }
     }
 }
-
 
 void scalarMultip(int m,int n,double p, double** A) {
     for (int i=0;i<m;i++) {
@@ -115,7 +113,7 @@ void printMatrix(int m,int n, double** A){
 
 // outer function
 
-double * outer(int nCols, int nRows, double** A, double** B, double** C){
+double* outer(int nCols, int nRows, double** A, double** B, double** C){
 
     double alpha = 1.0, beta = 0.0;
 
