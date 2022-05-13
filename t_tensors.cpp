@@ -53,6 +53,15 @@ void freeMatrix(double **array) {
 
 // some functions for matrix operations
 
+void randMatrix(int m,int n, double **A) {
+    for (int i=0;i<m;i++) {
+        for (int j=0;j<n;j++) {
+            A[i][j] = (double) rand()/RAND_MAX;
+        }
+    }
+}
+
+
 
 
 // outer function for vectors:
