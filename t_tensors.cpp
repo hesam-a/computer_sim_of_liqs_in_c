@@ -61,7 +61,13 @@ void randMatrix(int m,int n, double **A) {
     }
 }
 
-
+void zeroMatrix(int m,int n, double **A) {
+    for (int i=0;i<m;i++) {
+        for (int j=0;j<n;j++) {
+            A[i][j] = 0.;
+        }
+    }
+}
 
 
 // outer function for vectors:
