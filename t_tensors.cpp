@@ -31,19 +31,24 @@
 #include <math.h>
 #include <mkl.h>
 
-// to allocate memory for a matrix [m x n]
+// to allocate memory for a 2D Array
+double** allocate2DArray(int m,int n) {
+//    double** array = new double*[m];
+//    double*  space = new double[m*n];
+//
+//    for (int i{0}; i<m; i++) {
+//        array[i] = space;
+//        space += n;
+//    }
+    double** array = new double*[m];
 
-double** allocateMatrix(int m,int n) {
-    double *space;
-    double **array;
-    array = new double*[m];
-    space = new double[m*n];
-    for (int i=0; i<m; i++) {
-        array[i] = space;
-        space += n;
+    for (int i{0}; i<m; i++) {
+        array[i] = new double[n];
     }
     return array;
 }
+
+// to allocate memory for a 3D Array
 
 //to deallocate the memory:
 void freeMatrix(double** array) {
