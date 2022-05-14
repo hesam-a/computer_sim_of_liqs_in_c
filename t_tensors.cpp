@@ -206,6 +206,27 @@ double*** outer3D(int nRows, int nCols, int n3rd, double* A, double* B, double* 
 }
 
 // The t2 tensor function
+double** t2_tensor (double* mat,double r3){
+/* Returns second-rank 3x3 interaction tensor.
+    Supplied arguments should be the unit vector from 2 to 1 and
+    the third power of the modulus of that vector.*/
+
+    int nCols=3;
+
+    double** A  = allocate2DArray(nCols,nCols);
+    double** t2 = allocate2DArray(nCols,nCols);
+    
+    t2 = outer2D(nCols, mat, mat);
+    scalarMultip(nCols,nCols,3.,t2);
+
+    identMatrix(nCols,nCols,A);
+
+    matSubtract(nCols, nCols, t2, A);
+
+    scalarDivision(nCols,nCols, r3, t2);
+
+    return t2;
+}
 
 int main()
 {
