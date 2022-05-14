@@ -229,3 +229,36 @@ double** t2_tensor (double* mat,double r3){
 }
 
 
+int main()
+{
+    int nRows=1;
+    int nCols=3;
+    int d3rd =3;
+    double r3 = 4.;
+//    double r4 = 4.;
+
+    double* r = new double[nCols];
+    double**  D=allocate2DArray(nCols,nCols);
+//    double*** C=allocate3DArray(nCols,nCols,d3rd);
+
+    std::cout << "1D Array r:" << '\n';
+    rand1DArray(nCols,r);
+    print1DArray(nCols,r);
+    std::cout << '\n';
+
+//    std::cout << "3D Array C:" << '\n';
+//    C = outer3D(nCols,nCols,d3rd,r,r,r);
+//    print3DArray(nCols,nCols,d3rd,C);
+
+    D = t2_tensor(r,r3);
+    std::cout << "2D Array D:" << '\n';
+    print2DArray(nCols,nCols,D);
+    std::cout << '\n';
+
+    delete [] r;
+    free2DArray(nCols,D);
+//    free3DArray(nCols,nCols,d3rd,C);
+
+    return 0;
+}
+
