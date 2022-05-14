@@ -49,22 +49,65 @@ double** allocate2DArray(int m,int n) {
 }
 
 // to allocate memory for a 3D Array
+double*** allocate3DArray(int p,int q, int r) {
+    double*** array = new double**[p];
 
-//to deallocate the memory:
-void freeMatrix(double** array) {
-    free(array[0]);
-    //free array;
+    for (int i{0}; i<p; i++) {
+        array[i] = new double*[q];
+        for (int j{0}; j<q; ++j){
+            array[i][j] = new double[r];
+        }
+    }
+    return array;
 }
 
-// some functions for matrix operations
+// deallocate the memory of a 2D matrix
+void free2DArray(int m,double **array) {
+    for (int i{0}; i<m; ++i)
+        delete [] array[i];
+        delete [] array;
+}
 
-void randMatrix(int m,int n, double** A) {
+// deacllocate the memory of a 3D matrix
+void free3DArray(int p,int q,int r,double ***array) {
+    for (int i{0}; i<p ; i++){
+        for (int j{0}; j<q; j++) {
+            delete[] array[i][j];
+        }
+        delete[] array[i];
+    }
+    delete[] array;
+}
+
+// randomly initialize a 1D array
+void rand1DArray(int m, double *A) {
+    for (int i=0;i<m;i++) {
+        A[i] = (double) rand()/RAND_MAX;
+    }
+}
+
+
+// randomly initialize a 2D array
+void rand2DArray(int m,int n, double **A) {
     for (int i=0;i<m;i++) {
         for (int j=0;j<n;j++) {
             A[i][j] = (double) rand()/RAND_MAX;
         }
     }
 }
+
+
+// randomly initialize a 3D array
+void rand3DArray(int p,int q,int r, double ***A) {
+    for (int i=0;i<p;i++) {
+        for (int j=0;j<q;j++) {
+            for (int k=0;k<r;k++) {
+                A[i][j][k] = (double) rand()/RAND_MAX;
+            }
+        }
+    }
+}
+
 
 void zeroMatrix(int m,int n, double** A) {
     for (int i=0;i<m;i++) {
@@ -77,7 +120,9 @@ void zeroMatrix(int m,int n, double** A) {
 void identMatrix(int m,int n, double** A) {
     for (int i=0;i<m;i++) {
         for (int j=0;j<n;j++) {
-            A[i][j] = 1.;
+            if (i==j){
+                A[i][j] = 1.;
+            }
         }
     }
 }
@@ -106,7 +151,14 @@ void scalarDivision(int m,int n,double p, double** A) {
     }
 }
 
-void printMatrix(int m,int n, double** A){
+void print1DArray(int m, double* A){
+    for (int i=0;i<m;i++) {
+        printf("%15.10f  ",A[i]);
+    }
+    std::cout << '\n';
+}
+
+void print2DArray(int m,int n, double** A){
     for (int i=0;i<m;i++) {
         for (int j=0;j<n;j++) {
             printf("%15.10f  ",A[i][j]);
@@ -116,16 +168,45 @@ void printMatrix(int m,int n, double** A){
     }
 }
 
-// outer function
+void print3DArray(int p, int q, int r, double*** A){
+    for (int i=0;i<p;i++) {
+        for (int j=0;j<q;j++) {
+            for (int k=0;k<r;k++) {
+                printf("%15.10f  ",A[i][j][k]);
+            }
+            std::cout << '\n';
+        }
+        std::cout << '\n';
+    }
+}
 
-double* outer(int nCols, int nRows, double** A, double** B, double** C){
+// function  
+double** outer2D(int nCols, double* A, double* B){
 
-    double alpha = 1.0, beta = 0.0;
+    double** C = allocate2DArray(nCols,nCols);
 
-    cblas_dger(CblasRowMajor, nRows, nCols, alpha, A, 1, B, 1, C, nCols);
-
+    for (int i{0};i<nCols;++i){
+        for (int j{0};j<nCols;++j){
+                C[i][j] = A[i] * B[j] ;
+        }
+    }
     return C;
 }
+
+double*** outer3D(int nRows, int nCols, int n3rd, double* A, double* B, double* C){
+
+    double*** D = allocate3DArray(nRows,nCols,n3rd);
+
+    for (int i{0};i<nRows;++i){
+        for (int j{0};j<nCols;++j){
+            for (int k{0};k<n3rd;++k){
+                D[i][j][k] = A[i] * B[j] * C[k];
+            }
+        }
+    }
+    return D;
+}
+
 
 // The t2 tensor function
 
