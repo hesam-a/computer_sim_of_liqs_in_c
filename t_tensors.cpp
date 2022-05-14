@@ -180,7 +180,7 @@ void print3DArray(int p, int q, int r, double*** A){
     }
 }
 
-// function  
+// a function for 2D array outer product 
 double** outer2D(int nCols, double* A, double* B){
 
     double** C = allocate2DArray(nCols,nCols);
@@ -192,7 +192,7 @@ double** outer2D(int nCols, double* A, double* B){
     }
     return C;
 }
-
+// a function for 3D array outer product
 double*** outer3D(int nRows, int nCols, int n3rd, double* A, double* B, double* C){
 
     double*** D = allocate3DArray(nRows,nCols,n3rd);
