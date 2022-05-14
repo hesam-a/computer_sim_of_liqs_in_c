@@ -96,7 +96,6 @@ void rand2DArray(int m,int n, double **A) {
     }
 }
 
-
 // randomly initialize a 3D array
 void rand3DArray(int p,int q,int r, double ***A) {
     for (int i=0;i<p;i++) {
@@ -107,7 +106,6 @@ void rand3DArray(int p,int q,int r, double ***A) {
         }
     }
 }
-
 
 void zeroMatrix(int m,int n, double** A) {
     for (int i=0;i<m;i++) {
@@ -207,31 +205,7 @@ double*** outer3D(int nRows, int nCols, int n3rd, double* A, double* B, double* 
     return D;
 }
 
-
 // The t2 tensor function
-
-double t2_tensor (r,r3){
-/* Returns second-rank 3x3 interaction tensor.
-    Supplied arguments should be the unit vector from 2 to 1 and
-    the third power of the modulus of that vector.*/
-
-    int nRows=3;
-    int nCols=3;
-
-    double** A  = allocateMatrix(nRows,nCols);
-    double** t2 = allocateMatrix(nRows,nCols);
-
-    outer(nCols,nRows, mat, mat, t2);
-    scalarMultip(nRows,nCols,3,t2);
-
-    identMatrix(nRows,nCols,A);
-
-    matSubtract(nRows, nCols, t2, A);
-
-    scalarDivision(nRows,nCols, r3, t2);
-
-    return t2;
-}
 
 int main()
 {
