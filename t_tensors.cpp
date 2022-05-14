@@ -228,27 +228,4 @@ double** t2_tensor (double* mat,double r3){
     return t2;
 }
 
-int main()
-{
-    int nRows=3 ;
-    int nCols=3;
-    double r3 = 4.;
 
-    double** r=allocateMatrix(nRows,nCols);
-    double** B=allocateMatrix(nRows,nCols);
-    double** C=allocateMatrix(nRows,nCols);
-
-    randMatrix(nRows,nCols,r);
-
-    printMatrix(nRows,nCols,r);
-    std::cout << '\n';
-    B = t2_tensor(r,r3);
-    printMatrix(nRows,nCols,B);
-    std::cout << '\n';
-
-    freeMatrix(r);
-    freeMatrix(B);
-    freeMatrix(C);
-
-    return 0;
-}
