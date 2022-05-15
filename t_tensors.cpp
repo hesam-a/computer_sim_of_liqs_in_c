@@ -26,10 +26,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
-#include <string.h>
 
-#include <math.h>
-#include <mkl.h>
 
 // to allocate memory for a 2D Array
 double** allocate2DArray(int m,int n) {
@@ -61,13 +58,32 @@ double*** allocate3DArray(int p,int q, int r) {
     return array;
 }
 
-// deacllocate the memory of a 4D matrix
-void free4DArray(int p,int q,int m,double**** array) {
+double**** allocate4DArray(int p,int q, int m, int n) {
+    double**** array = new double***[p];
+
+    for (int i{0}; i<p; i++) {
+        array[i] = new double**[q];
+        for (int j{0}; j<q; ++j){
+            array[i][j] = new double*[m];
+            for (int k{0}; k<m; ++k){
+                array[i][j][k] = new double[n];
+            }
+        }
+    }
+    return array;
+}
+
+// deallocate the memory of a 2D Array
+void free2DArray(int m,double **array) {
+    for (int i{0}; i<m; ++i)
+        delete [] array[i];
+        delete [] array;
+}
+
+// deacllocate the memory of a 3D Array
+void free3DArray(int p,int q,int r,double ***array) {
     for (int i{0}; i<p ; i++){
         for (int j{0}; j<q; j++) {
-            for (int k{0}; k<m; k++) {
-                delete[] array[i][j][k];
-            }
             delete[] array[i][j];
         }
         delete[] array[i];
@@ -75,17 +91,13 @@ void free4DArray(int p,int q,int m,double**** array) {
     delete[] array;
 }
 
-// deallocate the memory of a 2D matrix
-void free2DArray(int m,double **array) {
-    for (int i{0}; i<m; ++i)
-        delete [] array[i];
-        delete [] array;
-}
-
-// deacllocate the memory of a 3D matrix
-void free3DArray(int p,int q,int r,double ***array) {
+// deacllocate the memory of a 4D Array
+void free4DArray(int p,int q,int m,double**** array) {
     for (int i{0}; i<p ; i++){
         for (int j{0}; j<q; j++) {
+            for (int k{0}; k<m; k++) {
+                delete[] array[i][j][k];
+            }
             delete[] array[i][j];
         }
         delete[] array[i];
@@ -116,6 +128,19 @@ void rand3DArray(int p,int q,int r, double ***A) {
         for (int j=0;j<q;j++) {
             for (int k=0;k<r;k++) {
                 A[i][j][k] = (double) rand()/RAND_MAX;
+            }
+        }
+    }
+}
+
+// randomly initialize a 4D array
+void rand4DArray(int p,int q,int m, int n, double ****A) {
+    for (int i=0;i<p;i++) {
+        for (int j=0;j<q;j++) {
+            for (int k=0;k<m;k++) {
+                for (int l=0;l<n;l++) {
+                    A[i][j][k][l] = (double) rand()/RAND_MAX;
+                }
             }
         }
     }
