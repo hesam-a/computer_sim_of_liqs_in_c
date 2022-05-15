@@ -61,6 +61,20 @@ double*** allocate3DArray(int p,int q, int r) {
     return array;
 }
 
+// deacllocate the memory of a 4D matrix
+void free4DArray(int p,int q,int m,double**** array) {
+    for (int i{0}; i<p ; i++){
+        for (int j{0}; j<q; j++) {
+            for (int k{0}; k<m; k++) {
+                delete[] array[i][j][k];
+            }
+            delete[] array[i][j];
+        }
+        delete[] array[i];
+    }
+    delete[] array;
+}
+
 // deallocate the memory of a 2D matrix
 void free2DArray(int m,double **array) {
     for (int i{0}; i<m; ++i)
