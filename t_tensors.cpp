@@ -164,7 +164,7 @@ void identMatrix(int m,int n, double** A) {
     }
 }
 
-void scalarMultip(int m,int n,double p, double** A) {
+void scalar2DArrayMultip(int m,int n,double p, double** A) {
     for (int i=0;i<m;i++) {
         for (int j=0;j<n;j++) {
             A[i][j] *= p;
@@ -172,7 +172,29 @@ void scalarMultip(int m,int n,double p, double** A) {
     }
 }
 
-void matSubtract(int m,int n, double** A, double** B) {
+void scalar3DArrayMultip(int m,int n, int r, double p, double*** A) {
+    for (int i=0;i<m;i++) {
+        for (int j=0;j<n;j++) {
+            for (int k=0;k<r;k++) {
+                A[i][j][k] *= p;
+            }
+        }
+    }
+}
+
+void scalar4DArrayMultip(int p,int q, int m, int n, double b, double**** A) {
+    for (int i=0;i<p;i++) {
+        for (int j=0;j<q;j++) {
+            for (int k=0;k<m;k++) {
+                for (int l=0;l<n;l++) {
+                    A[i][j][k][l] *= b;
+                }
+            }
+        }
+    }
+}
+
+void scalar2DArraySubtract(int m,int n, double** A, double** B) {
     for (int i=0;i<m;i++) {
         for (int j=0;j<n;j++) {
             A[i][j] -= B[i][j];
@@ -180,10 +202,32 @@ void matSubtract(int m,int n, double** A, double** B) {
     }
 }
 
-void scalarDivision(int m,int n,double p, double** A) {
+oid scalar2DArrayDivision(int m,int n,double p, double** A) {
     for (int i=0;i<m;i++) {
         for (int j=0;j<n;j++) {
             A[i][j] /= p;
+        }
+    }
+}
+
+void scalar3DArrayDivision(int m,int n,int r, double p, double*** A) {
+    for (int i=0;i<m;i++) {
+        for (int j=0;j<n;j++) {
+            for (int k=0;k<r;k++) {
+                A[i][j][k] /= p;
+            }
+        }
+    }
+}
+
+void scalar4DArrayDivision(int p,int q, int m,int n, double b, double**** A) {
+    for (int i=0;i<p;i++) {
+        for (int j=0;j<q;j++) {
+            for (int k=0;k<m;k++) {
+                for (int l=0;l<n;l++) {
+                    A[i][j][k][l] /= b;
+                }
+            }
         }
     }
 }
@@ -216,6 +260,7 @@ void print3DArray(int p, int q, int r, double*** A){
         std::cout << '\n';
     }
 }
+
 
 // a function for 2D array outer product 
 double** outer2D(int nCols, double* A, double* B){
@@ -260,7 +305,7 @@ double** t2_tensor (double* mat,double r3){
 
     identMatrix(nCols,nCols,A);
 
-    matSubtract(nCols, nCols, t2, A);
+    scalar2DArraySubtract(nCols, nCols, t2, A);
 
     scalarDivision(nCols,nCols, r3, t2);
 
