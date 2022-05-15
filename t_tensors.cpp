@@ -416,32 +416,37 @@ int main()
 {
     int nRows=1;
     int nCols=3;
-    int d3rd =3;
     double r3 = 4.;
-//    double r4 = 4.;
+    double r4 = 4.;
+    double r5 = 4.;
 
-    double* r = new double[nCols];
-    double**  D=allocate2DArray(nCols,nCols);
-//    double*** C=allocate3DArray(nCols,nCols,d3rd);
+    double*   r = new double[nCols];
+    double**  D = allocate2DArray(nCols,nCols);
+    double*** T = allocate3DArray(nCols,nCols,nCols);
+    double**** F = allocate4DArray(nCols,nCols,nCols,nCols);
 
     std::cout << "1D Array r:" << '\n';
     rand1DArray(nCols,r);
     print1DArray(nCols,r);
     std::cout << '\n';
 
-//    std::cout << "3D Array C:" << '\n';
-//    C = outer3D(nCols,nCols,d3rd,r,r,r);
-//    print3DArray(nCols,nCols,d3rd,C);
-
     D = t2_tensor(r,r3);
     std::cout << "2D Array D:" << '\n';
     print2DArray(nCols,nCols,D);
     std::cout << '\n';
 
+    T = t3_tensor(r,r4);
+    std::cout << "3D Array T:" << '\n';
+    print3DArray(nCols,nCols,nCols,T);
+
+    std::cout << "4D Array F:" << '\n';
+    F = t4_tensor(r,r5);
+    print4DArray(nCols,nCols,nCols,nCols,F);
+
+    std::cout << '\n';
     delete [] r;
     free2DArray(nCols,D);
-//    free3DArray(nCols,nCols,d3rd,C);
+    free3DArray(nCols,nCols,T);
+    free4DArray(nCols,nCols,nCols,F);
 
-    return 0;
 }
-
