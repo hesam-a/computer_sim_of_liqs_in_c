@@ -343,6 +343,73 @@ double** t2_tensor (double* mat,double r3){
     return t2;
 }
 
+double*** t3_tensor(double *mat3, double r4){
+/*  returns third-rank 3x3x3 interaction tensor (note positive sign).
+
+    Supplied arguments should be the unit vector from 2 to 1 and
+    the fourth power of the modulus of that vector. */
+
+    int nCols=3;
+
+    double*** t3 = allocate3DArray(nCols,nCols,nCols);
+
+    t3 = outer3D(nCols,nCols,nCols,mat3,mat3,mat3);
+
+    scalar3DArrayMultip(nCols,nCols,nCols,15.,t3);
+
+    for (int i{0};i<3;++i){
+            t3[i][i][i] = t3[i][i][i] - 9.0 * mat3[i];
+        for (int j{0};j<3;++j){
+            if (j == i){
+                    continue;
+            }
+             t3[i][i][j] = t3[i][i][j] - 3.0 * mat3[j];
+             t3[i][j][i] = t3[i][j][i] - 3.0 * mat3[j];
+             t3[j][i][i] = t3[j][i][i] - 3.0 * mat3[j];
+        }
+    }
+
+    scalar3DArrayDivision(nCols,nCols,nCols, r4,t3);
+
+    return t3;
+
+}
+
+double**** t4_tensor(double* mat4, double r5){
+    /*Returns fourth-rank 3x3x3x3 interaction tensor
+
+    Supplied arguments should be the unit vector from 2 to 1 and
+    the fifth power of the modulus of that vector. */
+
+    int nCols=3;
+
+    double**** t4 = allocate4DArray(nCols,nCols,nCols,nCols);
+    double**   I  = allocate2DArray(nCols,nCols);
+
+    t4 = outer4D(nCols,nCols,nCols,nCols,mat4,mat4,mat4,mat4);
+    scalar4DArrayMultip(nCols,nCols,nCols,nCols,105.,t4);
+
+    identMatrix(nCols,nCols,I);
+
+    for (int i{0};i<nCols;++i){
+        for (int j{0};j<nCols;++j){
+            for (int k{0};k<nCols;++k){
+                for (int l{0};l<nCols;++l){
+
+                    t4[i][j][k][l] = t4[i][j][k][l] - 15.0 * (
+                           mat4[i] * mat4[j] * I[k][l] + mat4[i] * mat4[k] * I[j][l]
+                         + mat4[i] * mat4[l] * I[j][k] + mat4[j] * mat4[k] * I[i][l]
+                         + mat4[j] * mat4[l] * I[i][k] + mat4[k] * mat4[l] * I[i][j])
+                         + 3.0 * ( I[i][j] * I[k][l] + I[i][k] * I[j][l] + I[i][l] * I[j][k]);
+                }
+            }
+        }
+    }
+
+    scalar4DArrayDivision(nCols,nCols,nCols,nCols,r5,t4);
+
+    return t4;
+}
 
 
 int main()
