@@ -261,6 +261,20 @@ void print3DArray(int p, int q, int r, double*** A){
     }
 }
 
+void print4DArray(int p, int q, int m, int n, double**** A){
+    for (int i=0;i<p;i++) {
+        for (int j=0;j<q;j++) {
+            for (int k=0;k<m;k++) {
+                for (int l=0;l<n;l++) {
+                    printf("%15.10f  ",A[i][j][k][l]);
+                }
+                std::cout << '\n';
+            }
+            std::cout << '\n';
+        }
+        std::cout << '\n';
+    }
+}
 
 // a function for 2D array outer product 
 double** outer2D(int nCols, double* A, double* B){
@@ -289,6 +303,23 @@ double*** outer3D(int nRows, int nCols, int n3rd, double* A, double* B, double* 
     return D;
 }
 
+// a function for 4D array outer product
+double**** outer4D(int nRows, int nCols, int n3rd, int n4th, double* A, double* B, double* C, double* D){
+
+    double**** E = allocate4DArray(nRows,nCols,n3rd,n4th);
+
+    for (int i{0};i<nRows;++i){
+        for (int j{0};j<nCols;++j){
+            for (int k{0};k<n3rd;++k){
+                for (int l{0};l<n4th;++l){
+                    E[i][j][k][l] = A[i] * B[j] * C[k] * D[l];
+                }
+            }
+        }
+    }
+    return E;
+}
+
 // The t2 tensor function
 double** t2_tensor (double* mat,double r3){
 /* Returns second-rank 3x3 interaction tensor.
@@ -311,6 +342,7 @@ double** t2_tensor (double* mat,double r3){
 
     return t2;
 }
+
 
 
 int main()
