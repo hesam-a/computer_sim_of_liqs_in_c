@@ -84,3 +84,8 @@ double**** t4_tensor(double* mat4, double r5);
 double***** t5_tensor(double* mat5, double r6);
 
 double* skew(double** vec);
+
+double dot_product(double* a, double* b);
+
+double* cross_product(double** a, double** b);
+
