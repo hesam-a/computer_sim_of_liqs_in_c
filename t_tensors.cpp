@@ -99,7 +99,7 @@ void free2DArray(int m,double **array) {
 }
 
 // deacllocate the memory of a 3D Array
-void free3DArray(int p,int q,int r,double ***array) {
+void free3DArray(int p,int q,double ***array) {
     for (int i{0}; i<p ; i++){
         for (int j{0}; j<q; j++) {
             delete[] array[i][j];
@@ -350,13 +350,13 @@ double** t2_tensor (double* mat,double r3){
     double** t2 = allocate2DArray(nCols,nCols);
     
     t2 = outer2D(nCols, mat, mat);
-    scalarMultip(nCols,nCols,3.,t2);
+    scalar2DArrayMultip(nCols,nCols,3.,t2);
 
     identMatrix(nCols,nCols,A);
 
     scalar2DArraySubtract(nCols, nCols, t2, A);
 
-    scalarDivision(nCols,nCols, r3, t2);
+    scalar2DArrayDivision(nCols,nCols, r3, t2);
 
     return t2;
 }
@@ -429,6 +429,17 @@ double**** t4_tensor(double* mat4, double r5){
     return t4;
 }
 
+double* skew(double** vec){
+
+    double* b = new double[3];
+    b[0] = vec[1][2] - vec[2][1];
+    b[1] = vec[2][0] - vec[0][2];
+    b[2] = vec[0][1] - vec[1][0];
+
+    return b;
+}
+
+
 
 int main()
 {
@@ -438,9 +449,11 @@ int main()
     double r4 = 4.;
     double r5 = 4.;
 
-    double*   r = new double[nCols];
-    double**  D = allocate2DArray(nCols,nCols);
-    double*** T = allocate3DArray(nCols,nCols,nCols);
+    double*    r = new double[nCols];
+    double*    a = new double[nCols];
+    double**   D = allocate2DArray(nCols,nCols);
+    double**   b = allocate2DArray(nCols,nCols);
+    double***  T = allocate3DArray(nCols,nCols,nCols);
     double**** F = allocate4DArray(nCols,nCols,nCols,nCols);
 
     std::cout << "1D Array r:" << '\n';
@@ -461,9 +474,18 @@ int main()
     F = t4_tensor(r,r5);
     print4DArray(nCols,nCols,nCols,nCols,F);
 
+    rand2DArray(nCols,nCols,b);
+    std::cout << "randomized 2D Array b:" << '\n';
+    print2DArray(nCols,nCols,b);
+    std::cout << "skew:" << '\n';
+    a = skew(b);
+    print1DArray(nCols,a);
+
     std::cout << '\n';
     delete [] r;
+    delete [] a;
     free2DArray(nCols,D);
+    free2DArray(nCols,b);
     free3DArray(nCols,nCols,T);
     free4DArray(nCols,nCols,nCols,F);
 
