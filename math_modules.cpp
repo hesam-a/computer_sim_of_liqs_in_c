@@ -550,3 +550,22 @@ double* skew(double** vec){
 
     return b;
 }
+
+double dot_product(double* a, double* b){
+    double product{0};
+    for (int{0}; i<n; i++){
+        product = product + a * b;
+    }
+    return product
+}
+
+double* cross_product(double** a, double** b){
+        
+    double* product = new double [3];
+
+    product[0] = a[1]*a[2] - a[2]*a[1];
+    product[1] = a[2]*a[0] - a[0]*a[2];
+    product[2] = a[0]*a[1] - a[1]*a[0];
+
+    return product;
+}
