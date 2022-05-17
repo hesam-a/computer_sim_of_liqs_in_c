@@ -31,18 +31,21 @@
 
 int main()
 {
+
     int nRows=1;
     int nCols=3;
     double r3 = 4.;
     double r4 = 4.;
     double r5 = 4.;
+    double r6 = 4.;
 
-    double*    r = new double[nCols];
-    double*    a = new double[nCols];
-    double**   D = allocate2DArray(nCols,nCols);
-    double**   b = allocate2DArray(nCols,nCols);
-    double***  T = allocate3DArray(nCols,nCols,nCols);
-    double**** F = allocate4DArray(nCols,nCols,nCols,nCols);
+    double*     r = new double[nCols];
+    double*     a = new double[nCols];
+    double**    D = allocate2DArray(nCols,nCols);
+    double**    b = allocate2DArray(nCols,nCols);
+    double***   T = allocate3DArray(nCols,nCols,nCols);
+    double****  F = allocate4DArray(nCols,nCols,nCols,nCols);
+    double***** G = allocate5DArray(nCols,nCols,nCols,nCols,nCols);
 
     std::cout << "1D Array r:" << '\n';
     rand1DArray(nCols,r);
@@ -62,6 +65,11 @@ int main()
     F = t4_tensor(r,r5);
     print4DArray(nCols,nCols,nCols,nCols,F);
 
+    std::cout << "5D Array F:" << '\n';
+    G = t5_tensor(r,r6);
+    print5DArray(nCols,nCols,nCols,nCols,nCols,G);
+    std::cout << '\n';
+
     rand2DArray(nCols,nCols,b);
     std::cout << "randomized 2D Array b:" << '\n';
     print2DArray(nCols,nCols,b);
@@ -69,12 +77,15 @@ int main()
     a = skew(b);
     print1DArray(nCols,a);
 
-    std::cout << '\n';
+
     delete [] r;
     delete [] a;
     free2DArray(nCols,D);
     free2DArray(nCols,b);
     free3DArray(nCols,nCols,T);
     free4DArray(nCols,nCols,nCols,F);
+    free5DArray(nCols,nCols,nCols,nCols,G);
+
+    return 0;
 
 }
