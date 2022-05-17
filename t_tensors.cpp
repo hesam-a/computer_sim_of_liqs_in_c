@@ -73,6 +73,24 @@ double**** allocate4DArray(int p,int q, int m, int n) {
     return array;
 }
 
+double***** allocate5DArray(int p,int q, int m, int n, int s) {
+    double***** array = new double**** [p];
+
+    for (int i{0}; i<p; i++) {
+        array[i] = new double*** [q];
+        for (int j{0}; j<q; ++j){
+            array[i][j] = new double** [m];
+            for (int k{0}; k<m; ++k){
+                array[i][j][k] = new double* [n];
+                for (int l{0}; l<n; ++l){
+                    array[i][j][k][l] = new double [s];
+                }
+            }
+        }
+    }
+    return array;
+}
+
 // deallocate the memory of a 2D Array
 void free2DArray(int m,double **array) {
     for (int i{0}; i<m; ++i)
