@@ -89,3 +89,8 @@ double dot_product(double* a, double* b);
 
 double* cross_product(double** a, double** b);
 
+double contract_i_i (int n,double* a, double* b);
+
+double* contract_ij_j (double* a, double** b);
+
+
