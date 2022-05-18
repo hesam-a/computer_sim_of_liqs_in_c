@@ -569,3 +569,27 @@ double* cross_product(double** a, double** b){
 
     return product;
 }
+
+double contract_i_i (int n,double* a, double* b){
+/*  Returns a zero-rank contraction of a first-rank tensor
+    with a first-rank tensor*/
+
+    double c;
+    c = dot_product(n,a,b);
+
+    return c;
+}
+
+double* contract_ij_j (double* a, double** b){
+/*  Returns a first-rank contraction offirst-rank tensor
+    with a first-rank tensor*/
+    double* product = new double[3];
+    for(int i{0};i<3;++i){
+        for (int j{0};j<3;++j){
+            product[i] = product[i] + a[i]*b[j][i];
+        }
+    }
+    return product;
+}
+
+
