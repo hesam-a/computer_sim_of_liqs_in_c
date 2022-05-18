@@ -76,10 +76,16 @@ int main()
     std::cout << "skew:" << '\n';
     a = skew(b);
     print1DArray(nCols,a);
+    std::cout << '\n';
+   
+    std::cout << "contract:" << '\n';
+    contract = contract_ij_j(a,b);
+    print1DArray(nCols,contract);
 
 
     delete [] r;
     delete [] a;
+    delete [] contract;
     free2DArray(nCols,D);
     free2DArray(nCols,b);
     free3DArray(nCols,nCols,T);
