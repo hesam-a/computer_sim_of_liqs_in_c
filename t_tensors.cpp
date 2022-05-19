@@ -34,6 +34,7 @@ int main()
 
     int nRows=1;
     int nCols=3;
+    double contract2;
     double r3 = 4.;
     double r4 = 4.;
     double r5 = 4.;
