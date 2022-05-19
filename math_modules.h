@@ -85,12 +85,16 @@ double***** t5_tensor(double* mat5, double r6);
 
 double* skew(double** vec);
 
-double dot_product(double* a, double* b);
+double dotProduct(double* a, double* b);
 
-double* cross_product(double** a, double** b);
+double** elementWiseProduct(double** a, double** b);
+
+double* crossProduct(double** a, double** b);
 
 double contract_i_i (int n,double* a, double* b);
 
 double* contract_ij_j (double* a, double** b);
+
+double contract_ij_ij (double** a, double** b);
 
 
