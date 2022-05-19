@@ -551,7 +551,7 @@ double* skew(double** vec){
     return b;
 }
 
-double dot_product(double* a, double* b){
+double dotProduct(double* a, double* b){
     double product{0};
     for (int{0}; i<n; i++){
         product = product + a * b;
@@ -559,7 +559,7 @@ double dot_product(double* a, double* b){
     return product
 }
 
-double* cross_product(double** a, double** b){
+double* crossProduct(double** a, double** b){
         
     double* product = new double [3];
 
@@ -570,12 +570,22 @@ double* cross_product(double** a, double** b){
     return product;
 }
 
+double** elementWiseProduct(double** a, double** b){
+    double** product = allocate2DArray(3,3);
+    for (int i{0};i<3;++i){
+        for (int j{0};j<3;++j){
+            product[i][j] = a[i][j] * b[i][j];
+        }
+    }
+    return product;
+}
+
 double contract_i_i (int n,double* a, double* b){
 /*  Returns a zero-rank contraction of a first-rank tensor
     with a first-rank tensor*/
 
     double c;
-    c = dot_product(n,a,b);
+    c = dotProduct(n,a,b);
 
     return c;
 }
@@ -592,4 +602,16 @@ double* contract_ij_j (double* a, double** b){
     return product;
 }
 
+double contract_ij_ij (double** a, double** b){
 
+    double product;
+    double** dot;
+    dot = elementWiseProduct(a,b);
+    print2DArray(3,3,dot);
+    for (int i{0};i<3;++i){
+        for (int j{0};j<3;++j){
+            product = product + dot[i][j];
+        }
+    }
+    return product;
+}
