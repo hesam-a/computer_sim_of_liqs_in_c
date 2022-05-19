@@ -603,7 +603,9 @@ double* contract_ij_j (double* a, double** b){
 }
 
 double contract_ij_ij (double** a, double** b){
-
+/*  c ! Returns a zero-rank contraction of a second-rank tensor
+    with another second-rank tensor. */
+	
     double product;
     double** dot;
     dot = elementWiseProduct(3,3,a,b);
