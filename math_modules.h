@@ -87,7 +87,7 @@ double* skew(double** vec);
 
 double dotProduct(double* a, double* b);
 
-double** elementWiseProduct(double** a, double** b);
+double** elementWiseProduct(int m, int n, double** a, double** b);
 
 double* crossProduct(double** a, double** b);
 
