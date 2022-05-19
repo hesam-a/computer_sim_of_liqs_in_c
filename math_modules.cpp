@@ -570,10 +570,10 @@ double* crossProduct(double** a, double** b){
     return product;
 }
 
-double** elementWiseProduct(double** a, double** b){
+double** elementWiseProduct(int m, int n, double** a, double** b){
     double** product = allocate2DArray(3,3);
-    for (int i{0};i<3;++i){
-        for (int j{0};j<3;++j){
+    for (int i{0};i<m;++i){
+        for (int j{0};j<n;++j){
             product[i][j] = a[i][j] * b[i][j];
         }
     }
@@ -606,7 +606,7 @@ double contract_ij_ij (double** a, double** b){
 
     double product;
     double** dot;
-    dot = elementWiseProduct(a,b);
+    dot = elementWiseProduct(3,3,a,b);
     print2DArray(3,3,dot);
     for (int i{0};i<3;++i){
         for (int j{0};j<3;++j){
