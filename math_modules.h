@@ -97,4 +97,4 @@ double* contract_ij_j (double* a, double** b);
 
 double contract_ij_ij (double** a, double** b);
 
-
+double** contract_ik_jk (double*** a, double* b);
