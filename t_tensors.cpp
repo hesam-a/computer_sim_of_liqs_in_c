@@ -85,18 +85,25 @@ int main()
     std::cout << "contract:" << '\n';
     contract = contract_ij_j(a,b);
     print1DArray(nCols,contract);
+    std::cout << '\n';
    
     std::cout << "contract ij ij:" << '\n';
     contract2 = contract_ij_ij(D,b);
     std::cout << contract2 << '\n';
     std::cout << '\n';
    
-
+    std::cout << "contract ij ij:" << '\n';
+    contract2 = contract_ij_ij(D,b);
+    std::cout << contract2 << '\n';
+    std::cout << '\n';
+   
+  
     delete [] r;
     delete [] a;
     delete [] contract;
     free2DArray(nCols,D);
     free2DArray(nCols,b);
+    free2DArray(nCols,contract3);
     free3DArray(nCols,nCols,T);
     free4DArray(nCols,nCols,nCols,F);
     free5DArray(nCols,nCols,nCols,nCols,G);
