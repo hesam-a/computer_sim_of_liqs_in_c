@@ -609,7 +609,7 @@ double contract_ij_ij (double** a, double** b){
     double product;
     double** dot;
     dot = elementWiseProduct(3,3,a,b);
-    print2DArray(3,3,dot);
+//    print2DArray(3,3,dot);
     for (int i{0};i<3;++i){
         for (int j{0};j<3;++j){
             product = product + dot[i][j];
