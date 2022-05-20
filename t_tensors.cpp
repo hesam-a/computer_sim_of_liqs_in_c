@@ -44,6 +44,7 @@ int main()
     double*     r = new double[nCols];
     double*     a = new double[nCols];
     double*     contract = new double[nCols];
+    double**    contract3 = allocate2DArray(nCols,nCols);
     double**    D = allocate2DArray(nCols,nCols);
     double**    b = allocate2DArray(nCols,nCols);
     double***   T = allocate3DArray(nCols,nCols,nCols);
