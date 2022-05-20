@@ -617,3 +617,20 @@ double contract_ij_ij (double** a, double** b){
     }
     return product;
 }
+
+double** contract_ik_jk (double** a, double** b){
+/*  Returns a second-rank contraction of a second-rank tensor
+    with another second-rank tensor. */
+
+    double** D = allocate2DArray(3,3);
+
+    for (int i{0};i<3;++i){
+        for (int j{0};j<3;++j){
+            for (int k{0};k<3;++k){
+                    D[i][j] = D[i][j] + a[i][k] * b[j][k];
+            }
+        }
+    }
+    return D;
+}
+
