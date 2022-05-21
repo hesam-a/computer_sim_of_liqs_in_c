@@ -596,7 +596,7 @@ double* contract_ij_j (double** a, double* b){
     double* product = new double[3];
     for(int i{0};i<3;++i){
         for (int j{0};j<3;++j){
-            product[i] = product[i] + a[i]*b[j][i];
+            product[i] = product[i] + a[j][i] * b[i];
         }
     }
     return product;
