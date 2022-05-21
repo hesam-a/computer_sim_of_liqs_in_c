@@ -590,7 +590,7 @@ double contract_i_i (int n,double* a, double* b){
     return c;
 }
 
-double* contract_ij_j (double* a, double** b){
+double* contract_ij_j (double** a, double* b){
 /*  Returns a first-rank contraction offirst-rank tensor
     with a first-rank tensor*/
     double* product = new double[3];
