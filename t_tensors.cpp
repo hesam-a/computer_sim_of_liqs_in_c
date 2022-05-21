@@ -45,6 +45,7 @@ int main()
     double*     a = new double[nCols];
     double*     contract = new double[nCols];
     double**    contract3 = allocate2DArray(nCols,nCols);
+    double**    contract4 = allocate2DArray(nCols,nCols);
     double**    D = allocate2DArray(nCols,nCols);
     double**    b = allocate2DArray(nCols,nCols);
     double***   T = allocate3DArray(nCols,nCols,nCols);
@@ -83,7 +84,7 @@ int main()
     std::cout << '\n';
    
     std::cout << "contract:" << '\n';
-    contract = contract_ij_j(a,b);
+    contract = contract_ij_j(b,a);
     print1DArray(nCols,contract);
     std::cout << '\n';
    
@@ -96,7 +97,11 @@ int main()
     contract2 = contract_ij_ij(D,b);
     std::cout << contract2 << '\n';
     std::cout << '\n';
-   
+  
+    std::cout << "contract ijk k:" << '\n';
+    contract4 = contract_ijk_k(T,contract);
+    print2DArray(nCols,nCols,contract4);
+    std::cout << '\n';   
   
     delete [] r;
     delete [] a;
@@ -104,6 +109,7 @@ int main()
     free2DArray(nCols,D);
     free2DArray(nCols,b);
     free2DArray(nCols,contract3);
+    free2DArray(nCols,contract4);
     free3DArray(nCols,nCols,T);
     free4DArray(nCols,nCols,nCols,F);
     free5DArray(nCols,nCols,nCols,nCols,G);
