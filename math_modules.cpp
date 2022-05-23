@@ -1,4 +1,10 @@
+#define _USE_MATH_DEFINES
+ 
+#include <cmath>
 #include <iostream>
+#include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
 
 
 double** allocate2DArray(int m,int n) {
@@ -116,80 +122,132 @@ void free5DArray(int p,int q,int m, int n, double***** array) {
     delete[] array;
 }
 
-void rand1DArray(int m, double *A) {
+double* rand1DArray(int m) {
+
+    double* arr = new double[m];
+
     for (int i=0;i<m;i++) {
-        A[i] = (double) rand()/RAND_MAX;
+        arr[i] = (double) rand()/RAND_MAX;
     }
+    return arr;
 }
 
-void rand2DArray(int m,int n, double **A) {
+double** rand2DArray(int m,int n) {
+
+    double** arr = allocate2DArray(m,n);
+
     for (int i=0;i<m;i++) {
         for (int j=0;j<n;j++) {
-            A[i][j] = (double) rand()/RAND_MAX;
+            arr[i][j] = (double) rand()/RAND_MAX;
         }
     }
+    return arr;
 }
 
-void rand3DArray(int p,int q,int r, double ***A) {
+double*** rand3DArray(int p,int q,int r) {
+
+    double*** arr = allocate3DArray(p,q,r);
+
     for (int i=0;i<p;i++) {
         for (int j=0;j<q;j++) {
             for (int k=0;k<r;k++) {
-                A[i][j][k] = (double) rand()/RAND_MAX;
+                arr[i][j][k] = (double) rand()/RAND_MAX;
             }
         }
     }
+    return arr;
 }
 
-void rand4DArray(int p,int q,int m, int n, double ****A) {
+double**** rand4DArray(int p,int q,int m, int n) {
+
+    double**** arr = allocate4DArray(p,q,m,n);
+
     for (int i=0;i<p;i++) {
         for (int j=0;j<q;j++) {
             for (int k=0;k<m;k++) {
                 for (int l=0;l<n;l++) {
-                    A[i][j][k][l] = (double) rand()/RAND_MAX;
+                    arr[i][j][k][l] = (double) rand()/RAND_MAX;
 		}
             }
         }
     }
+    return arr;
 }
 
-void rand5DArray(int p,int q,int m, int n,int s, double *****A) {
+double***** rand5DArray(int p,int q,int m, int n,int s) {
+
+    double***** arr = allocate5DArray(p,q,m,n,s);
+
     for (int i=0;i<p;i++) {
         for (int j=0;j<q;j++) {
             for (int k=0;k<m;k++) {
                 for (int l=0;l<n;l++) {
                     for (int r=0;r<s;r++) {
-                        A[i][j][k][l][r] = (double) rand()/RAND_MAX;
+                        arr[i][j][k][l][r] = (double) rand()/RAND_MAX;
 		    }
 		}
             }
         }
     }
+    return arr;
 }
 
-void zeroMatrix(int m,int n, double **A) {
+double** zeroMatrix(int m,int n) {
+
+    double** arr = allocate2DArray(m,n);
+
     for (int i=0;i<m;i++) {
         for (int j=0;j<n;j++) {
-            A[i][j] = 0.;
+            arr[i][j] = 0.;
         }
     }
+    return arr;
 }
 
-void identMatrix(int m,int n, double **A) {
+double** identMatrix(int m,int n) {
+
+    double** arr = allocate2DArray(m,n);
+
     for (int i=0;i<m;i++) {
         for (int j=0;j<n;j++) {
 	    if (i==j){
-	        A[i][j] = 1.;
+	        arr[i][j] = 1.;
 	    }
         }
     }
+    return arr;
 }
 
-void scalar2DArrayMultip(int m,int n,double p, double** A) {
+double* sum2DArrays(int m,int n, double* A, double* B) {
+
+    double* sum = new double [m];
+
+    for (int i=0;i<m;i++) {
+            sum[i] = A[i] + B[i];
+    }
+    return sum;
+}
+
+double* scalar1DArrayMultip(int m,double p, double* A) {
+
+    double* arr = new double [3];
+
+    for (int i=0;i<m;i++) {
+            arr[i] = A[i] * p;
+    }
+    return arr;
+}
+
+double** scalar2DArrayMultip(int m,int n,double p, double** A) {
+
+    double** product = allocate2DArray(m,n);
+
     for (int i=0;i<m;i++) {
         for (int j=0;j<n;j++) {
-            A[i][j] *= p;
+            product[i][j] = A[i][j] * p;
         }
     }
+    return product;
 }
 
 void scalar3DArrayMultip(int m,int n, int r, double p, double*** A) {
@@ -229,10 +287,32 @@ void scalar5DArrayMultip(int p,int q, int m, int n, int s, double b, double*****
     }
 }
 
-void scalar2DArraySubtract(int m,int n, double** A, double** B) {
+double* subtract1DArrays(int m, double* A, double* B) {
+
+    double* sub = new double [m];
+
+    for (int i=0;i<m;i++) {
+            sub[i] = A[i] - B[i];
+    }
+    return sub;
+}
+
+double** subtract2DArrays(int m,int n, double** A, double** B) {
+
+    double** sub = allocate2DArray(m,n);
+
     for (int i=0;i<m;i++) {
         for (int j=0;j<n;j++) {
-            A[i][j] -= B[i][j];
+            sub[i][j] = A[i][j] - B[i][j];
+        }
+    }
+    return sub;
+}
+
+void scalar2DArraySubtract(int m,int n, double p, double** A) {
+    for (int i=0;i<m;i++) {
+        for (int j=0;j<n;j++) {
+            A[i][j] -= p;
         }
     }
 }
@@ -283,7 +363,7 @@ void scalar5DArrayDivision(int p,int q, int m,int n, int s, double b, double****
 
 void print1DArray(int m, double* A){
     for (int i=0;i<m;i++) {
-        printf("%15.10f  ",A[i]);
+        printf("%10.10f  ",A[i]);
     }
     std::cout << '\n';
 }
@@ -417,13 +497,12 @@ double** t2_tensor (double* mat,double r3){
    
     double** A  = allocate2DArray(nCols,nCols);
     double** t2 = allocate2DArray(nCols,nCols);
+ 
+    t2 = scalar2DArrayMultip(nCols,nCols,3.,outer2D(nCols, mat, mat));
 
-    t2 = outer2D(nCols, mat, mat);
-    scalar2DArrayMultip(nCols,nCols,3.,t2);
-
-    identMatrix(nCols,nCols,A);
+    A  = identMatrix(nCols,nCols);
    
-    scalar2DArraySubtract(nCols, nCols, t2, A);
+    t2 = subtract2DArrays(nCols, nCols, t2, A);
     
     scalar2DArrayDivision(nCols,nCols, r3, t2);
      
@@ -432,7 +511,6 @@ double** t2_tensor (double* mat,double r3){
 
 double*** t3_tensor(double *mat3, double r4){
 /*  returns third-rank 3x3x3 interaction tensor (note positive sign).
-
     Supplied arguments should be the unit vector from 2 to 1 and
     the fourth power of the modulus of that vector. */
 	
@@ -464,7 +542,6 @@ double*** t3_tensor(double *mat3, double r4){
 
 double**** t4_tensor(double* mat4, double r5){
     /*Returns fourth-rank 3x3x3x3 interaction tensor
-
     Supplied arguments should be the unit vector from 2 to 1 and
     the fifth power of the modulus of that vector. */	
 
@@ -476,7 +553,7 @@ double**** t4_tensor(double* mat4, double r5){
     t4 = outer4D(nCols,nCols,nCols,nCols,mat4,mat4,mat4,mat4);
     scalar4DArrayMultip(nCols,nCols,nCols,nCols,105.,t4);
 
-    identMatrix(nCols,nCols,A);
+    A = identMatrix(nCols,nCols);
 
     for (int i{0};i<nCols;++i){
         for (int j{0};j<nCols;++j){
@@ -501,7 +578,6 @@ double**** t4_tensor(double* mat4, double r5){
 
 double***** t5_tensor(double* mat5, double r6){
 /*    Returns fifth-rank 3x3x3x3x3 interaction tensor
-
     Supplied arguments should be the unit vector from 2 to 1 and
     the fifth power of the modulus of that vector. */	
 
@@ -513,7 +589,7 @@ double***** t5_tensor(double* mat5, double r6){
     t5 = outer5D(nCols,nCols,nCols,nCols,nCols,mat5,mat5,mat5,mat5,mat5);
     scalar5DArrayMultip(nCols,nCols,nCols,nCols,nCols,945.,t5);
 
-    identMatrix(nCols,nCols,A);
+    A = identMatrix(nCols,nCols);
     for (int i{0};i<nCols;++i){
         for (int j{0};j<nCols;++j){
             for (int k{0};k<nCols;++k){
@@ -551,26 +627,30 @@ double* skew(double** vec){
     return b;
 }
 
-double dotProduct(double* a, double* b){
+double dotProduct(int n,double* a, double* b){
+
     double product{0};
-    for (int{0}; i<n; i++){
-        product = product + a * b;
+    
+    for (int i{0}; i<n; i++){
+	product = product + (a[i] * b[i]);
     }
-    return product
+    return product;
 }
 
-double* crossProduct(double** a, double** b){
-        
+
+double* crossProduct(double* a, double* b){
+
     double* product = new double [3];
 
-    product[0] = a[1]*a[2] - a[2]*a[1];
-    product[1] = a[2]*a[0] - a[0]*a[2];
-    product[2] = a[0]*a[1] - a[1]*a[0];
+    product[0] = a[1]*b[2] - a[2]*b[1];
+    product[1] = a[2]*b[0] - a[0]*b[2];
+    product[2] = a[0]*b[1] - a[1]*b[0];
 
     return product;
 }
 
 double** elementWiseProduct(int m, int n, double** a, double** b){
+    
     double** product = allocate2DArray(3,3);
     for (int i{0};i<m;++i){
         for (int j{0};j<n;++j){
@@ -582,31 +662,33 @@ double** elementWiseProduct(int m, int n, double** a, double** b){
 
 double contract_i_i (int n,double* a, double* b){
 /*  Returns a zero-rank contraction of a first-rank tensor
-    with a first-rank tensor*/
+    with a first-rank tensor. */
 
     double c;
     c = dotProduct(n,a,b);
-
+    
     return c;
 }
 
+
 double* contract_ij_j (double** a, double* b){
 /*  Returns a first-rank contraction offirst-rank tensor
-    with a first-rank tensor*/
+    with a first-rank tensor. */
     double* product = new double[3];
     for(int i{0};i<3;++i){
-        for (int j{0};j<3;++j){
-            product[i] = product[i] + a[j][i] * b[i];
-        }
+	for (int j{0};j<3;++j){
+	    product[i] = product[i] + a[i][j] *  b[j];
+	}
     }
     return product;
-}
+}	
+
 
 double contract_ij_ij (double** a, double** b){
 /*  c ! Returns a zero-rank contraction of a second-rank tensor
     with another second-rank tensor. */
-	
-    double product;
+
+    double product{0};
     double** dot;
     dot = elementWiseProduct(3,3,a,b);
 //    print2DArray(3,3,dot);
@@ -625,14 +707,15 @@ double** contract_ik_jk (double** a, double** b){
     double** D = allocate2DArray(3,3);
 
     for (int i{0};i<3;++i){
-        for (int j{0};j<3;++j){
-            for (int k{0};k<3;++k){
-                    D[i][j] = D[i][j] + a[i][k] * b[j][k];
-            }
-        }
+	for (int j{0};j<3;++j){
+	    for (int k{0};k<3;++k){
+		    D[i][j] = D[i][j] + a[i][k] * b[j][k];
+	    }
+	}
     }
     return D;
 }
+
 
 double** contract_ijk_k (double*** a, double* b){
 /*  Returns a second-rank contraction of a third-rank tensor
@@ -641,11 +724,89 @@ double** contract_ijk_k (double*** a, double* b){
     double** D = allocate2DArray(3,3);
 
     for (int i{0};i<3;++i){
-        for (int j{0};j<3;++j){
-            for (int k{0};k<3;++k){
+	for (int j{0};j<3;++j){
+	    for (int k{0};k<3;++k){
                 D[i][j] =  D[i][j] + a[i][j][k] * b[k];
-            }
-        }
+	    }
+	}
     }
     return D;
 }
+
+double* contract_ijk_jk (double*** a, double** b){
+/*  Returns a second-rank contraction of a fourth-rank tensor
+    and a second-rank tensor */
+
+    double* D = new double[3];
+
+    for (int i{0};i<3;++i){
+	for (int j{0};j<3;++j){
+	    for (int k{0};k<3;++k){
+                D[i] =  D[i] + a[i][j][k] * b[j][k];
+	    }
+	}
+    }
+    return D;
+}
+
+double** contract_ijkl_kl(double**** a, double** b){
+/*  Returns a second-rank contraction of a fourth-rank tensor
+    and a second-rank tensor. */
+
+    double** D = allocate2DArray(3,3);
+
+    for (int i{0};i<3;++i){
+	for (int j{0};j<3;++j){
+	    for (int k{0};k<3;++k){
+	        for (int l{0};l<3;++l){
+                    D[i][j] =  D[i][j] + a[i][j][k][l] * b[k][l];
+		}
+	    }
+	}
+    }
+    return D;
+}
+
+
+double*** contract_ijklm_lm(double***** a, double** b){
+/*  Returns a third-rank contraction of a fifth-rank tensor
+    and a second-rank tensor. */
+
+    double*** D = allocate3DArray(3,3,3);
+
+    for (int i{0};i<3;++i){
+	for (int j{0};j<3;++j){
+	    for (int k{0};k<3;++k){
+	        for (int l{0};l<3;++l){
+	            for (int m{0};m<3;++m){
+                        D[i][j][k] = D[i][j][k] + a[i][j][k][l][m] * b[l][m];
+		    }
+		}
+	    }
+	}
+    }
+    return D;
+}
+
+double* random_vector(){
+//  Returns a random unit vector as a numpy array of 3 elements. 
+
+    double* rand_vec = new double [3];
+    double* zeta     = rand1DArray(2);        // Two uniformly sampled random numbers in range (0,1)
+    double c         = 2.0*zeta[0] - 1.0;     // Random cos(theta) uniformly sampled in range (-1,+1)
+    double s,phi;                             // desclare sin, angle phi
+
+    if (c >= 1.0){                            // Guard against very small chance of roundoff error
+        s = 0.0;                              // Set sin(theta) to zero
+    }
+    else{
+        s = sqrt(1.0-pow(c,2));               // Calculate sin(theta) from cos(theta), always positive
+    }
+    phi = zeta[1] * 2.0*M_PI;                 //  Random angle uniformly sampled in range (0,2*pi)
+
+    rand_vec[0] = s*cos(phi);
+    rand_vec[1] = s*sin(phi);
+    rand_vec[2] = c;
+
+    return rand_vec; 
+ }
