@@ -1,13 +1,10 @@
 #include <iostream>
-#include <stdio.h>
-#include <time.h>
-#include <stdlib.h>
 
-double** allocate2DArray(int m,int n);
+double**    allocate2DArray(int m,int n);
 
-double*** allocate3DArray(int p,int q, int r);
+double***   allocate3DArray(int p,int q, int r);
 
-double**** allocate4DArray(int p,int q, int m, int n);
+double****  allocate4DArray(int p,int q, int m, int n);
 
 double***** allocate5DArray(int p,int q, int m, int n, int s);
 
@@ -23,9 +20,9 @@ void free4DArray(int p,int q,int m,double**** array);
 // deacllocate the memory of a 5D matrix
 void free5DArray(int p,int q,int m, int n, double***** array);
 
-void rand1DArray(int m, double *A);
+double* rand1DArray(int m);
 
-void rand2DArray(int m,int n, double **A);
+double** rand2DArray(int m,int n);
 
 void rand3DArray(int p,int q,int r, double ***A);
 
@@ -35,9 +32,11 @@ void rand5DArray(int p,int q,int m, int n,int s, double *****A);
 
 void zeroMatrix(int m,int n, double **A);
 
-void identMatrix(int m,int n, double **A);
+double** identMatrix(int m,int n);
 
-void scalar2DArrayMultip(int m,int n,double p, double** A);
+double* scalar1DArrayMultip(int m,double p, double* A);
+
+double** scalar2DArrayMultip(int m,int n,double p, double** A);
 
 void scalar3DArrayMultip(int m,int n, int r, double p, double*** A);
 
@@ -45,7 +44,13 @@ void scalar4DArrayMultip(int p,int q, int m, int n, double b, double**** A);
 
 void scalar5DArrayMultip(int p,int q, int m, int n, int s, double b, double***** A);
 
-void scalar2DArraySubtract(int m,int n, double** A, double** B);
+void scalar2DArraySubtract(int m,int n, double p, double** A);
+
+double* subtract1DArrays(int m, double* A, double* B);
+
+double** subtract2DArrays(int m,int n, double** A, double** B);
+
+double* sum2DArrays(int m,int n, double* A, double* B);
 
 void scalar2DArrayDivision(int m,int n,double p, double** A);
 
@@ -85,11 +90,11 @@ double***** t5_tensor(double* mat5, double r6);
 
 double* skew(double** vec);
 
-double dotProduct(double* a, double* b);
+double dotProduct(int n,double* a, double* b);
 
 double** elementWiseProduct(int m, int n, double** a, double** b);
 
-double* crossProduct(double** a, double** b);
+double* crossProduct(double* a, double* b);
 
 double contract_i_i (int n,double* a, double* b);
 
@@ -100,3 +105,11 @@ double contract_ij_ij (double** a, double** b);
 double** contract_ik_jk (double** a, double** b);
 
 double** contract_ijk_k (double*** a, double* b);
+
+double* contract_ijk_jk (double*** a, double** b);
+
+double** contract_ijkl_kl(double**** a, double** b);
+
+double*** contract_ijklm_lm(double***** a, double** b);
+
+double* random_vector();
