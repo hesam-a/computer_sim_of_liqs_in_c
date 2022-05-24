@@ -6,6 +6,8 @@
 #include <time.h>
 #include <stdlib.h>
 
+// This is a math module for some functions used in the programs. Although the current version is completely working for the programs,
+// some functions might need 
 
 double** allocate2DArray(int m,int n) {
 //    double** array = new double*[m];
@@ -218,7 +220,7 @@ double** identMatrix(int m,int n) {
     return arr;
 }
 
-double* sum2DArrays(int m,int n, double* A, double* B) {
+double* sum1DArrays(int m, double* A, double* B) {
 
     double* sum = new double [m];
 
@@ -250,14 +252,18 @@ double** scalar2DArrayMultip(int m,int n,double p, double** A) {
     return product;
 }
 
-void scalar3DArrayMultip(int m,int n, int r, double p, double*** A) {
+double*** scalar3DArrayMultip(int m,int n, int r, double p, double*** A) {
+
+    double*** product = allocate3DArray(m,n,r);
+
     for (int i=0;i<m;i++) {
         for (int j=0;j<n;j++) {
             for (int k=0;k<r;k++) {
-                A[i][j][k] *= p;
+                product[i][j][k] = A[i][j][k] * p;
 	    }
         }
     }
+    return product;
 }
 
 void scalar4DArrayMultip(int p,int q, int m, int n, double b, double**** A) {
@@ -520,7 +526,7 @@ double*** t3_tensor(double *mat3, double r4){
 
     t3 = outer3D(nCols,nCols,nCols,mat3,mat3,mat3);
 
-    scalar3DArrayMultip(nCols,nCols,nCols,15.,t3);
+    t3 = scalar3DArrayMultip(nCols,nCols,nCols,15.,t3);
 
     for (int i{0};i<3;++i){
 	    t3[i][i][i] = t3[i][i][i] - 9.0 * mat3[i];
