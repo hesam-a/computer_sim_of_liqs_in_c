@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 // This is a math module for some functions used in the programs. Although the current version is completely working for the programs,
-// some functions might need 
+// some functions might need slight modifications.
 
 double** allocate2DArray(int m,int n) {
 //    double** array = new double*[m];
