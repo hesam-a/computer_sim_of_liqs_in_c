@@ -38,7 +38,7 @@ double* scalar1DArrayMultip(int m,double p, double* A);
 
 double** scalar2DArrayMultip(int m,int n,double p, double** A);
 
-void scalar3DArrayMultip(int m,int n, int r, double p, double*** A);
+double*** scalar3DArrayMultip(int m,int n, int r, double p, double*** A);
 
 void scalar4DArrayMultip(int p,int q, int m, int n, double b, double**** A);
 
@@ -50,7 +50,7 @@ double* subtract1DArrays(int m, double* A, double* B);
 
 double** subtract2DArrays(int m,int n, double** A, double** B);
 
-double* sum2DArrays(int m,int n, double* A, double* B);
+double* sum1DArrays(int m, double* A, double* B);
 
 void scalar2DArrayDivision(int m,int n,double p, double** A);
 
