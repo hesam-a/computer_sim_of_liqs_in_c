@@ -1,4 +1,4 @@
-// This program is used to run test the function for operations on tensors.
+// This program is used to test the function for operations on tensors.
 
 #include <iostream>
 #include <stdio.h>
