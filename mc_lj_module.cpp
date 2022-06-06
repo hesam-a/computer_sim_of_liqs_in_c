@@ -1,3 +1,10 @@
+/* This program is a C++ version of the module "mc_lj_module.f90" from the book "Computer simulations of liquids"
+ by Allen and Tildesley. */
+
+// It is used for calculation of the Lennard-Jones (LJ) potential and squared force of particles.
+
+// It should be called by other programs.
+
 #include <iostream>
 #include <cmath>
 #include <stdio.h>
@@ -7,6 +14,7 @@
 #include <stdlib.h>
 #include <iterator>
 #include "./math_module.h"
+
 
 class PotentialType{
 
@@ -18,9 +26,10 @@ class PotentialType{
 
 };
 
+
 void introduction(){
 
-/*  Prints out introductory statements at start of run. */
+//  Prints out introductory statements at start of run.
 
 	std::cout << "Lennard-Jones potential" << '\n'; 
     	std::cout << "Cut (but not shifted) "  << '\n'; 
@@ -29,16 +38,18 @@ void introduction(){
 }
 
 void conclusion():{
-/*  Prints out concluding statements at end of run. */
+
+//  Prints out concluding statements at end of run.
 
 	std::cout << "Program ends";
 }
 
 void potential (PotentialType &total, int mm, double box, double r_cut, double** r ){
-/*  Takes in box, cutoff range, and coordinate array, and calculates total potential etc.
-    The results are returned as total, a PotentialType variable. */
 
-    // Actual calculation performed by function potential_1
+/*  Takes in box, cutoff range, and coordinate array, number of atoms (mm), and calculates total potential etc.
+    The results are returned as total, a PotentialType variable.
+
+    Actual calculation performed by function potential_1 */
 
     int d = 3;
 
@@ -81,10 +92,11 @@ void potential (PotentialType &total, int mm, double box, double r_cut, double**
 
 
 void potential_1 (PotentialType &partial,int mm, double* ri, double box, double r_cut, double** r){
+
 /*  Takes in coordinates of an atom and calculates its interactions.
 
-    Values of box, cutoff range, and partner coordinate array are supplied.
-    The results are returned as partial, a PotentialType variable. */
+    Values of box, cutoff range, and partner coordinate array, number of all atoms (mm) are supplied.
+    The results will be passed to partial, a PotentialType object. */
 
 
     double rij_sq,sr2,sr6,sr12,pot,vir,lap;
@@ -134,12 +146,14 @@ void potential_1 (PotentialType &partial,int mm, double* ri, double box, double 
             partial.lap = partial.lap + lap;
 	}
     }
+
     partial.pot = partial.pot * 4.0;        // 4*epsilon
     partial.vir = partial.vir * 24.0 / 3.0; // 24*epsilon and divide virial by 3
     partial.lap = partial.lap * 24.0 * 2.0;
 }
 
 void force_sq (int mm,double box, double r_cut, double** r){
+
 //   Calculates total squared force.
 
     double rij_sq,sr2,sr6,sr12,pot,vir,lap;
