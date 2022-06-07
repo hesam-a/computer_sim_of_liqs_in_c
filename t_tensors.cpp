@@ -29,7 +29,7 @@
 #include <time.h>
 #include <numeric>
 #include <stdlib.h>
-#include "./math_module.h"
+#include "./math_module.hpp"
 
 
 // Default parameters
