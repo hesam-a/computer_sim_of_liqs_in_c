@@ -1,4 +1,4 @@
-This repository includes some C++ version (written by H.A) of some programs from the book "Computer simulations of liquids"
+This repository includes some C++ version (written by H.A) of some programs from the book "Computer simulation of liquids"
 by Allen and Tildesley
 
 The program math_module includes a header file as well, and will be completed based on the written programs, not following the orginal
