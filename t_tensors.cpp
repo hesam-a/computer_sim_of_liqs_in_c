@@ -4,9 +4,6 @@
 // It is used for calculation of electrostatic interactions between two linear molecules including dipole-dipole,
 // dipole-quadrupole and quadrupole-quadrupole, using T tensors and Euler angles.
 
-// While the book itself does not provide detailed discussion about the equations, as suggested by the authors, "The theory of intermolecular 
-// forces" by Anthony Stones is a good source for derivations and further discussion.
-
 // some expalanations from Allen-Tildesley:
 
 /* The dipole moment of molecule 1 is aligned along the axial vector e1
