@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
-#include "./math_module.h"
+#include "./math_module.hpp"
 
 class PotentialType{
 
@@ -19,8 +19,8 @@ void introduction();
 
 void conclusion();
 
-void potential (PotentialType &total, int mm, double box, double r_cut, double** r );
-
 void potential_1 (PotentialType &partial,int mm, double* ri, double box, double r_cut, double** r);
 
-void force_sq (int mm,double box, double r_cut, double** r);
+void potential   (PotentialType &total, int mm, double box, double r_cut, double** r );
+
+double force_sq (int mm,double box, double r_cut, double** r);
