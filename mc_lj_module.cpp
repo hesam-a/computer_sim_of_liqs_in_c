@@ -1,10 +1,3 @@
-/* This program is a C++ version of the module "mc_lj_module.f90" from the book "Computer simulations of liquids"
- by Allen and Tildesley. */
-
-// It is used for calculation of the Lennard-Jones (LJ) potential and squared force of particles.
-
-// It should be called by other programs.
-
 #include <iostream>
 #include <cmath>
 #include <stdio.h>
@@ -13,23 +6,21 @@
 #include <numeric>
 #include <stdlib.h>
 #include <iterator>
-#include "./math_module.h"
-
+#include "./math_module.hpp"
 
 class PotentialType{
 
     public:
-	double pot; 
-	double vir;
-	double lap;
-	bool   ovr;
+	double pot;  // = 0.0; 
+	double vir;  // = 0.0;
+	double lap;  // = 0.0;
+	bool   ovr;  // = false;
 
 };
 
-
 void introduction(){
 
-//  Prints out introductory statements at start of run.
+/*  Prints out introductory statements at start of run. */
 
 	std::cout << "Lennard-Jones potential" << '\n'; 
     	std::cout << "Cut (but not shifted) "  << '\n'; 
@@ -37,19 +28,79 @@ void introduction(){
     	std::cout << "Well depth, epsilon = 1" << '\n'; 
 }
 
-void conclusion():{
+void conclusion(){
+/*  Prints out concluding statements at end of run. */
 
-//  Prints out concluding statements at end of run.
+	std::cout << "Program ends \n";
+	std::cout << "\n";
+	std::cout << "\n";
 
-	std::cout << "Program ends";
+}
+
+void potential_1 (PotentialType &partial,int mm, double* ri, double box, double r_cut, double** r){
+/*  Takes in coordinates of an atom and calculates its interactions.
+
+    Values of box, cutoff range, and partner coordinate array are supplied.
+    The results are returned as partial, a PotentialType variable. */
+
+
+    double rij_sq,sr2,sr6,sr12,pot,vir,lap;
+    bool ovr;
+    double sr2_ovr      = 1.77;      // Overlap threshold (pot > 100)
+    double r_cut_box    = r_cut / box;
+    double r_cut_box_sq = pow(r_cut_box,2);
+    double box_sq       = pow(box,2);
+
+    int d = 3;
+
+    partial.pot = 0.0;
+    partial.vir = 0.0;
+    partial.lap = 0.0;
+    partial.ovr = false;
+
+    for (int i{0};i<mm;++i){
+
+        double* rij = new double[3];
+	double* r_j = new double[3];
+
+	for (int j{0};j<d;++j){
+	   r_j[j] = r[i][j];
+	}
+
+        rij = subtract1DArrays(3,ri,r_j);   // Separation vector
+        rij = rint1D(d,rij);                   // Periodic boundary conditions in box=1 units
+        rij_sq = elementSum1D(3,elementWise1DProduct(3,rij,rij));       // Squared separation
+    
+        if (rij_sq < r_cut_box_sq){    // Check within cutoff
+            rij_sq = rij_sq * box_sq;  // Now in sigma=1 units
+            sr2    = 1.0 / rij_sq;     // (sigma/rij)**2
+            ovr    = sr2 > sr2_ovr;    // Overlap if too close
+    
+            if (ovr){
+                partial.ovr=true;
+            }
+    
+            sr6  = pow(sr2,3);
+            sr12 = pow(sr6,2);
+            pot  = sr12 - sr6;                       // LJ pair potential (cut but not shifted)
+            vir  = pot + sr12;                       // LJ pair virial
+            lap  = ( 22.0*sr12 - 5.0*sr6 ) * sr2;    // LJ pair Laplacian
+    
+            partial.pot = partial.pot + pot; 
+            partial.vir = partial.vir + vir;
+            partial.lap = partial.lap + lap;
+	}
+    }
+    partial.pot = partial.pot * 4.0;        // 4*epsilon
+    partial.vir = partial.vir * 24.0 / 3.0; // 24*epsilon and divide virial by 3
+    partial.lap = partial.lap * 24.0 * 2.0;
 }
 
 void potential (PotentialType &total, int mm, double box, double r_cut, double** r ){
+/*  Takes in box, cutoff range, and coordinate array, and calculates total potential etc.
+    The results are returned as total, a PotentialType variable. */
 
-/*  Takes in box, cutoff range, and coordinate array, number of atoms (mm), and calculates total potential etc.
-    The results are returned as total, a PotentialType variable.
-
-    Actual calculation performed by function potential_1 */
+    // Actual calculation performed by function potential_1
 
     int d = 3;
 
@@ -91,69 +142,7 @@ void potential (PotentialType &total, int mm, double box, double r_cut, double**
 }
 
 
-void potential_1 (PotentialType &partial,int mm, double* ri, double box, double r_cut, double** r){
-
-/*  Takes in coordinates of an atom and calculates its interactions.
-
-    Values of box, cutoff range, and partner coordinate array, number of all atoms (mm) are supplied.
-    The results will be passed to partial, a PotentialType object. */
-
-
-    double rij_sq,sr2,sr6,sr12,pot,vir,lap;
-    bool ovr;
-    double sr2_ovr      = 1.77;      // Overlap threshold (pot > 100)
-    double r_cut_box    = r_cut / box;
-    double r_cut_box_sq = pow(r_cut_box,2);
-    double box_sq       = pow(box,2);
-
-    int d = 3;
-
-    partial.pot = 0.0;
-    partial.vir = 0.0;
-    partial.lap = 0.0;
-    partial.ovr = false;
-
-    for (int i{0};i<mm;++i){
-
-        double* rij = new double[3];
-	double* r_j = new double[3];
-
-	for (int j{0};j<d;++j){
-	   r_j[j] = r[i][j];
-	}
-
-        rij = subtract1DArrays(3,ri,r_j);   // Separation vector
-        rij = rint(d,rij);                   // Periodic boundary conditions in box=1 units
-        rij_sq = elementSum1D(3,elementWise1DProduct(3,rij,rij));       // Squared separation
-    
-        if (rij_sq < r_cut_box_sq){    // Check within cutoff
-            rij_sq = rij_sq * box_sq;  // Now in sigma=1 units
-            sr2    = 1.0 / rij_sq;     // (sigma/rij)**2
-            ovr    = sr2 > sr2_ovr;    // Overlap if too close
-    
-            if (ovr){
-                partial.ovr=true;
-            }
-    
-            sr6  = pow(sr2,3);
-            sr12 = pow(sr6,2);
-            pot  = sr12 - sr6;                       // LJ pair potential (cut but not shifted)
-            vir  = pot + sr12;                       // LJ pair virial
-            lap  = ( 22.0*sr12 - 5.0*sr6 ) * sr2;    // LJ pair Laplacian
-    
-            partial.pot = partial.pot + pot; 
-            partial.vir = partial.vir + vir;
-            partial.lap = partial.lap + lap;
-	}
-    }
-
-    partial.pot = partial.pot * 4.0;        // 4*epsilon
-    partial.vir = partial.vir * 24.0 / 3.0; // 24*epsilon and divide virial by 3
-    partial.lap = partial.lap * 24.0 * 2.0;
-}
-
-void force_sq (int mm,double box, double r_cut, double** r){
-
+double force_sq (int mm,double box, double r_cut, double** r){
 //   Calculates total squared force.
 
     double rij_sq,sr2,sr6,sr12,pot,vir,lap;
@@ -163,20 +152,21 @@ void force_sq (int mm,double box, double r_cut, double** r){
 
     int d = 3;
 
-    double** f     = allocate2DArray(n,d);
+    double** f     = allocate2DArray(mm,d);
     double* fij    = new double[3];
     double* rij    = new double[3];
     double* rij_p  = new double[3];
+    double f2      = 0;
 
     f = zeroMatrix(mm,d); // Initialize
 
     for(int i{0};i<mm;++i){
         for(int j{i+1};j<mm ;++j){
 	    for (int k{0};k<3;++k){
-		rij[k] = b[i][k] - b[j][k];                     // Separation vector
+		rij[k] = r[i][k] - r[j][k];                     // Separation vector
 	    }
 
-                rij    = rint(3,rij);                           // Periodic boundary conditions in box=1 units
+                rij    = rint1D(3,rij);                           // Periodic boundary conditions in box=1 units
                 rij_p  = elementWise1DProduct(3,rij,rij);
                 rij_sq = elementSum1D(3,rij_p);
 
@@ -197,8 +187,11 @@ void force_sq (int mm,double box, double r_cut, double** r){
     }
 	    
     f = scalar2DArrayMultip(mm,d,24.0,f);
-    std::cout << "f " << '\n';
-    print2DArray(mm,3,f);
+    //std::cout << "f " << '\n';
+    //print2DArray(mm,3,f);
+    f  = elementWise2DProduct(mm,3 , f, f);
+    f2 = elementSum2D(mm,3,f);
 
-    return f; 
+    return f2; 
+    free2DArray(mm,f);
 }
