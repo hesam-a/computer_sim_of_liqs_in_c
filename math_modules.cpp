@@ -132,6 +132,7 @@ double* rand1DArray(int m) {
         arr[i] = (double) rand()/RAND_MAX;
     }
     return arr;
+    delete [] arr;
 }
 
 double** rand2DArray(int m,int n) {
@@ -144,6 +145,7 @@ double** rand2DArray(int m,int n) {
         }
     }
     return arr;
+    free2DArray(m,arr);
 }
 
 double*** rand3DArray(int p,int q,int r) {
@@ -158,6 +160,7 @@ double*** rand3DArray(int p,int q,int r) {
         }
     }
     return arr;
+    free3DArray(p,q,arr);
 }
 
 double**** rand4DArray(int p,int q,int m, int n) {
@@ -174,6 +177,7 @@ double**** rand4DArray(int p,int q,int m, int n) {
         }
     }
     return arr;
+    free4DArray(p,q,m,arr);
 }
 
 double***** rand5DArray(int p,int q,int m, int n,int s) {
@@ -192,6 +196,7 @@ double***** rand5DArray(int p,int q,int m, int n,int s) {
         }
     }
     return arr;
+    free5DArray(p,q,m,n,arr);
 }
 
 double** zeroMatrix(int m,int n) {
@@ -204,6 +209,7 @@ double** zeroMatrix(int m,int n) {
         }
     }
     return arr;
+    free2DArray(m,arr);
 }
 
 double** identMatrix(int m,int n) {
@@ -218,6 +224,7 @@ double** identMatrix(int m,int n) {
         }
     }
     return arr;
+    free2DArray(m,arr);
 }
 
 double* sum1DArrays(int m, double* A, double* B) {
@@ -228,6 +235,7 @@ double* sum1DArrays(int m, double* A, double* B) {
             sum[i] = A[i] + B[i];
     }
     return sum;
+    delete [] sum;
 }
 
 double* scalar1DArrayMultip(int m,double p, double* A) {
@@ -238,6 +246,7 @@ double* scalar1DArrayMultip(int m,double p, double* A) {
             arr[i] = A[i] * p;
     }
     return arr;
+    delete [] arr;
 }
 
 double** scalar2DArrayMultip(int m,int n,double p, double** A) {
@@ -250,6 +259,7 @@ double** scalar2DArrayMultip(int m,int n,double p, double** A) {
         }
     }
     return product;
+    free2DArray(m,product);
 }
 
 double*** scalar3DArrayMultip(int m,int n, int r, double p, double*** A) {
@@ -264,6 +274,7 @@ double*** scalar3DArrayMultip(int m,int n, int r, double p, double*** A) {
         }
     }
     return product;
+    free3DArray(m,n,product);
 }
 
 void scalar4DArrayMultip(int p,int q, int m, int n, double b, double**** A) {
@@ -293,6 +304,42 @@ void scalar5DArrayMultip(int p,int q, int m, int n, int s, double b, double*****
     }
 }
 
+double* rint1D(int m,double* A){
+
+    double* sub = new double [m];
+
+    for (int i=0;i<m;i++) {
+            sub[i] = A[i] - round(A[i]);
+    }
+    return sub;
+    delete [] sub;
+
+}
+
+double** rint2D(int m,int n,double** A){
+
+//    double** sub = allocate2DArray(m,n);
+
+    for (int i=0;i<m;i++) {
+        for (int j=0;j<m;j++) {
+            A[i][j] -= round(A[i][j]);
+            //sub[i][j] = A[i][j] - round(A[i][j]);
+	}
+    }
+    return A;
+}
+
+double* sqrt1DArray(int m, double*A){
+
+    double* sq = new double[m];
+    for (int i{0}; i<m;++i){
+	sq[i] = sqrt(A[i]);
+    }
+    return sq;
+    delete [] sq;
+}
+
+
 double* subtract1DArrays(int m, double* A, double* B) {
 
     double* sub = new double [m];
@@ -301,6 +348,7 @@ double* subtract1DArrays(int m, double* A, double* B) {
             sub[i] = A[i] - B[i];
     }
     return sub;
+    delete [] sub;
 }
 
 double** subtract2DArrays(int m,int n, double** A, double** B) {
@@ -313,6 +361,25 @@ double** subtract2DArrays(int m,int n, double** A, double** B) {
         }
     }
     return sub;
+    free2DArray(m,sub);
+}
+
+double* scalar1DArraySubtract(int m, double p, double* A) {
+
+    for (int i=0;i<m;i++) {
+        A[i] -= p;
+    }
+    return A;
+}
+
+double* scalar1DArrayDivision(int m,double p, double* A) {
+
+    double* div = new double[m];
+    for (int i=0;i<m;i++) {
+            A[i] /= p;
+    }
+    return A;
+    delete [] div;
 }
 
 void scalar2DArraySubtract(int m,int n, double p, double** A) {
@@ -323,12 +390,13 @@ void scalar2DArraySubtract(int m,int n, double p, double** A) {
     }
 }
 
-void scalar2DArrayDivision(int m,int n,double p, double** A) {
+double** scalar2DArrayDivision(int m,int n,double p, double** A) {
     for (int i=0;i<m;i++) {
         for (int j=0;j<n;j++) {
             A[i][j] /= p;
         }
     }
+    return A;
 }
 
 void scalar3DArrayDivision(int m,int n,int r, double p, double*** A) {
@@ -441,6 +509,8 @@ double** outer2D(int nCols, double* A, double* B){
 	}
     }
     return C;
+    free2DArray(nCols,C);
+
 }
 
 double*** outer3D(int nRows, int nCols, int n3rd, double* A, double* B, double* C){
@@ -455,6 +525,7 @@ double*** outer3D(int nRows, int nCols, int n3rd, double* A, double* B, double* 
 	}
     }
     return D;
+    free3DArray(nRows,nCols,D);
 }
 
 
@@ -472,6 +543,7 @@ double**** outer4D(int nRows, int nCols, int n3rd, int n4th, double* A, double* 
 	}
     }
     return E;
+    free4DArray(nRows,nCols,n3rd,E);
 }
 
 
@@ -492,6 +564,7 @@ double***** outer5D(int nRows, int nCols, int n3rd, int n4th, int n5th, double* 
     }
 
     return F;
+    free5DArray(nRows,nCols,n3rd,n4th,F);
 }
 
 double** t2_tensor (double* mat,double r3){
@@ -513,6 +586,8 @@ double** t2_tensor (double* mat,double r3){
     scalar2DArrayDivision(nCols,nCols, r3, t2);
      
     return t2;
+    free2DArray(nCols,A);
+    free2DArray(nCols,t2);
 }
 
 double*** t3_tensor(double *mat3, double r4){
@@ -543,6 +618,7 @@ double*** t3_tensor(double *mat3, double r4){
     scalar3DArrayDivision(nCols,nCols,nCols, r4,t3);
 
     return t3;
+    free3DArray(nCols,nCols,t3);
 
 }
 
@@ -579,6 +655,8 @@ double**** t4_tensor(double* mat4, double r5){
     scalar4DArrayDivision(nCols,nCols,nCols,nCols,r5,t4);
 
     return t4;
+    free4DArray(nCols,nCols,nCols,t4);
+    free2DArray(nCols,A);
 }
 
 
@@ -621,6 +699,8 @@ double***** t5_tensor(double* mat5, double r6){
     }
     scalar5DArrayDivision(nCols,nCols,nCols,nCols,nCols,r6,t5);
     return t5;
+    free5DArray(nCols,nCols,nCols,nCols,t5);
+    free2DArray(nCols,A);
 }
 
 double* skew(double** vec){
@@ -631,11 +711,23 @@ double* skew(double** vec){
     b[2] = vec[0][1] - vec[1][0];
 
     return b;
+    delete [] b;
 }
 
-double dotProduct(int n,double* a, double* b){
 
-    double product{0};
+double dotProduct1D(int n,double* a){
+
+    double product{1.0};
+    
+    for (int i{0}; i<n; i++){
+	product *= a[i];
+    }
+    return product;
+}
+
+double dotProduct2D(int n,double* a, double* b){
+
+    double product{0.0};
     
     for (int i{0}; i<n; i++){
 	product = product + (a[i] * b[i]);
@@ -653,17 +745,52 @@ double* crossProduct(double* a, double* b){
     product[2] = a[0]*b[1] - a[1]*b[0];
 
     return product;
+    delete [] product;
 }
 
-double** elementWiseProduct(int m, int n, double** a, double** b){
+double elementSum1D(int m, double* a){
     
-    double** product = allocate2DArray(3,3);
+    double product{0};
+
+    for (int i{0};i<m;++i){
+         product += a[i];
+    }
+    return product;
+}
+
+double elementSum2D(int m,int n, double** a){
+    
+    double product{0};
+
+    for (int i{0};i<m;++i){
+        for (int j{0};j<n;++j){
+         product += a[i][j];
+	}
+    }
+    return product;
+}
+
+double* elementWise1DProduct(int m, double* a, double* b){
+    
+    double* product = new double[m];
+
+    for (int i{0};i<m;++i){
+         product[i] = a[i] * b[i];
+    }
+    return product;
+    delete [] product;
+}
+
+double** elementWise2DProduct(int m, int n, double** a, double** b){
+    
+    double** product = allocate2DArray(m,n);
     for (int i{0};i<m;++i){
         for (int j{0};j<n;++j){
             product[i][j] = a[i][j] * b[i][j];
         }
     }
     return product;
+    free2DArray(m,product);
 }
 
 double contract_i_i (int n,double* a, double* b){
@@ -671,7 +798,7 @@ double contract_i_i (int n,double* a, double* b){
     with a first-rank tensor. */
 
     double c;
-    c = dotProduct(n,a,b);
+    c = dotProduct2D(n,a,b);
     
     return c;
 }
@@ -685,8 +812,8 @@ double* contract_ij_j (double** a, double* b){
 	for (int j{0};j<3;++j){
 	    product[i] = product[i] + a[i][j] *  b[j];
 	}
-    }
-    return product;
+    }    return product;
+    delete [] product;
 }	
 
 
@@ -696,7 +823,7 @@ double contract_ij_ij (double** a, double** b){
 
     double product{0};
     double** dot;
-    dot = elementWiseProduct(3,3,a,b);
+    dot = elementWise2DProduct(3,3,a,b);
 //    print2DArray(3,3,dot);
     for (int i{0};i<3;++i){
         for (int j{0};j<3;++j){
@@ -704,6 +831,7 @@ double contract_ij_ij (double** a, double** b){
         }
     }
     return product;
+    free2DArray(3,dot);
 }
 
 double** contract_ik_jk (double** a, double** b){
@@ -720,6 +848,7 @@ double** contract_ik_jk (double** a, double** b){
 	}
     }
     return D;
+    free2DArray(3,D);
 }
 
 
@@ -737,6 +866,7 @@ double** contract_ijk_k (double*** a, double* b){
 	}
     }
     return D;
+    free2DArray(3,D);
 }
 
 double* contract_ijk_jk (double*** a, double** b){
@@ -753,6 +883,7 @@ double* contract_ijk_jk (double*** a, double** b){
 	}
     }
     return D;
+    delete [] D;
 }
 
 double** contract_ijkl_kl(double**** a, double** b){
@@ -771,6 +902,7 @@ double** contract_ijkl_kl(double**** a, double** b){
 	}
     }
     return D;
+    free2DArray(3,D);
 }
 
 
@@ -792,6 +924,7 @@ double*** contract_ijklm_lm(double***** a, double** b){
 	}
     }
     return D;
+    free3DArray(3,3,D);
 }
 
 double* random_vector(){
@@ -815,4 +948,67 @@ double* random_vector(){
     rand_vec[2] = c;
 
     return rand_vec; 
+    delete [] rand_vec;
+    delete [] zeta;
  }
+
+
+double** deleteArray2D(int m,int n, int p, double** A){
+
+    double **temp = new double*[m-1];
+
+    int ii = 0;
+    for(int i = 0; i < m; ++i)
+        if(i != p){
+            temp[ii++] = A[i];
+        }
+    A = temp;
+
+    return A;
+    //free2DArray(m,A);
+    free2DArray(m-1,temp);
+
+}
+
+double* random_translate_vector (double dr_max, double* old ){
+/*  Returns a vector translated by a random amount.
+ 
+     A randomly chosen vector is added to the old one. */
+
+    double* zeta     = rand1DArray(3);             // Three uniformly sampled random numbers in range (0,1)
+    zeta = scalar1DArrayMultip(3,2.0,zeta);
+    zeta = scalar1DArraySubtract(3,1.0,zeta);      // Now in range (-1,+1)
+    zeta = scalar1DArrayMultip(3,dr_max,zeta);
+    old  = sum1DArrays( 3, old, zeta);              // Move to new position
+
+    return old;
+}
+
+bool metropolis (double delta ){
+//  Conduct Metropolis test, with safeguards.
+
+    double exponent_guard = 75.0;
+
+    if (delta > exponent_guard){                // Too high, reject without evaluating
+        return false;
+    }
+    else if (delta < 0.0){                      // Downhill, accept without evaluating
+        return true;
+    }
+    else{
+        double zeta = (double) rand()/RAND_MAX; // Uniform random number in range (0,1)
+        return exp(-delta) > zeta;         // Metropolis test
+    }
+}
+
+double** update2DArray(int m,int n, double* ri, double* rj, double** A){
+
+    for (int i{0};i<m;++i){
+	for(int j{0};j<n;++j){
+	    if (ri[j] == A[i][j]){
+		A[i][j] = rj[j];
+	    }
+	}
+    }
+    return A;
+}
