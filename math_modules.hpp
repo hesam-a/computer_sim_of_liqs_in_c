@@ -30,7 +30,7 @@ void rand4DArray(int p,int q,int m, int n, double ****A);
 
 void rand5DArray(int p,int q,int m, int n,int s, double *****A);
 
-void zeroMatrix(int m,int n, double **A);
+double** zeroMatrix(int m,int n);
 
 double** identMatrix(int m,int n);
 
@@ -46,13 +46,19 @@ void scalar5DArrayMultip(int p,int q, int m, int n, int s, double b, double*****
 
 void scalar2DArraySubtract(int m,int n, double p, double** A);
 
+double* scalar1DArraySubtract(int m, double p, double* A);
+
 double* subtract1DArrays(int m, double* A, double* B);
 
 double** subtract2DArrays(int m,int n, double** A, double** B);
 
 double* sum1DArrays(int m, double* A, double* B);
 
-void scalar2DArrayDivision(int m,int n,double p, double** A);
+double* scalar1DArrayDivision(int m,double p, double* A);
+
+double* sqrt1DArray(int m, double*A);
+
+double** scalar2DArrayDivision(int m,int n,double p, double** A);
 
 void scalar3DArrayDivision(int m,int n,int r, double p, double*** A);
 
@@ -90,9 +96,17 @@ double***** t5_tensor(double* mat5, double r6);
 
 double* skew(double** vec);
 
-double dotProduct(int n,double* a, double* b);
+double dotProduct1D(int n,double* a);
 
-double** elementWiseProduct(int m, int n, double** a, double** b);
+double dotProduct2D(int n,double* a, double* b);
+
+double** elementWise2DProduct(int m, int n, double** a, double** b);
+
+double* elementWise1DProduct(int m, double* a,double* b);
+
+double elementSum1D(int m, double* a);
+
+double elementSum2D(int m, int n, double** a);
 
 double* crossProduct(double* a, double* b);
 
@@ -113,3 +127,15 @@ double** contract_ijkl_kl(double**** a, double** b);
 double*** contract_ijklm_lm(double***** a, double** b);
 
 double* random_vector();
+
+double* rint1D(int m,double* A);
+
+double** rint2D(int m,int n, double** A);
+
+double** deleteArray2D(int m,int n, int p, double** A);
+
+double* random_translate_vector (double dr_max, double* old );
+
+bool metropolis (double delta );
+
+double** update2DArray(int m,int n, double* ri, double* rj, double** A);
