@@ -63,18 +63,17 @@ void potential_1 (PotentialType &partial,int mm, double* ri, double box, double 
         double* rij = new double[3];
 	double* r_j = new double[3];
 
-	for (int j{0};j<d;++j){
+	for (int j{0};j<d;++j)
 	   r_j[j] = r[i][j];
-	}
 
-        rij = subtract1DArrays(3,ri,r_j);   // Separation vector
-        rij = rint1D(d,rij);                   // Periodic boundary conditions in box=1 units
+        rij = subtract1DArrays(3,ri,r_j);            // Separation vector
+        rij = rint1D(d,rij);                         // Periodic boundary conditions in box=1 units
         rij_sq = elementSum1D(3,elementWise1DProduct(3,rij,rij));       // Squared separation
     
-        if (rij_sq < r_cut_box_sq){    // Check within cutoff
-            rij_sq = rij_sq * box_sq;  // Now in sigma=1 units
-            sr2    = 1.0 / rij_sq;     // (sigma/rij)**2
-            ovr    = sr2 > sr2_ovr;    // Overlap if too close
+        if (rij_sq < r_cut_box_sq){                  // Check within cutoff
+            rij_sq = rij_sq * box_sq;                // Now in sigma=1 units
+            sr2    = 1.0 / rij_sq;                   // (sigma/rij)**2
+            ovr    = sr2 > sr2_ovr;                  // Overlap if too close
     
             if (ovr){
                 partial.ovr=true;
@@ -86,14 +85,19 @@ void potential_1 (PotentialType &partial,int mm, double* ri, double box, double 
             vir  = pot + sr12;                       // LJ pair virial
             lap  = ( 22.0*sr12 - 5.0*sr6 ) * sr2;    // LJ pair Laplacian
     
+	    //std::cout << "lap:         " << lap << '\n';
             partial.pot = partial.pot + pot; 
             partial.vir = partial.vir + vir;
             partial.lap = partial.lap + lap;
+	    //std::cout << "partial.lap: " << partial.lap << '\n';
 	}
+    delete [] rij;
+    delete [] r_j;
     }
-    partial.pot = partial.pot * 4.0;        // 4*epsilon
-    partial.vir = partial.vir * 24.0 / 3.0; // 24*epsilon and divide virial by 3
+    partial.pot = partial.pot * 4.0;                // 4*epsilon
+    partial.vir = partial.vir * 24.0 / 3.0;         // 24*epsilon and divide virial by 3
     partial.lap = partial.lap * 24.0 * 2.0;
+
 }
 
 void potential (PotentialType &total, int mm, double box, double r_cut, double** r ){
@@ -138,6 +142,10 @@ void potential (PotentialType &total, int mm, double box, double r_cut, double**
         total.lap = total.lap + part.lap;
 
 	m -= 1;
+
+        delete [] r_i;
+        free2DArray(m,r_all); 
+
     }
 }
 
@@ -193,5 +201,9 @@ double force_sq (int mm,double box, double r_cut, double** r){
     f2 = elementSum2D(mm,3,f);
 
     return f2; 
+
     free2DArray(mm,f);
+    delete [] fij; 
+    delete [] rij;  
+    delete [] rij_p;
 }
