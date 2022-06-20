@@ -1,6 +1,5 @@
 #include <iostream>
 #include <cmath>
-#include <list>
 #include <stdlib.h>
 #include <string>
 #include <vector>
@@ -53,12 +52,12 @@ class BlockVar{
 
 std::vector<std::string> word_splitter(std::string str);
 
-void run_begin (std::vector<VariableType> vars, BlockVar &blk_var);
+void run_begin (std::vector<VariableType> &vars, BlockVar &blk_var);
 
 void blk_begin(int n_avg, BlockVar &blk_var);
 
-void blk_add (std::vector<VariableType> vars, BlockVar &blk_var);
+void blk_add (std::vector<VariableType> &vars, BlockVar &blk_var);
 
 void blk_end (int blk, int n_avg, BlockVar &blk_var);
 
-void run_end (std::vector<VariableType> vars, BlockVar &blk_var);
+void run_end (std::vector<VariableType> &vars, BlockVar &blk_var);
