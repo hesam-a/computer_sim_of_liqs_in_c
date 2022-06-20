@@ -24,8 +24,6 @@ std::vector<VariableType> calc_variables(PotentialType tot, double** r, int n, d
     double rho = n / vol;                        //  Density
     double fsq = force_sq (n, box, r_cut, r );   // Total squared force
 
-    //std::cout << " force squared: " << fsq << '\n';
-
     // Initial energy and overlap check
     potential (tot,n, box, r_cut, r);
 
@@ -70,9 +68,6 @@ std::vector<VariableType> calc_variables(PotentialType tot, double** r, int n, d
     t_c = new VariableType();
     t_c->nam = "T config";
     t_c->val = fsq/tot.lap;
-    //std::cout << " total.lap: " << tot.lap << '\n';
-    //std::cout << " force squared: " << fsq << '\n';
-    //std::cout << " T Config value: " << t_c->val << '\n';
 
     // Heat capacity (full)
     // MSD potential energy divided by temperature and sqrt(N) to make result intensive; LRC does not contribute
@@ -139,13 +134,7 @@ int main(){
     // Initial energy and overlap check
     PotentialType total;
 
-//    total.pot = 0.0;
-//    total.vir = 0.0;
-//    total.lap = 0.0;
-//    total.ovr = false;
-
     potential (total,n, box, r_cut, r);
-    //printf("%12s %25f %25f %25f \n","after: ",total.pot, total.vir, total.lap);
 
     assert (!total.ovr); 
     std::cout << "No overlap in initial configuration! \n";
@@ -182,14 +171,13 @@ int main(){
 
         for (int stp{0}; stp<nstep;++stp){                               // Loop over steps
 
-            int moves = 0;
-	    //printf("%12s %25f %25f %25f \n","before: ",total.pot, total.vir, total.lap);
+            double moves = 0.0;
             for (int atm{0};atm <n;++atm){                               // Loop over atoms
 
 		double** rj  = allocate2DArray(n-1,3);
 	        double*  r_i = new double[3];
 	        double*  ri  = new double[3];
-                rj = deleteArray2D(n,3,atm,r);                           // Array of all the other atoms
+                rj = remove2DArray(n,atm,r);                             // Array of all the other atoms
 		
                 for (int j{0};j<3;++j)
                    r_i[j] = r[atm][j];
@@ -197,46 +185,41 @@ int main(){
 		PotentialType partial_old;
 	        potential_1 (partial_old, n-1, r_i, box, r_cut, rj );    // Old atom potential, virial etc
 
-                if (partial_old.ovr)
-                    std::cout << "OVERLAP in cuurent configuration!\n";
+                assert (!partial_old.ovr);
+                //std::cout << "OVERLAP in cuurent configuration!\n";
 
-		ri = random_translate_vector(dr_max/box, r_i );           // Trial move to new position (in box=1 units)
+		ri = random_translate_vector(dr_max/box, r_i );          // Trial move to new position (in box=1 units)
 		ri = rint1D(3,ri);                                       // Periodic boundary correction
 
 		PotentialType partial_new;
-	        potential_1 (partial_new, n-1, ri, box, r_cut, rj );                     // New atom potential, virial etc
-		//std::cout << "partial_new.pot: " << partial_new.pot << '\n';
+	        potential_1 (partial_new, n-1, ri, box, r_cut, rj );                       // New atom potential, virial etc
 
-                    if (!partial_new.ovr){                                                // Test for non-overlapping configuration
+		//free2DArray(n-1,rj);
+                    if (!partial_new.ovr){                                                 // Test for non-overlapping configuration
 		        double delta;
-                        delta = partial_new.pot - partial_old.pot;                        // Use cut (but not shifted) potential
+                        delta = partial_new.pot - partial_old.pot;                         // Use cut (but not shifted) potential
                         delta = delta / temperature;
-			//std::cout << "partial_new.pot: " << partial_new.pot << '\n';
 
                         if (metropolis (delta)){                                           // Accept Metropolis test
-			    //printf("%12s %25f %25f %25f \n","before: ",total.pot, total.vir, total.lap);
-			    //std::cout << '\n';
                             total.pot = total.pot + partial_new.pot - partial_old.pot;     // Update total values
                             total.vir = total.vir + partial_new.vir - partial_old.vir;     // Update total values
                             total.lap = total.lap + partial_new.lap - partial_old.lap;     // Update total values
                             total.ovr = total.ovr + partial_new.ovr - partial_old.ovr;     // Update total values
-			    //printf("%12s %25f %25f %25f \n","after: ",total.pot, total.vir, total.lap);
 			    
 			    update2DArray(n, 3,r_i,ri,r);                                  // Update position
                             moves = moves + 1;                                             // Increment move counter
 		        }
 		    }
-//            free2DArray(n-1,rj);
+	        delete [] r_i;
+	        delete [] ri ;
 	    }
 
         m_ratio = moves / n;
 
 	blk_add (calc_variables(total, r, n, box, m_ratio),blk_var);
-	//printf("%12s %25f %25f %25f \n","blk_add: ",total.pot, total.vir, total.lap);
 	}
 
     blk_end ( blk, n_avg, blk_var);
-    //printf("%12s %25f %25f %25f \n","blk_end: ",total.pot, total.vir, total.lap);
     }
 
     run_end (calc_variables(total, r, n, box, m_ratio), blk_var);
