@@ -117,8 +117,8 @@ void run_begin (std::vector<VariableType> vars, BlockVar &blk_var){
     std::cout << '\n';
     std::cout << "Run begins \n";
     std::cout << "=============================================================================================================================== \n";
-    printf("%15s %15s %15s %15s %15s %15s %15s %15s \n","Block","Move","E/N","P","E/N","P", "T","Cv/N");
-    printf("%15s %15s %15s %15s %15s %15s %15s %15s \n","  ","ratio","cut","cut","full","full","config","full");
+    printf("%15s %15s %15s %15s %15s %15s %15s %15s \n","Block","Move" ,"E/N" ,"P"  ,"E/N" ,"P"   , "T"    ,"Cv/N");
+    printf("%15s %15s %15s %15s %15s %15s %15s %15s \n","  "   ,"ratio","cut" ,"cut","full","full","config","full");
     std::cout << "------------------------------------------------------------------------------------------------------------------------------- \n";
 
 }
@@ -145,22 +145,16 @@ void blk_add (std::vector<VariableType> vars, BlockVar &blk_var){
         std::cout << "Mismatched variable arrays";
     }
 
-    //for (std::size_t i=0; i<n_avg;++i){
-    for (int i=0; i<n_avg;++i){
+    for (int i=0; i<n_avg;++i)
         blk_var.values[i] = vars[i].val;
-        //std::cout  << vars[i].nam << ":  " << vars[i].val << "\n";
-        //std::cout << "blk_var.values: " << blk_var.values[i] << "\n";
-    }
 
-    for(int i{0};i<n_avg;++i)
+    for(std::size_t i{0};i<n_avg;++i)
 	values2[i] = 0.0;
-
 
     blk_var.blk_avg = sum1DArrays(n_avg,blk_var.blk_avg,blk_var.values);
     values2         = elementWise1DProduct(n_avg,blk_var.values,blk_var.values);
     blk_var.blk_msd = sum1DArrays(n_avg,blk_var.blk_msd,values2);
-    for (std::size_t i=0; i<n_avg;++i)
-        std::cout << "blk_msd:  " << blk_var.blk_msd[i] << "\n";
+
     blk_var.blk_nrm = blk_var.blk_nrm + 1.0;
 
     delete [] values2;
@@ -178,17 +172,12 @@ void blk_end (int blk, int n_avg, BlockVar &blk_var){
     for (int i{0}; i< n_avg;++i)
 	    constraint[i] = 0.0;
 
-    if (!(blk_var.blk_nrm>0.5))
-        std::cout << "Block accumulation error \n";
+    assert (blk_var.blk_nrm>0.5);
+//    std::cout << "Block accumulation error \n";
+
+    blk_var.blk_avg = scalar1DArrayDivision(n_avg, blk_var.blk_nrm,blk_var.blk_avg);
+    blk_var.blk_msd = scalar1DArrayDivision(n_avg, blk_var.blk_nrm,blk_var.blk_msd);
     
-    for(int i=0;i<n_avg;++i){
-        blk_var.blk_avg[i] = blk_var.blk_avg[i] / blk_var.blk_nrm;
-    }
-
-    for(int i=0;i<n_avg;++i){
-        blk_var.blk_msd[i] = blk_var.blk_msd[i] / blk_var.blk_nrm;
-    }
-
     // Replace blk_avg by mean-squared deviations plus optional constant where required
 
     for (int i{0};i<n_avg;++i){ 
@@ -205,11 +194,11 @@ void blk_end (int blk, int n_avg, BlockVar &blk_var){
     std::cout << '\n';
     blk_avg2     = elementWise1DProduct(n_avg,blk_var.blk_avg,blk_var.blk_avg);
     constraint   = subtract1DArrays(n_avg,blk_var.blk_msd, blk_avg2);
-    blk_var.addd = sum1DArrays(n_avg,blk_var.addd, constraint);
+    constraint   = sum1DArrays(n_avg,blk_var.addd, constraint);
 
     for(int i{0};i<n_avg;++i){
 	if (blk_var.mask[i]){
-            blk_var.blk_avg[i] = blk_var.addd[i];
+            blk_var.blk_avg[i] = constraint[i];
 	}
 	else
 	    continue;
@@ -225,9 +214,14 @@ void blk_end (int blk, int n_avg, BlockVar &blk_var){
     blk_var.run_err = sum1DArrays(n_avg, blk_var.run_err,blk_avg2);
     blk_var.run_nrm = blk_var.run_nrm + 1.0;        // Increment run normalizer
 
+    //for(int i{0};i<n_avg;++i)
+    //    std::cout << "run error: " << blk_var.run_err[i] << '\n';
+
     // Write out block averages
     printf("%15i %15f %15f %15f %15f %15f %15f %15f\n", blk+1,blk_var.blk_avg[0],blk_var.blk_avg[1],blk_var.blk_avg[2],blk_var.blk_avg[3],blk_var.blk_avg[4],blk_var.blk_avg[5],blk_var.blk_avg[6]);
 
+    delete [] constraint;
+    delete [] blk_avg2  ;
 }
 
 void run_end (std::vector<VariableType> vars, BlockVar &blk_var){ 
@@ -244,8 +238,8 @@ void run_end (std::vector<VariableType> vars, BlockVar &blk_var){
     for (int i{0}; i< n_avg;++i)
 	    constraint2[i] = 0.0;
 
-    if (!(blk_var.run_nrm>0.5))
-        std::cout << "Run accumulation error \n";
+    assert (blk_var.run_nrm>0.5);
+    //std::cout << "Run accumulation error \n";
 
     // NB, these are the crudest possible error estimates, based on the wholly unjustified
     // assumption that the blocks are statistically independent
@@ -263,6 +257,9 @@ void run_end (std::vector<VariableType> vars, BlockVar &blk_var){
 
     // Normalize and get estimated errors guarding against roundoff
     constraint2 = scalar1DArrayDivision(n_avg, blk_var.run_nrm,blk_var.run_err);
+    for (int i{0};i<n_avg;++i)
+	    constraint2[i] = abs(constraint2[i]);
+
     constraint2 = sqrt1DArray(n_avg,constraint2);
     for(int i{0};i<n_avg;++i){
         if (blk_var.run_err[i]>0.0){
@@ -293,6 +290,9 @@ void run_end (std::vector<VariableType> vars, BlockVar &blk_var){
             printf("%10s %29.6f \n",variable.nam,variable.val);
 	}
     }
+
+    delete [] run_avg2  ; 
+    delete [] constraint2;
 }
 
 //void cke_calc(){
