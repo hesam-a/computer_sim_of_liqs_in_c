@@ -2,6 +2,7 @@
 #include <cmath>
 #include <stdlib.h>
 #include <string>
+#include <ctime>
 #include <vector>
 #include "./math_module.hpp" 
 
@@ -41,18 +42,11 @@ class BlockVar{
 
 };
 
-//void time_stamp(){
-////    Function to print date, time, and cpu time information.
-//
-//
-//    printf("{:45}{}".format("Date:",time.strftime("%Y/%m/%d")))
-//    printf("{:47}{}".format("Time:",time.strftime("%H:%M:%S")))
-//    printf("{:40}{:15.6f}".format("CPU time:",time.process_time()))
-//}
+void time_stamp(bool end, std::clock_t ti);
 
 std::vector<std::string> word_splitter(std::string str);
 
-void run_begin (std::vector<VariableType> &vars, BlockVar &blk_var);
+void run_begin (std::vector<VariableType> &vars, BlockVar &blk_var, std::clock_t ti);
 
 void blk_begin(int n_avg, BlockVar &blk_var);
 
@@ -60,4 +54,4 @@ void blk_add (std::vector<VariableType> &vars, BlockVar &blk_var);
 
 void blk_end (int blk, int n_avg, BlockVar &blk_var);
 
-void run_end (std::vector<VariableType> &vars, BlockVar &blk_var);
+void run_end (std::vector<VariableType> &vars, BlockVar &blk_var, std::clock_t ti);
