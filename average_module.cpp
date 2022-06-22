@@ -57,14 +57,26 @@ class BlockVar{
 };
 
 
-//void time_stamp(){
-////    Function to print date, time, and cpu time information.
-//
-//
-//    printf("{:45}{}".format("Date:",time.strftime("%Y/%m/%d")))
-//    printf("{:47}{}".format("Time:",time.strftime("%H:%M:%S")))
-//    printf("{:40}{:15.6f}".format("CPU time:",time.process_time()))
-//}
+void time_stamp(bool end, std::clock_t ti){
+//  Function to print date, time, and cpu time information.
+    time_t timer ;
+    struct std::tm *tim;
+
+    std::time(&timer);
+    tim = localtime(&timer);
+
+    std::cout << '\n';
+    printf("Date:   %27d/%d/%d \n",1900+tim->tm_year,tim->tm_mon,tim->tm_mday);
+    printf("Time:   %26d:%d:%d \n",tim->tm_hour,tim->tm_min,tim->tm_sec);
+
+    std::clock_t tf = std::clock();
+    double time_elapsed = (tf-ti) / CLOCKS_PER_SEC;
+
+    if (end)
+       printf("CPU time: %30.6f \n", time_elapsed);
+
+}
+
 
 std::vector<std::string> word_splitter(std::string str){
 //   A function for splitting the words. 
@@ -87,7 +99,7 @@ std::vector<std::string> word_splitter(std::string str){
 }
 
 
-void run_begin (std::vector<VariableType> vars, BlockVar &blk_var){ 
+void run_begin (std::vector<VariableType> vars, BlockVar &blk_var, std::clock_t ti){ 
 //  Set up averaging variable based on supplied list of names & other attributes.
 
     int n_avg = vars.size();
@@ -139,9 +151,8 @@ void run_begin (std::vector<VariableType> vars, BlockVar &blk_var){
     for (int i{0}; i<n_avg ;++i)
 	    blk_var.run_err[i] = 0.0;
 
-//    time_stamp()
-//    print(headings_fmt.format('Block',*headings))
-//    print(headings_fmt.format('     ',*subheads))
+    time_stamp(false, ti)
+
 
     //Write headings
     std::cout << '\n';
@@ -264,7 +275,7 @@ void blk_end (int blk, int n_avg, BlockVar &blk_var){
     delete [] blk_avg2  ;
 }
 
-void run_end (std::vector<VariableType> vars, BlockVar &blk_var){ 
+void run_end (std::vector<VariableType> vars, BlockVar &blk_var, std::clock_t ti){ 
 //  Write out averages and error estimates at end of run.
 
     int n_avg = vars.size();
@@ -326,7 +337,7 @@ void run_end (std::vector<VariableType> vars, BlockVar &blk_var){
     std::cout << "Run ends \n";
     std::cout << '\n';
 
-    //time_stamp()
+    time_stamp(true, ti)
     std::cout << '\n';
 
     bool need_header = true;
