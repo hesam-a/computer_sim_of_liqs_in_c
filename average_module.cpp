@@ -21,11 +21,7 @@
 
 // Internal variable
 #define colf_fmt  "%15.6f"         // Format for floats; we assume that 6 dp will be sufficient
-#define cole_fmt  "%15.4e"         // Alternative format for floats, suitable for small numbers
 #define head_fmt  "%15s"           // Format for heading strings
-#define col1a_fmt "%15s"           // Format for column 1 strings
-#define col1i_fmt "%15d"           // Format for column 1 integers
-#define sngl_fmt  "%40s %15.6f"    // Format for single line output
 
 int     n_avg;
 int     col_width = 15;            // Must be large enough to allow sensible format
@@ -152,10 +148,10 @@ void run_begin (std::vector<VariableType> vars, BlockVar &blk_var){
     std::cout << "Run begins \n";
     std::cout << std::string(line_width,'=') << '\n';
     for (int i{0}; i< headings.size();++i)
-	std::cout << boost::format(colf_fmt) %headings[i];
+	std::cout << boost::format(head_fmt) %headings[i];
     std::cout << '\n';
     for (int i{0}; i<subheads.size();++i)
-	std::cout << boost::format(colf_fmt) %subheads[i];
+	std::cout << boost::format(head_fmt) %subheads[i];
     std::cout << '\n';
     std::cout << std::string(line_width,'-') << '\n';
     
