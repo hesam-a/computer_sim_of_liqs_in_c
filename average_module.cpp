@@ -66,14 +66,14 @@ void time_stamp(bool end, std::clock_t ti){
     tim = localtime(&timer);
 
     std::cout << '\n';
-    printf("Date:   %27d/%d/%d \n",1900+tim->tm_year,tim->tm_mon,tim->tm_mday);
-    printf("Time:   %26d:%d:%d \n",tim->tm_hour,tim->tm_min,tim->tm_sec);
+    printf("Date:   %27d/%d/%2d \n",1900+tim->tm_year,tim->tm_mon,tim->tm_mday);
+    printf("Time:   %26d:%d:%2d \n",tim->tm_hour,tim->tm_min,tim->tm_sec);
 
     std::clock_t tf = std::clock();
     double time_elapsed = (tf-ti) / CLOCKS_PER_SEC;
 
     if (end)
-       printf("CPU time: %30.6f \n", time_elapsed);
+       printf("CPU time: %30.2f \n", time_elapsed);
 
 }
 
