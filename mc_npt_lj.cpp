@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string>
 #include <vector>
+#include <ctime>
 #include <cassert>
 #include "./lrc_module.hpp"
 #include "./math_module.hpp"
@@ -167,8 +168,10 @@ std::vector<VariableType> calc_variables(PotentialType tot, double** r, int n, d
 
 int main(){
 
-    // Preliminary calculations (n,r,total are taken from the calling program)
+    // initial time for calculating the processing time
+    std::clock_t ti = std::clock();
 
+    // Preliminary calculations (n,r,total are taken from the calling program)
     const char* file = "cnf.inp";
 
 // Read in initial configuration
@@ -227,7 +230,7 @@ int main(){
 
     int n_avg = calc_variables(total, r, n, box, m_ratio, v_ratio).size();
 
-    run_begin (calc_variables(total, r, n, box, m_ratio, v_ratio), blk_var);
+    run_begin (calc_variables(total, r, n, box, m_ratio, v_ratio), blk_var, ti);
 
     for (int blk{0}; blk < nblock;++blk){                                // Loop over blocks
 
@@ -308,7 +311,7 @@ int main(){
         blk_end ( blk, n_avg, blk_var);
     }
 
-    run_end (calc_variables(total, r, n, box, m_ratio, v_ratio), blk_var);
+    run_end (calc_variables(total, r, n, box, m_ratio, v_ratio), blk_var, ti);
 
     conclusion();
 
