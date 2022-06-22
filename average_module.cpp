@@ -8,6 +8,7 @@
 #include <cassert>
 #include <algorithm>
 #include <functional>
+#include "boost/format.hpp"
 #include "./math_module.hpp" 
 #include "./read_atoms.hpp"
 
@@ -18,9 +19,18 @@
 #define msd  1
 #define cke  2
 
-
 // Internal variable
-int      n_avg;
+#define colf_fmt  "%15.6f"         // Format for floats; we assume that 6 dp will be sufficient
+#define cole_fmt  "%15.4e"         // Alternative format for floats, suitable for small numbers
+#define head_fmt  "%15s"           // Format for heading strings
+#define col1a_fmt "%15s"           // Format for column 1 strings
+#define col1i_fmt "%15d"           // Format for column 1 integers
+#define sngl_fmt  "%40s %15.6f"    // Format for single line output
+
+int     n_avg;
+int     col_width = 15;            // Must be large enough to allow sensible format
+int     nam_width = 2*col_width+1; // At most two column widths plus spacer
+
 
 class VariableType{
 //    Class encapsulating the essential information for simulation averages.
@@ -40,14 +50,14 @@ class BlockVar{
 	    double blk_nrm = 0.0;
 	    double run_nrm = 0.0;
 
-	    double* run_avg = new double[7];
-	    double* run_err = new double[7]; 
-	    double* blk_avg = new double[7];
-	    double* blk_msd = new double[7];
-	    double* values  = new double[7];
-	    double* addd    = new double[7];
-	    bool*   mask    = new bool[7];
-	    int*    methodd = new int[7];
+	    double* run_avg = new double[11];
+	    double* run_err = new double[11]; 
+	    double* blk_avg = new double[11];
+	    double* blk_msd = new double[11];
+	    double* values  = new double[11];
+	    double* addd    = new double[11];
+	    bool*   mask    = new bool[11];
+	    int*    methodd = new int[11];
 };
 
 
@@ -103,8 +113,27 @@ void run_begin (std::vector<VariableType> vars, BlockVar &blk_var){
             blk_var.addd[i]    = vars[i].add;
     }
     
-    std::cout << "\n";
+    //First column plus a column for each variable; allow one space between columns
+    int line_width = col_width + n_avg * ( col_width + 1 );
 
+/*  Store variable names in module variables
+    Attempt to split name string at first space
+    Build up format string for line of averages*/
+    std::vector<std::string> headings; 
+    headings.push_back("Block");
+    std::vector<std::string> subheads;
+    subheads.push_back(" ");
+    std::vector<std::string> line_fmt;
+
+    for (auto variable : vars){
+	std::vector<std::string> parts  = word_splitter(variable.nam);
+        headings.push_back(parts[0]);
+        if (parts.size() > 1)
+            subheads.push_back(parts[1]);
+        else
+            subheads.push_back(" ");
+    }
+    
     // Zero averages and error accumulators at start of run
     blk_var.run_nrm = 0.0;
 
@@ -114,13 +143,22 @@ void run_begin (std::vector<VariableType> vars, BlockVar &blk_var){
     for (int i{0}; i<n_avg ;++i)
 	    blk_var.run_err[i] = 0.0;
 
+//    time_stamp()
+//    print(headings_fmt.format('Block',*headings))
+//    print(headings_fmt.format('     ',*subheads))
+
+    //Write headings
     std::cout << '\n';
     std::cout << "Run begins \n";
-    std::cout << "=============================================================================================================================== \n";
-    printf("%15s %15s %15s %15s %15s %15s %15s %15s \n","Block","Move" ,"E/N" ,"P"  ,"E/N" ,"P"   , "T"    ,"Cv/N");
-    printf("%15s %15s %15s %15s %15s %15s %15s %15s \n","  "   ,"ratio","cut" ,"cut","full","full","config","full");
-    std::cout << "------------------------------------------------------------------------------------------------------------------------------- \n";
-
+    std::cout << std::string(line_width,'=') << '\n';
+    for (int i{0}; i< headings.size();++i)
+	std::cout << boost::format(colf_fmt) %headings[i];
+    std::cout << '\n';
+    for (int i{0}; i<subheads.size();++i)
+	std::cout << boost::format(colf_fmt) %subheads[i];
+    std::cout << '\n';
+    std::cout << std::string(line_width,'-') << '\n';
+    
 }
 
 void blk_begin(int n_avg, BlockVar &blk_var){
@@ -163,8 +201,8 @@ void blk_add (std::vector<VariableType> vars, BlockVar &blk_var){
 void blk_end (int blk, int n_avg, BlockVar &blk_var){
 //  Write out averages at end of every block.
 
-    double* constraint = new double[7];
-    double* blk_avg2   = new double[7];
+    double* constraint = new double[11];
+    double* blk_avg2   = new double[11];
 
     for (int i{0}; i< n_avg;++i)
 	    blk_avg2[i] = 0.0;
@@ -214,11 +252,17 @@ void blk_end (int blk, int n_avg, BlockVar &blk_var){
     blk_var.run_err = sum1DArrays(n_avg, blk_var.run_err,blk_avg2);
     blk_var.run_nrm = blk_var.run_nrm + 1.0;        // Increment run normalizer
 
-    //for(int i{0};i<n_avg;++i)
-    //    std::cout << "run error: " << blk_var.run_err[i] << '\n';
+    std::vector<double> block_variables;
+    block_variables.push_back(blk+1);
+
+    for (int i{0}; i< n_avg;++i)
+	block_variables.push_back(blk_var.blk_avg[i]);
 
     // Write out block averages
-    printf("%15i %15f %15f %15f %15f %15f %15f %15f\n", blk+1,blk_var.blk_avg[0],blk_var.blk_avg[1],blk_var.blk_avg[2],blk_var.blk_avg[3],blk_var.blk_avg[4],blk_var.blk_avg[5],blk_var.blk_avg[6]);
+    std::cout << boost::format("%15.0f") %block_variables[0];
+    for (int i{1}; i< n_avg+1;++i)
+	std::cout << boost::format(colf_fmt) %block_variables[i];
+    std::cout << '\n';
 
     delete [] constraint;
     delete [] blk_avg2  ;
@@ -228,6 +272,7 @@ void run_end (std::vector<VariableType> vars, BlockVar &blk_var){
 //  Write out averages and error estimates at end of run.
 
     int n_avg = vars.size();
+    int line_width = col_width + n_avg * ( col_width + 1 );
 
     double* run_avg2    = new double[n_avg];
     double* constraint2 = new double[n_avg];
@@ -270,13 +315,21 @@ void run_end (std::vector<VariableType> vars, BlockVar &blk_var){
 	}
     }
 
-    std::cout << "------------------------------------------------------------------------------------------------------------------------------- \n";
-    printf("%15s %15f %15f %15f %15f %15f %15f %15f \n","Run averages",blk_var.run_avg[0],blk_var.run_avg[1],blk_var.run_avg[2],blk_var.run_avg[3],blk_var.run_avg[4],blk_var.run_avg[5],blk_var.run_avg[6]);
-    printf("%15s %15f %15f %15f %15f %15f %15f %15f \n","Run errors",  blk_var.run_err[0],blk_var.run_err[1],blk_var.run_err[2],blk_var.run_err[3],blk_var.run_err[4],blk_var.run_err[5],blk_var.run_err[6]);
-    std::cout << "=============================================================================================================================== \n";
+    std::cout << '\n';
+    std::cout << std::string(line_width,'-') << '\n';
+    std::cout << boost::format("%15s") %"Run averages";
+    for (int i{0}; i< n_avg;++i)
+	std::cout << boost::format(colf_fmt) %blk_var.run_avg[i];
+    std::cout << '\n';
+    std::cout << boost::format("%15s") %"Run errors";
+    for (int i{0}; i<n_avg;++i)
+	std::cout << boost::format(colf_fmt) %blk_var.run_err[i];
+    std::cout << '\n';
+    std::cout << std::string(line_width,'=') << '\n';
     std::cout << '\n';
     std::cout << "Run ends \n";
     std::cout << '\n';
+
     //time_stamp()
     std::cout << '\n';
 
