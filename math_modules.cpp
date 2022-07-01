@@ -78,6 +78,7 @@ double***** allocate5DArray(int p,int q, int m, int n, int s) {
 void free2DArray(int m,double** array) {
     for (int i{0}; i<m; ++i)
         delete [] array[i];
+
 	delete [] array;
 }
 
@@ -124,33 +125,24 @@ void free5DArray(int p,int q,int m, int n, double***** array) {
     delete[] array;
 }
 
-double* rand1DArray(int m) {
-
-    double* arr = new double[m];
+void rand1DArray(int m, double* arr) {
 
     for (int i=0;i<m;i++) {
         arr[i] = (double) rand()/RAND_MAX;
     }
-    return arr;
-    delete [] arr;
 }
 
-double** rand2DArray(int m,int n) {
-
-    double** arr = allocate2DArray(m,n);
+void rand2DArray(int m,int n, double** arr) {
 
     for (int i=0;i<m;i++) {
         for (int j=0;j<n;j++) {
             arr[i][j] = (double) rand()/RAND_MAX;
         }
     }
-    return arr;
-    free2DArray(m,arr);
 }
 
-double*** rand3DArray(int p,int q,int r) {
+void rand3DArray(int p,int q,int r, double*** arr) {
 
-    double*** arr = allocate3DArray(p,q,r);
 
     for (int i=0;i<p;i++) {
         for (int j=0;j<q;j++) {
@@ -159,13 +151,9 @@ double*** rand3DArray(int p,int q,int r) {
             }
         }
     }
-    return arr;
-    free3DArray(p,q,arr);
 }
 
-double**** rand4DArray(int p,int q,int m, int n) {
-
-    double**** arr = allocate4DArray(p,q,m,n);
+void rand4DArray(int p,int q,int m, int n, double**** arr) {
 
     for (int i=0;i<p;i++) {
         for (int j=0;j<q;j++) {
@@ -176,13 +164,9 @@ double**** rand4DArray(int p,int q,int m, int n) {
             }
         }
     }
-    return arr;
-    free4DArray(p,q,m,arr);
 }
 
-double***** rand5DArray(int p,int q,int m, int n,int s) {
-
-    double***** arr = allocate5DArray(p,q,m,n,s);
+void rand5DArray(int p,int q,int m, int n,int s, double***** arr) {
 
     for (int i=0;i<p;i++) {
         for (int j=0;j<q;j++) {
@@ -195,26 +179,18 @@ double***** rand5DArray(int p,int q,int m, int n,int s) {
             }
         }
     }
-    return arr;
-    free5DArray(p,q,m,n,arr);
 }
 
-double** zeroMatrix(int m,int n) {
-
-    double** arr = allocate2DArray(m,n);
+void zeroMatrix(int m,int n, double** arr) {
 
     for (int i=0;i<m;i++) {
         for (int j=0;j<n;j++) {
             arr[i][j] = 0.;
         }
     }
-    return arr;
-    free2DArray(m,arr);
 }
 
-double** identMatrix(int m,int n) {
-
-    double** arr = allocate2DArray(m,n);
+void identMatrix(int m,int n, double** arr) {
 
     for (int i=0;i<m;i++) {
         for (int j=0;j<n;j++) {
@@ -223,48 +199,32 @@ double** identMatrix(int m,int n) {
 	    }
         }
     }
-    return arr;
-    free2DArray(m,arr);
 }
 
-double* sum1DArrays(int m, double* A, double* B) {
-
-    double* sum = new double [m];
+void sum1DArrays(int m, double* A, double* B, double* sum) {
 
     for (int i=0;i<m;i++) {
             sum[i] = A[i] + B[i];
     }
-    return sum;
-    delete [] sum;
 }
 
-double* scalar1DArrayMultip(int m,double p, double* A) {
-
-    double* arr = new double [3];
+void scalar1DArrayMultip(int m,double p, double* A, double* arr) {
 
     for (int i=0;i<m;i++) {
             arr[i] = A[i] * p;
     }
-    return arr;
-    delete [] arr;
 }
 
-double** scalar2DArrayMultip(int m,int n,double p, double** A) {
-
-    double** product = allocate2DArray(m,n);
+void scalar2DArrayMultip(int m,int n,double p, double** A, double** product) {
 
     for (int i=0;i<m;i++) {
         for (int j=0;j<n;j++) {
             product[i][j] = A[i][j] * p;
         }
     }
-    return product;
-    free2DArray(m,product);
 }
 
-double*** scalar3DArrayMultip(int m,int n, int r, double p, double*** A) {
-
-    double*** product = allocate3DArray(m,n,r);
+void scalar3DArrayMultip(int m,int n, int r, double p, double*** A, double*** product) {
 
     for (int i=0;i<m;i++) {
         for (int j=0;j<n;j++) {
@@ -273,8 +233,6 @@ double*** scalar3DArrayMultip(int m,int n, int r, double p, double*** A) {
 	    }
         }
     }
-    return product;
-    free3DArray(m,n,product);
 }
 
 void scalar4DArrayMultip(int p,int q, int m, int n, double b, double**** A) {
@@ -288,7 +246,6 @@ void scalar4DArrayMultip(int p,int q, int m, int n, double b, double**** A) {
         }
     }
 }
-
 
 void scalar5DArrayMultip(int p,int q, int m, int n, int s, double b, double***** A) {
     for (int i=0;i<p;i++) {
@@ -304,82 +261,58 @@ void scalar5DArrayMultip(int p,int q, int m, int n, int s, double b, double*****
     }
 }
 
-double* rint1D(int m,double* A){
-
-    double* sub = new double [m];
+void rint1D(int m,double* A){
 
     for (int i=0;i<m;i++) {
-            sub[i] = A[i] - round(A[i]);
+            A[i] -= round(A[i]);
     }
-    return sub;
-    delete [] sub;
-
 }
 
-double** rint2D(int m,int n,double** A){
-
-//    double** sub = allocate2DArray(m,n);
-
-    for (int i=0;i<m;i++) {
-        for (int j=0;j<m;j++) {
-            A[i][j] -= round(A[i][j]);
-            //sub[i][j] = A[i][j] - round(A[i][j]);
-	}
-    }
-    return A;
-}
-
-double* sqrt1DArray(int m, double*A){
-
-    double* sq = new double[m];
-    for (int i{0}; i<m;++i){
-	sq[i] = sqrt(A[i]);
-    }
-    return sq;
-    delete [] sq;
-}
-
-
-double* subtract1DArrays(int m, double* A, double* B) {
-
-    double* sub = new double [m];
-
-    for (int i=0;i<m;i++) {
-            sub[i] = A[i] - B[i];
-    }
-    return sub;
-    delete [] sub;
-}
-
-double** subtract2DArrays(int m,int n, double** A, double** B) {
-
-    double** sub = allocate2DArray(m,n);
+void rint2D(int m,int n,double** A){
 
     for (int i=0;i<m;i++) {
         for (int j=0;j<n;j++) {
-            sub[i][j] = A[i][j] - B[i][j];
-        }
+            A[i][j] -= round(A[i][j]);
+	}
     }
-    return sub;
-    free2DArray(m,sub);
 }
 
-double* scalar1DArraySubtract(int m, double p, double* A) {
+void sqrt1DArray(int m, double*A, double* sq ){
+
+    for (int i{0}; i<m;++i){
+	sq[i] = sqrt(A[i]);
+    }
+}
+
+
+void subtract1DArrays(int m, double* A, double* B, double* C) {
+
+    for (int i=0;i<m;i++) {
+            C[i] = A[i] - B[i];
+    }
+}
+
+void subtract2DArrays(int m,int n, double** A, double** B, double** C) {
+
+    for (int i=0;i<m;i++) {
+        for (int j=0;j<n;j++) {
+            C[i][j] = A[i][j] - B[i][j];
+        }
+    }
+}
+
+void scalar1DArraySubtract(int m, double p, double* A) {
 
     for (int i=0;i<m;i++) {
         A[i] -= p;
     }
-    return A;
 }
 
-double* scalar1DArrayDivision(int m,double p, double* A) {
+void scalar1DArrayDivision(int m,double p, double* A, double* product) {
 
-    double* div = new double[m];
     for (int i=0;i<m;i++) {
-            A[i] /= p;
+            product[i] = A[i] / p;
     }
-    return A;
-    delete [] div;
 }
 
 void scalar2DArraySubtract(int m,int n, double p, double** A) {
@@ -390,13 +323,12 @@ void scalar2DArraySubtract(int m,int n, double p, double** A) {
     }
 }
 
-double** scalar2DArrayDivision(int m,int n,double p, double** A) {
+void scalar2DArrayDivision(int m,int n,double p, double** A) {
     for (int i=0;i<m;i++) {
         for (int j=0;j<n;j++) {
             A[i][j] /= p;
         }
     }
-    return A;
 }
 
 void scalar3DArrayDivision(int m,int n,int r, double p, double*** A) {
@@ -577,16 +509,17 @@ double** t2_tensor (double* mat,double r3){
     double** A  = allocate2DArray(nCols,nCols);
     double** t2 = allocate2DArray(nCols,nCols);
  
-    t2 = scalar2DArrayMultip(nCols,nCols,3.,outer2D(nCols, mat, mat));
+    scalar2DArrayMultip(nCols,nCols,3.,outer2D(nCols, mat, mat),t2);
 
-    A  = identMatrix(nCols,nCols);
+    identMatrix(nCols,nCols,A);
    
-    t2 = subtract2DArrays(nCols, nCols, t2, A);
+    subtract2DArrays(nCols, nCols, t2, A,t2);
     
     scalar2DArrayDivision(nCols,nCols, r3, t2);
      
-    return t2;
     free2DArray(nCols,A);
+
+    return t2;
     free2DArray(nCols,t2);
 }
 
@@ -601,7 +534,7 @@ double*** t3_tensor(double *mat3, double r4){
 
     t3 = outer3D(nCols,nCols,nCols,mat3,mat3,mat3);
 
-    t3 = scalar3DArrayMultip(nCols,nCols,nCols,15.,t3);
+    scalar3DArrayMultip(nCols,nCols,nCols,15.,t3,t3);
 
     for (int i{0};i<3;++i){
 	    t3[i][i][i] = t3[i][i][i] - 9.0 * mat3[i];
@@ -635,7 +568,7 @@ double**** t4_tensor(double* mat4, double r5){
     t4 = outer4D(nCols,nCols,nCols,nCols,mat4,mat4,mat4,mat4);
     scalar4DArrayMultip(nCols,nCols,nCols,nCols,105.,t4);
 
-    A = identMatrix(nCols,nCols);
+    identMatrix(nCols,nCols,A);
 
     for (int i{0};i<nCols;++i){
         for (int j{0};j<nCols;++j){
@@ -673,7 +606,7 @@ double***** t5_tensor(double* mat5, double r6){
     t5 = outer5D(nCols,nCols,nCols,nCols,nCols,mat5,mat5,mat5,mat5,mat5);
     scalar5DArrayMultip(nCols,nCols,nCols,nCols,nCols,945.,t5);
 
-    A = identMatrix(nCols,nCols);
+    identMatrix(nCols,nCols,A);
     for (int i{0};i<nCols;++i){
         for (int j{0};j<nCols;++j){
             for (int k{0};k<nCols;++k){
@@ -750,7 +683,7 @@ double* crossProduct(double* a, double* b){
 
 double elementSum1D(int m, double* a){
     
-    double product{0};
+    double product{0.};
 
     for (int i{0};i<m;++i){
          product += a[i];
@@ -760,7 +693,7 @@ double elementSum1D(int m, double* a){
 
 double elementSum2D(int m,int n, double** a){
     
-    double product{0};
+    double product{0.};
 
     for (int i{0};i<m;++i){
         for (int j{0};j<n;++j){
@@ -770,27 +703,20 @@ double elementSum2D(int m,int n, double** a){
     return product;
 }
 
-double* elementWise1DProduct(int m, double* a, double* b){
-    
-    double* product = new double[m];
+void elementWise1DProduct(int m, double* a, double* b, double* product){
 
     for (int i{0};i<m;++i){
          product[i] = a[i] * b[i];
     }
-    return product;
-    delete [] product;
 }
 
-double** elementWise2DProduct(int m, int n, double** a, double** b){
+void elementWise2DProduct(int m, int n, double** a, double** b, double** product){
     
-    double** product = allocate2DArray(m,n);
     for (int i{0};i<m;++i){
         for (int j{0};j<n;++j){
             product[i][j] = a[i][j] * b[i][j];
         }
     }
-    return product;
-    free2DArray(m,product);
 }
 
 double contract_i_i (int n,double* a, double* b){
@@ -822,16 +748,17 @@ double contract_ij_ij (double** a, double** b){
     with another second-rank tensor. */
 
     double product{0};
-    double** dot;
-    dot = elementWise2DProduct(3,3,a,b);
+    double** dot = allocate2DArray(3,3);
+    elementWise2DProduct(3,3,a,b,dot);
 //    print2DArray(3,3,dot);
     for (int i{0};i<3;++i){
         for (int j{0};j<3;++j){
             product = product + dot[i][j];
         }
     }
-    return product;
     free2DArray(3,dot);
+    return product;
+
 }
 
 double** contract_ik_jk (double** a, double** b){
@@ -901,8 +828,8 @@ double** contract_ijkl_kl(double**** a, double** b){
 	    }
 	}
     }
-    return D;
     free2DArray(3,D);
+    return D;
 }
 
 
@@ -927,11 +854,11 @@ double*** contract_ijklm_lm(double***** a, double** b){
     free3DArray(3,3,D);
 }
 
-double* random_vector(){
+void random_vector(double* rand_vec){
 //  Returns a random unit vector as a numpy array of 3 elements. 
 
-    double* rand_vec = new double [3];
-    double* zeta     = rand1DArray(2);        // Two uniformly sampled random numbers in range (0,1)
+    double* zeta = new double[2];
+    rand1DArray(2,zeta);        // Two uniformly sampled random numbers in range (0,1)
     double c         = 2.0*zeta[0] - 1.0;     // Random cos(theta) uniformly sampled in range (-1,+1)
     double s,phi;                             // desclare sin, angle phi
 
@@ -947,41 +874,46 @@ double* random_vector(){
     rand_vec[1] = s*sin(phi);
     rand_vec[2] = c;
 
-    return rand_vec; 
-    delete [] rand_vec;
     delete [] zeta;
  }
 
 
-double** deleteArray2D(int m,int n, int p, double** A){
+void remove2DArray(int m, int p, double** A, double** B){
 
-    double **temp = new double*[m-1];
-
-    int ii = 0;
-    for(int i = 0; i < m; ++i)
-        if(i != p){
-            temp[ii++] = A[i];
+    if (p <m-1){
+        int ii = 0;
+        for (int i{0};i<m;i++){
+            if (i == p){
+                i++;
+            }
+            for (int j{0};j<3;++j){
+                B[ii][j] = A[i][j];
+           }
+           ii++;
         }
-    A = temp;
-
-    return A;
-    //free2DArray(m,A);
-    free2DArray(m-1,temp);
-
+    }
+    else if (p == m-1){
+        for (int i{0};i<m-1;i++){
+            for (int j{0};j<3;++j){
+                B[i][j] = A[i][j];
+	    }
+	}
+    }
 }
 
-double* random_translate_vector (double dr_max, double* old ){
+void random_translate_vector (double dr_max, double* old,double* ri ){
 /*  Returns a vector translated by a random amount.
  
      A randomly chosen vector is added to the old one. */
 
-    double* zeta     = rand1DArray(3);             // Three uniformly sampled random numbers in range (0,1)
-    zeta = scalar1DArrayMultip(3,2.0,zeta);
-    zeta = scalar1DArraySubtract(3,1.0,zeta);      // Now in range (-1,+1)
-    zeta = scalar1DArrayMultip(3,dr_max,zeta);
-    old  = sum1DArrays( 3, old, zeta);              // Move to new position
+    double* zeta = new double[3];
+    rand1DArray(3,zeta);             // Three uniformly sampled random numbers in range (0,1)
+    scalar1DArrayMultip(3,2.0,zeta,zeta);
+    scalar1DArraySubtract(3,1.0,zeta);             // Now in range (-1,+1)
+    scalar1DArrayMultip(3,dr_max,zeta,zeta);
+    sum1DArrays( 3, old, zeta,ri);             // Move to new position
 
-    return old;
+    delete [] zeta;
 }
 
 bool metropolis (double delta ){
@@ -1001,7 +933,7 @@ bool metropolis (double delta ){
     }
 }
 
-double** update2DArray(int m,int n, double* ri, double* rj, double** A){
+void update2DArray(int m,int n, double* ri, double* rj, double** A){
 
     for (int i{0};i<m;++i){
 	for(int j{0};j<n;++j){
@@ -1010,5 +942,68 @@ double** update2DArray(int m,int n, double* ri, double* rj, double** A){
 	    }
 	}
     }
+}
+
+double** createArray(int m,int n, double* ri, double** A){
+
+    int newSize = m+1;
+    double** newArr = new double*[newSize];
+
+    for (int i{0}; i<newSize; i++)
+        newArr[i] = new double[n];
+
+    for (int i{0};i<m;++i){
+        for(int j{0};j<n;++j){
+            newArr[i][j] = A[i][j];
+        }
+    }
+
+    for(int k{0};k<n;++k)
+        newArr[m][k] = ri[k];
+
+    m = newSize;
+    free2DArray(m-1,A);
+    A = newArr;
+
+    return A;
+}
+
+double** annihilateArray(int m,int n, double* ri, double** A){
+
+    int newSize = m - 1;
+    double** newArr = new double*[newSize];
+
+    for (int i{0}; i<m-1; i++)
+        newArr[i] = new double[n];
+
+    bool last = false;
+    int count =0;
+    for (int i{0};i<m-1;++i){
+        for(int j{0};j<n;++j){
+            if (A[i][j] == ri[j]){
+                count = i;
+                last = true;
+                break;
+            }
+            else{
+                newArr[i][j] = A[i][j];
+            }
+        }
+    }
+
+    if (last == false){
+    }
+    else{
+        for (int i{count+1};i<m;++i){
+            for(int j{0};j<n;++j){
+                newArr[i-1][j] = A[i][j];
+            }
+        }
+    }
+
+    m = newSize;
+    free2DArray(m,A);
+    A = newArr;
+
     return A;
 }
