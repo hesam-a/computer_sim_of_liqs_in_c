@@ -13,7 +13,7 @@
 
 
 #define nblock        10
-#define nstep         100
+#define nstep         1000
 #define temperature   1.0
 #define r_cut         2.5
 #define dr_max        0.15
