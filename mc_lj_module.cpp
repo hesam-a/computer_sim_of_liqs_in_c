@@ -66,9 +66,17 @@ void potential_1 (PotentialType &partial,int mm, double* ri, double box, double 
 	for (int j{0};j<d;++j)
 	   r_j[j] = r[i][j];
 
-        rij = subtract1DArrays(3,ri,r_j);            // Separation vector
-        rij = rint1D(d,rij);                         // Periodic boundary conditions in box=1 units
-        rij_sq = elementSum1D(3,elementWise1DProduct(3,rij,rij));       // Squared separation
+	//std::cout << " ---- r_i ---- \n";
+	//print1DArray(3,r_j);
+
+        subtract1DArrays(3,ri,r_j,rij);         // Separation vector
+
+	//std::cout << " ---- rij ---- \n";
+	//print1DArray(3,rij);
+
+        rint1D(d,rij);                          // Periodic boundary conditions in box=1 units
+        elementWise1DProduct(3,rij,rij,rij);
+        rij_sq = elementSum1D(3,rij);           // Squared separation
     
         if (rij_sq < r_cut_box_sq){                  // Check within cutoff
             rij_sq = rij_sq * box_sq;                // Now in sigma=1 units
@@ -85,11 +93,9 @@ void potential_1 (PotentialType &partial,int mm, double* ri, double box, double 
             vir  = pot + sr12;                       // LJ pair virial
             lap  = ( 22.0*sr12 - 5.0*sr6 ) * sr2;    // LJ pair Laplacian
     
-	    //std::cout << "lap:         " << lap << '\n';
             partial.pot = partial.pot + pot; 
             partial.vir = partial.vir + vir;
             partial.lap = partial.lap + lap;
-	    //std::cout << "partial.lap: " << partial.lap << '\n';
 	}
     delete [] rij;
     delete [] r_j;
@@ -143,8 +149,8 @@ void potential (PotentialType &total, int mm, double box, double r_cut, double**
 
 	m -= 1;
 
+        free2DArray(m+1,r_all); 
         delete [] r_i;
-        free2DArray(m,r_all); 
 
     }
 }
@@ -161,12 +167,15 @@ double force_sq (int mm,double box, double r_cut, double** r){
     int d = 3;
 
     double** f     = allocate2DArray(mm,d);
+    double** ff    = allocate2DArray(mm,d);
     double* fij    = new double[3];
+    double* fij2   = new double[3];
     double* rij    = new double[3];
+    double* rijb   = new double[3];
     double* rij_p  = new double[3];
     double f2      = 0;
 
-    f = zeroMatrix(mm,d); // Initialize
+    zeroMatrix(mm,d,f); // Initialize f
 
     for(int i{0};i<mm;++i){
         for(int j{i+1};j<mm ;++j){
@@ -174,36 +183,39 @@ double force_sq (int mm,double box, double r_cut, double** r){
 		rij[k] = r[i][k] - r[j][k];                     // Separation vector
 	    }
 
-                rij    = rint1D(3,rij);                           // Periodic boundary conditions in box=1 units
-                rij_p  = elementWise1DProduct(3,rij,rij);
+                rint1D(3,rij);                             // Periodic boundary conditions in box=1 units
+
+                elementWise1DProduct(3,rij,rij, rij_p);
+
                 rij_sq = elementSum1D(3,rij_p);
 
-                if (rij_sq < r_cut_box_sq){                         // Check within cutoff
-                    rij_sq = rij_sq * box_sq;                       // Now in sigma=1 units 
-                    rij    = scalar1DArrayMultip(3,box,rij);        // Now in sigma=1 units
+                if (rij_sq < r_cut_box_sq){                // Check within cutoff
+                    rij_sq = rij_sq * box_sq;              // Now in sigma=1 units 
+                    scalar1DArrayMultip(3,box,rij,rijb);        // Now in sigma=1 units
                     sr2    = 1.0 / rij_sq;  
                     sr6    = pow(sr2,3);
                     sr12   = pow(sr6,2);
-                    fij    = scalar1DArrayMultip(3, (2.0*sr12 - sr6),rij);
-                    fij    = scalar1DArrayMultip(3,sr2,fij);
+                    scalar1DArrayMultip(3, (2.0*sr12 - sr6),rijb,fij);
+                    scalar1DArrayMultip(3,sr2,fij,fij2);
                     for (int k{0};k<3;++k){
-                        f[i][k] = f[i][k] + fij[k];
-                        f[j][k] = f[j][k] - fij[k];
+                        f[i][k] = f[i][k] + fij2[k];
+                        f[j][k] = f[j][k] - fij2[k];
                     }
                 }
         }
     }
 	    
-    f = scalar2DArrayMultip(mm,d,24.0,f);
-    //std::cout << "f " << '\n';
-    //print2DArray(mm,3,f);
-    f  = elementWise2DProduct(mm,3 , f, f);
-    f2 = elementSum2D(mm,3,f);
-
-    return f2; 
+    scalar2DArrayMultip(mm,d,24.0,f,f);
+    elementWise2DProduct(mm,3 , f, f, ff);
+    f2 = elementSum2D(mm,3,ff);
 
     free2DArray(mm,f);
+    free2DArray(mm,ff);
     delete [] fij; 
+    delete [] fij2; 
     delete [] rij;  
+    delete [] rijb;
     delete [] rij_p;
+
+    return f2; 
 }
