@@ -9,7 +9,7 @@
 #include "./math_module.hpp"
 #include "./mc_lj_module.hpp"
 #include "./averages_module.hpp"
-#include "./read_atoms.hpp"
+#include "./config_io_module.hpp"
 
 #define nblock        10
 #define nstep         100
