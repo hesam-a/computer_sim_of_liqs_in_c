@@ -5,6 +5,7 @@
 #include <string>
 #include <stdio.h>
 #include <vector>
+#include "boost/format.hpp"
 #include "./math_module.hpp"
 
 
