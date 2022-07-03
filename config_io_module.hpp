@@ -19,3 +19,5 @@
 
 
 double** read_cnf_atoms(const char* filename,double** coord);
+
+void write_cnf_atoms (std::string filename, int nn, double box, double** coord);
