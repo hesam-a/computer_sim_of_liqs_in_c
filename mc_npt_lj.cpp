@@ -13,7 +13,7 @@
 #include "./config_io_module.hpp"
 
 #define nblock        10
-#define nstep         10
+#define nstep         1000
 #define temperature   1.0
 #define pressure      0.69
 #define r_cut         2.5
