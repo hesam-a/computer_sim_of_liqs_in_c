@@ -20,6 +20,14 @@
 
 
 std::vector<VariableType> calc_variables(PotentialType tot, double** r, int n, double box, double m_ratio){
+/*
+     --- some notes from Allen-Tildesley ---
+    In this example we simulate using the cut (but not shifted) potential
+    The values of < p_c >, < e_c > and density should be consistent (for this potential)
+    For comparison, long-range corrections are also applied to give
+    estimates of < e_f > and < p_f > for the full (uncut) potential
+    The value of the cut-and-shifted potential is not used, in this example */
+
 
     // Preliminary calculations (n,r,total are taken from the calling program)
     double vol = pow(box,3);                     //  Volume
@@ -107,6 +115,21 @@ void deletePointer(std::vector<VariableType> vars, BlockVar blk_var){
       
 }
 
+/*  --- some notes from Allen-Tildesley ---
+    Takes in a configuration of atoms (positions)
+    Cubic periodic boundary conditions
+    Conducts Monte Carlo at the given temperature
+    Uses no special neighbour lists
+
+    Positions r are divided by box length after reading in
+    However, input configuration, output configuration, most calculations, and all results
+    are given in simulation units defined by the model
+    For example, for Lennard-Jones, sigma = 1, epsilon = 1
+
+    Despite the program name, there is nothing here specific to Lennard-Jones
+    The model is defined in mc_lj_module  */
+
+
 int main(){
 
     // initial time for calculating the processing time
@@ -183,20 +206,20 @@ int main(){
 	        double*  r_i = new double[3];
 	        double*  ri  = new double[3];
 
-		remove2DArray(n,atm,r,rj);
+		remove2DArray(n,atm,r,rj);                              // Array of all the other atoms
 
                 for (int j{0};j<3;++j){
                    r_i[j] = r[atm][j];
 		}
 
 		PotentialType partial_old;
-	        potential_1 (partial_old, n-1, r_i, box, r_cut, rj );    // Old atom potential, virial etc
+	        potential_1 (partial_old, n-1, r_i, box, r_cut, rj );  // Old atom potential, virial etc
 
 		random_translate_vector(dr_max/box, r_i, ri);          // Trial move to new position (in box=1 units)
-		rint1D(3,ri);                                       // Periodic boundary correction
+		rint1D(3,ri);                                          // Periodic boundary correction
 
 		PotentialType partial_new;
-	        potential_1 (partial_new, n-1, ri, box, r_cut, rj );                       // New atom potential, virial etc
+	        potential_1 (partial_new, n-1, ri, box, r_cut, rj );                   // New atom potential, virial etc
 
                 if (!partial_new.ovr){                                                 // Test for non-overlapping configuration
 		    double delta;
@@ -223,14 +246,28 @@ int main(){
 	blk_add (calc_variables(total, r, n, box, m_ratio),blk_var);
 	}
 
-    blk_end ( blk, n_avg, blk_var);
+    blk_end ( blk, n_avg, blk_var);                         // Output block averages
+        std::stringstream ss;
+        ss << std::setfill('0') << std::setw(3) << std::to_string(blk+1);
+        std::string sav_tag(ss.str());                      // Number configuration by block
+        double** out_r = allocate2DArray(n,3);
+        scalar2DArrayMultip(n,3,box,r,out_r);
+        write_cnf_atoms ("cnf."+sav_tag, n, box,out_r );    // Save configuration
+        free2DArray(n,out_r);
     }
 
     run_end (calc_variables(total, r, n, box, m_ratio), blk_var, ti);
 
+    potential (total,n, box, r_cut, r);
+    assert (!total.ovr);                                   // Double check book-keeping
+    std::cout << "No overlap in final configuration! \n";
+
+    double** out_r = allocate2DArray(n,3);
+    scalar2DArrayMultip(n,3,box,r,out_r);
+    write_cnf_atoms ("cnf.out", n, box,out_r );            // Save configuration
+    free2DArray(n,out_r);
     deletePointer(calc_variables(total, r, n, box, m_ratio), blk_var);
 
     conclusion();
-
     free2DArray(n,r);
 }
