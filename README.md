@@ -11,7 +11,7 @@ g++ -g mc_nvt_lj.cpp math_module.cpp mc_lj_module.cpp lrc_module.cpp averages_mo
 
 where "mc_nvt_lj.cpp" should be replaced with "mc_npt_lj.cpp" or "mc_zvt_lj.cpp", respectively for NPT or zVT codes.
 
-In case the boost library is not available in the user's c header file library, it can be installed with this command:
+In case the boost library is not available in the user's c header files library, it can be installed with this command:
 
 sudo apt-get install libboost-all-dev
 
