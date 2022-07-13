@@ -20,4 +20,6 @@
 
 double** read_cnf_atoms(const char* filename,double** coord);
 
+void read_cnf_mols(const char* filename, bool quaternion, bool with_v, double** coord, double** orient, double** vel, double** angvel);
+
 void write_cnf_atoms (std::string filename, int nn, double box, double** coord);
