@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
+#include <cstring>
+#include <cassert>
 
 // This is a math module for some functions used in the programs. Although the current version is completely working for the programs,
 // some functions might need slight modifications.
@@ -20,7 +22,7 @@ double** allocate2DArray(int m,int n) {
     double** array = new double*[m];
 
     for (int i{0}; i<m; i++) {
-        array[i] = new double[n];
+        array[i] = new double[n]{};
     }
 
     return array;
@@ -32,7 +34,7 @@ double*** allocate3DArray(int p,int q, int r) {
     for (int i{0}; i<p; i++) {
         array[i] = new double*[q];
         for (int j{0}; j<q; ++j){
-            array[i][j] = new double[r];
+            array[i][j] = new double[r]{};
         }
     }
     return array;
@@ -46,7 +48,7 @@ double**** allocate4DArray(int p,int q, int m, int n) {
         for (int j{0}; j<q; ++j){
             array[i][j] = new double*[m];
             for (int k{0}; k<m; ++k){
-                array[i][j][k] = new double[n];
+                array[i][j][k] = new double[n]{};
 	    }
         }
     }
@@ -66,7 +68,7 @@ double***** allocate5DArray(int p,int q, int m, int n, int s) {
             for (int k{0}; k<m; ++k){
                 array[i][j][k] = new double*[n];
                 for (int l{0}; l<n; ++l){
-                    array[i][j][k][l] = new double[s];
+                    array[i][j][k][l] = new double[s]{};
 		}
 	    }
         }
@@ -201,11 +203,56 @@ void identMatrix(int m,int n, double** arr) {
     }
 }
 
+void matMultip(int m, int n, double** A, double** B, double** C){
+
+    for (int i=0;i<3;i++) {
+        for (int j=0;j<3;j++) {
+            for (int k=0;k<3;k++) {
+                C[i][j] += A[i][k] * B[k][j];
+            }
+        }
+    }
+}
+    
+
 void sum1DArrays(int m, double* A, double* B, double* sum) {
 
     for (int i=0;i<m;i++) {
             sum[i] = A[i] + B[i];
     }
+}
+
+void sum2DArrays(int m, int n,double** A, double* sum,int axis) {
+
+    assert(axis==0 or axis==1);
+
+    if (axis = 0){ // column-wise sum
+	for (int i=0;i<m;i++) {
+	    sum[i] = 0.0;
+	    for (int j=0;j<n;j++) {
+            sum[i] += A[i][j];
+	    }
+	}
+    }
+    else if (axis = 1){ // row-wise sum
+	for (int i=0;i<m;i++) {
+	    sum[i] = 0.0;
+	    for (int j=0;j<n;j++) {
+            sum[j] += A[j][i];
+	    }
+	}
+    }
+}
+
+double max1DArray(int m, double* arr){
+ 
+    double max=0.;	
+    for (int i=0;i<m;i++) {
+	if (arr[i] > max){
+	    max = arr[i];
+	}
+    }
+    return max;
 }
 
 void scalar1DArrayMultip(int m,double p, double* A, double* arr) {
@@ -369,7 +416,7 @@ void scalar5DArrayDivision(int p,int q, int m,int n, int s, double b, double****
 
 void print1DArray(int m, double* A){
     for (int i=0;i<m;i++) {
-        printf("%10.10f  ",A[i]);
+        printf("%14.10f  ",A[i]);
     }
     std::cout << '\n';
 }
@@ -858,7 +905,7 @@ void random_vector(double* rand_vec){
 //  Returns a random unit vector as a numpy array of 3 elements. 
 
     double* zeta = new double[2];
-    rand1DArray(2,zeta);        // Two uniformly sampled random numbers in range (0,1)
+    rand1DArray(2,zeta);                      // Two uniformly sampled random numbers in range (0,1)
     double c         = 2.0*zeta[0] - 1.0;     // Random cos(theta) uniformly sampled in range (-1,+1)
     double s,phi;                             // desclare sin, angle phi
 
@@ -901,6 +948,33 @@ void remove2DArray(int m, int p, double** A, double** B){
     }
 }
 
+void remove3DArray(int m, int n, int p, double*** A, double*** B){
+
+    if (p <m-1){
+        int ii = 0;
+        for (int i{0};i<m;i++){
+            if (i == p){
+                i++;
+            }
+            for (int j{0};j<n;++j){
+                for (int k{0};k<n;++k){
+                B[ii][j][k] = A[i][j][k];
+		}
+           }
+           ii++;
+        }
+    }
+    else if (p == m-1){
+        for (int i{0};i<m-1;i++){
+            for (int j{0};j<3;++j){
+                for (int k{0};k<3;++k){
+                    B[i][j][k] = A[i][j][k];
+		}
+	    }
+	}
+    }
+}
+
 void random_translate_vector (double dr_max, double* old,double* ri ){
 /*  Returns a vector translated by a random amount.
  
@@ -914,6 +988,86 @@ void random_translate_vector (double dr_max, double* old,double* ri ){
     sum1DArrays( 3, old, zeta,ri);             // Move to new position
 
     delete [] zeta;
+}
+
+void quatmul (double* a, double* b, double* c){
+//  Returns quaternion product of two supplied quaternions.
+
+    c[0] = a[0]*b[0] - a[1]*b[1] - a[2]*b[2] - a[3]*b[3];
+    c[1] = a[1]*b[0] + a[0]*b[1] - a[3]*b[2] + a[2]*b[3];
+    c[2] = a[2]*b[0] + a[3]*b[1] + a[0]*b[2] - a[1]*b[3];
+    c[3] = a[3]*b[0] - a[2]*b[1] + a[1]*b[2] + a[0]*b[3];
+}
+
+void rotate_quaternion (double angle, double* axis,double* old, double* e){
+/*  Returns a quaternion rotated by angle about axis relative to old quaternion.
+
+    Note that the axis vector should be normalized and we test for this
+    In general, the old quaternion need not be normalized, and the same goes for the result
+    although in our applications we only ever use unit quaternions (to represent orientations) */
+    double* rot  = new double[3];
+    double* rot2 = new double[4];
+
+    // Standard formula for rotation quaternion, using half angles
+    scalar1DArrayMultip(3,sin(0.5*angle),axis,rot);
+    rot2[0] = cos(0.5*angle);
+    for(int i{0};i<3;++i)
+	rot2[i+1] = rot[i];
+    quatmul (rot2, old, e); // Apply rotation to old quaternion
+    delete [] rot;
+    delete [] rot2;
+}
+
+void random_quaternion(double* randq){
+//  Returns a random unit quaternion as a numpy array of 4 elements.
+
+    double* zeta = new double[2];
+    double* zeta2= new double[2];
+    double* beta = new double[2];
+    double* beta2= new double[2];
+    double norm1,norm2,f;
+
+    while (true){                            // Loop until within unit disk
+        rand1DArray(2,zeta);             
+        scalar1DArrayMultip(2,2.0,zeta,zeta);
+        scalar1DArraySubtract(2,1.0,zeta);   // Two uniform random numbers between -1 and 1
+	elementWise1DProduct(2,zeta, zeta,zeta2);
+	norm1 = elementSum1D(2, zeta2);      // Squared magnitude
+        if (norm1 < 1.0)                     // Test for within unit disk
+            break;
+    }
+
+    while (true){                            // Loop until within unit disk
+        rand1DArray(2,beta);             
+        scalar1DArrayMultip(2,2.0,zeta,zeta);
+        scalar1DArraySubtract(2,1.0,zeta);   // Two uniform random numbers between -1 and 1
+	elementWise1DProduct(2,zeta, zeta,zeta2);
+	norm1 = elementSum1D(2, zeta2);      // Squared magnitude
+        if (norm2 < 1.0)                     // Test for within unit disk
+            break;
+    }
+    f = sqrt((1.0 - norm1)/norm2);
+    randq[0] = zeta[0];
+    randq[1] = zeta[1];
+    randq[2] = beta[0]*f;
+    randq[3] = beta[1]*f;
+    delete [] zeta;
+    delete [] zeta2;
+    delete [] beta;
+    delete [] beta2;
+}
+
+void random_rotate_quaternion (double angle_max, double* old, double* e){
+/*  Returns a unit quaternion rotated by a maximum angle (in radians) relative to the old quaternion.
+
+    Note that the reference quaternion should be normalized and we test for this */
+    double randd = (double) rand()/RAND_MAX;
+    double* axis = new double[3];
+
+    random_vector(axis);                               // Choose random unit vector
+    double angle = ( 2.0* randd - 1.0 ) * angle_max;          // Uniform random angle in desired range
+    rotate_quaternion (angle, axis, old, e);           // General rotation function
+    delete [] axis;
 }
 
 bool metropolis (double delta ){
@@ -933,24 +1087,26 @@ bool metropolis (double delta ){
     }
 }
 
-void update2DArray(int m,int n, double* ri, double* rj, double** A){
+void update2DArray(int m, int atom, double* ri, double** A){
+
+    for (int i{0};i<m;++i)
+	A[atom][i] = ri[i];
+}
+
+//void update3DArray(int m,int n, int p, double** ri, double** rj, double*** A){
+void update3DArray(int m,int n, int atom, double** ri, double*** A){
 
     for (int i{0};i<m;++i){
-	for(int j{0};j<n;++j){
-	    if (ri[j] == A[i][j]){
-		A[i][j] = rj[j];
-	    }
+	for (int j{0};j<n;++j){
+	    A[atom][i][j] = ri[i][j];
 	}
     }
 }
 
 double** createArray(int m,int n, double* ri, double** A){
 
-    int newSize = m+1;
-    double** newArr = new double*[newSize];
-
-    for (int i{0}; i<newSize; i++)
-        newArr[i] = new double[n];
+    size_t newSize = m+1;
+    double** newArr = allocate2DArray(newSize,n);
 
     for (int i{0};i<m;++i){
         for(int j{0};j<n;++j){
@@ -1002,8 +1158,32 @@ double** annihilateArray(int m,int n, double* ri, double** A){
     }
 
     m = newSize;
-    free2DArray(m,A);
+    free2DArray(m+1,A);
     A = newArr;
 
     return A;
+
+}
+
+void q_to_a (double* q, double** a){
+/*  Returns a 3x3 rotation matrix calculated from supplied quaternion.
+
+    The rows of the rotation matrix correspond to unit vectors of the molecule in the space-fixed frame
+    The third row  a(3,:) is "the" axis of the molecule, for uniaxial molecules
+    Use a to convert space-fixed to body-fixed axes thus: db = np.dot(a,ds)
+    Use transpose of a to convert body-fixed to space-fixed axes thus: ds = np.dot(db,a)
+
+    The supplied quaternion should be normalized and we check for this
+    assert np.isclose(np.sum(q**2),1.0), 'quaternion normalization error {} {} {} {}'.format(*q) */
+
+    // Write out row by row, for clarity
+    a[0][0] =  pow(q[0],2)+ pow(q[1],2)-pow(q[2],2)-pow(q[3],2);           
+    a[0][1] =  2*(q[1]*q[2]+q[0]*q[3]);          
+    a[0][2] =  2*(q[1]*q[3]-q[0]*q[2]);             
+    a[1][0] =  2*(q[1]*q[2]-q[0]*q[3]);
+    a[1][1] =  pow(q[0],2)-pow(q[1],2)+pow(q[2],2)-pow(q[3],2);
+    a[1][2] =  2*(q[2]*q[3]+q[0]*q[1]); 
+    a[2][0] =  2*(q[1]*q[3]+q[0]*q[2]);
+    a[2][1] =  2*(q[2]*q[3]-q[0]*q[1]);
+    a[2][2] =  pow(q[0],2)-pow(q[1],2)-pow(q[2],2)+pow(q[3],2); 
 }
