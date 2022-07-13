@@ -20,45 +20,51 @@ void free4DArray(int p,int q,int m,double**** array);
 // deacllocate the memory of a 5D matrix
 void free5DArray(int p,int q,int m, int n, double***** array);
 
-double* rand1DArray(int m);
+void rand1DArray(int m, double* arr);
 
-double** rand2DArray(int m,int n);
+void rand2DArray(int m,int n, double** arr);
 
-void rand3DArray(int p,int q,int r, double ***A);
+void rand3DArray(int p,int q,int r, double ***arr);
 
-void rand4DArray(int p,int q,int m, int n, double ****A);
+void rand4DArray(int p,int q,int m, int n, double ****arr);
 
-void rand5DArray(int p,int q,int m, int n,int s, double *****A);
+void rand5DArray(int p,int q,int m, int n,int s, double *****arr);
 
-double** zeroMatrix(int m,int n);
+void zeroMatrix (int m,int n,double** arr);
 
-double** identMatrix(int m,int n);
+void identMatrix(int m,int n,double** arr);
 
-double* scalar1DArrayMultip(int m,double p, double* A);
+void matMultip(int m, int n, double** A, double** B, double** C);
 
-double** scalar2DArrayMultip(int m,int n,double p, double** A);
+void scalar1DArrayMultip(int m,double p, double* A, double* arr );
 
-double*** scalar3DArrayMultip(int m,int n, int r, double p, double*** A);
+void scalar2DArrayMultip(int m,int n,double p, double** A, double** product);
 
-void scalar4DArrayMultip(int p,int q, int m, int n, double b, double**** A);
+void scalar3DArrayMultip(int m,int n, int r, double p, double*** A, double*** product);
 
-void scalar5DArrayMultip(int p,int q, int m, int n, int s, double b, double***** A);
+void scalar4DArrayMultip(int p,int q, int m, int n, double b, double**** A, double**** product);
 
-void scalar2DArraySubtract(int m,int n, double p, double** A);
+void scalar5DArrayMultip(int p,int q, int m, int n, int s, double b, double***** A, double***** product);
 
-double* scalar1DArraySubtract(int m, double p, double* A);
+void scalar2DArraySubtract(int m,int n, double p, double** A, double** product);
 
-double* subtract1DArrays(int m, double* A, double* B);
+void scalar1DArraySubtract(int m, double p, double* A);
 
-double** subtract2DArrays(int m,int n, double** A, double** B);
+void subtract1DArrays(int m, double* A, double* B, double* C);
 
-double* sum1DArrays(int m, double* A, double* B);
+void subtract2DArrays(int m,int n, double** A, double** B, double** C);
 
-double* scalar1DArrayDivision(int m,double p, double* A);
+void sum1DArrays(int m, double* A, double* B, double* sum);
 
-double* sqrt1DArray(int m, double*A);
+void sum2DArrays(int m, int n,double** A, double* sum,int axis);
 
-double** scalar2DArrayDivision(int m,int n,double p, double** A);
+double max1DArray(int m, double* arr);
+
+void scalar1DArrayDivision(int m,double p, double* A, double* product);
+
+void sqrt1DArray(int m, double*A, double* sq);
+
+void scalar2DArrayDivision(int m,int n,double p, double** A);
 
 void scalar3DArrayDivision(int m,int n,int r, double p, double*** A);
 
@@ -100,9 +106,9 @@ double dotProduct1D(int n,double* a);
 
 double dotProduct2D(int n,double* a, double* b);
 
-double** elementWise2DProduct(int m, int n, double** a, double** b);
+void elementWise2DProduct(int m, int n, double** a, double** b,double** product);
 
-double* elementWise1DProduct(int m, double* a,double* b);
+void elementWise1DProduct(int m, double* a,double* b, double* product);
 
 double elementSum1D(int m, double* a);
 
@@ -126,16 +132,34 @@ double** contract_ijkl_kl(double**** a, double** b);
 
 double*** contract_ijklm_lm(double***** a, double** b);
 
-double* random_vector();
+void random_vector(double* rand_vec);
 
-double* rint1D(int m,double* A);
+void rint1D(int m,double* A);
 
-double** rint2D(int m,int n, double** A);
+void rint2D(int m,int n, double** A);
 
-double** deleteArray2D(int m,int n, int p, double** A);
+void remove2DArray(int m, int p, double** A, double** B);
 
-double* random_translate_vector (double dr_max, double* old );
+void remove3DArray(int m, int n, int p, double*** A, double*** B);
+
+void random_translate_vector (double dr_max, double* old, double* ri);
+
+void quatmul (double* a, double* b, double* c);
+
+void rotate_quaternion (double angle, double* axis,double* old, double* e);
+
+void random_quaternion(double* randq);
+
+void random_rotate_quaternion (double angle_max, double* old, double* e);
 
 bool metropolis (double delta );
 
-double** update2DArray(int m,int n, double* ri, double* rj, double** A);
+void update2DArray(int n, int atom, double* ri, double** A);
+
+void update3DArray(int m,int n, int atom, double** ri, double*** A);
+
+double** createArray(int m,int n, double* ri, double** A);
+
+double** annihilateArray(int m,int n, double* ri, double** A);
+
+void q_to_a (double* q, double** a);
