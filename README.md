@@ -1,7 +1,7 @@
 This repository includes some C++ version (written by H.A) of some programs from the book "Computer simulation of liquids"
 by Allen and Tildesley.
 
-So far it is written for the t_tensor program (chapter one) that is used to calculate the electrostatic interactions between two linear atoms, NVT, NPT and zVT (Metropolis) Monte Carlo programs (chapter four) for Leonard-Jones particles.
+So far it is written for the t_tensor program (chapter one) that is used to calculate the electrostatic interactions between two linear atoms, and NVT, NPT and zVT (Metropolis) Monte Carlo programs for atoms and NVT (Metropolis) Monte Carlo using quaternion (for rotations) for molecules (chapter four), all for Leonard-Jones particles.
 
 The cmake file for compilation of the codes will be provided soon.
 
