@@ -1,32 +1,27 @@
-#define _USE_MATH_DEFINES
-
 #include <iostream>
-#include <cmath>
+#include <fstream>
+#include <cstdio>
+#include <string>
 #include <stdio.h>
-#include <time.h>
-#include <cassert>
-#include <numeric>
-#include <stdlib.h>
-#include <iterator>
 #include "./math_module.hpp"
 
-// ------  Routines for MC simulation, polyatomic molecule, LJ atoms  --------
+//class Molecule {
+//
+//    public:
+//
+//        int natom;       // Number of atoms
+//        double box_size;      // Simulation box length (assumed cubic)
+//        double** coord; 
+//
+////        Molecule();
+////        ~Molecule();
+//};
 
-class PotentialType{
 
-    public:
-	double pot;  // = 0.0; 
-	double vir;  // = 0.0;
-	double lap;  // = 0.0;
-	bool   ovr;  // = false;
+double** read_cnf_atoms(const char* filename,double** coord);
 
-};
+void read_cnf_mols(const char* filename, bool quaternion, bool with_v, double** coord, double** orient, double** vel, double** angvel);
 
-void introduction(int na,double** db,double diameter);
+void write_cnf_atoms (std::string filename, int nn, double box, double** coord);
 
-void conclusion();
-
-void potential_1 (PotentialType &partial,int mm, double r_cut, double diameter, double* ri, double** ddi, double box, double** r, double*** dd );
-
-void potential (PotentialType &total, int mm,  double box,double r_cut, double diameter, double** r, double*** dd);
-
+void write_cnf_mols (std::string filename, int nn, double box,bool quaternion, bool with_v, double** coord, double** orient, double** vel, double** angvel);
