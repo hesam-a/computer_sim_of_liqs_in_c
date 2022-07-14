@@ -4,6 +4,8 @@
 #include <cstdio>
 #include <string>
 #include <stdio.h>
+#include <vector>
+#include <cassert>
 #include <stdarg.h>
 #include "boost/format.hpp"
 #include "./math_module.hpp"
@@ -59,13 +61,54 @@ void write_cnf_atoms (std::string filename, int nn, double box, double** coord){
 //  Write out atomic configuration.
     std::ofstream output(filename);
 
-    output << boost::format("%5d \n") %nn;      // Number of atoms
-    output << boost::format("%10.6f \n") %box;  // Simulation box length (assumed cubic)
+    output << boost::format(" %15d \n") %nn;      // Number of atoms
+    output << boost::format(" %15.8f \n") %box;  // Simulation box length (assumed cubic)
 
     for (int i{0};i<nn;++i){
         for (int j{0};j<3;++j){
-            output << boost::format(" %10.6f ") %coord[i][j];
+            output << boost::format(" %15.10f ") %coord[i][j];
 	}
 	output << '\n';
+    }
+}
+
+void write_cnf_mols (std::string filename,int nn,double box,bool quaternion,bool with_v,double** coord,double** orient,double** vel,double** angvel){
+//  Write out atomic configuration.
+
+    std::ofstream output(filename);
+
+    output << boost::format(" %15d \n") %nn;      // Number of atoms
+    output << boost::format(" %15.8f \n") %box;  // Simulation box length (assumed cubic)
+
+    if (quaternion && with_v){
+        for (int i{0};i<nn;++i){
+            for (int j{0};j<3;++j)
+                output << boost::format(" %15.10f ") %coord[i][j];
+            for (int j{0};j<4;++j)
+                output << boost::format(" %15.10f ") %orient[i][j];
+            for (int j{0};j<3;++j)
+                output << boost::format(" %15.10f ") %vel[i][j];
+            for (int j{0};j<3;++j)
+                output << boost::format(" %15.10f ") %angvel[i][j];
+            output << '\n';
+        }
+    }
+    else if (quaternion && !with_v){ 
+        for (int i{0};i<nn;++i){
+            for (int j{0};j<3;++j)
+                output << boost::format(" %15.10f ") %coord[i][j];
+            for (int j{0};j<4;++j)
+                output << boost::format(" %15.10f ") %orient[i][j];
+            output << '\n';
+        }
+    }
+    else if (!quaternion && !with_v){ 
+        for (int i{0};i<nn;++i){
+            for (int j{0};j<3;++j)
+                output << boost::format(" %15.10f ") %coord[i][j];
+            for (int j{0};j<3;++j)
+                output << boost::format(" %15.10f ") %orient[i][j];
+            output << '\n';
+        }
     }
 }
