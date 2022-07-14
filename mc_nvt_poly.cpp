@@ -263,7 +263,7 @@ int main(){
         std::string sav_tag(ss.str());
         double** out_r = allocate2DArray(n,3);
         scalar2DArrayMultip(n,3,box,r,out_r);
-        write_cnf_atoms ("cnf."+sav_tag, n, box,out_r );
+	write_cnf_mols ("cnf."+sav_tag, n, box, quaternion, with_v, out_r, e, vel, angvel);
         free2DArray(n,out_r);
     }
 
@@ -275,7 +275,7 @@ int main(){
 
     double** out_r = allocate2DArray(n,3);
     scalar2DArrayMultip(n,3,box,r,out_r);
-    write_cnf_atoms ("cnf.out", n, box,out_r );
+    write_cnf_mols ("cnf.out", n, box, quaternion, with_v, out_r, e, vel, angvel);
     free2DArray(n,out_r);
     deletePointer(calc_variables(total,n,box,m_ratio), blk_var);
 
