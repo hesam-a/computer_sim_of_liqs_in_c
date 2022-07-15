@@ -3,7 +3,7 @@ by Allen and Tildesley.
 
 So far it is written for the t_tensor program (chapter one) that is used to calculate the electrostatic interactions between two linear atoms, and NVT, NPT and zVT (Metropolis) Monte Carlo programs for atoms and NVT (Metropolis) Monte Carlo using quaternion (for rotations) for molecules (chapter four), all for Leonard-Jones particles.
 
-The cmake file for compilation of the codes will be provided soon.
+The Makefile for compilation of the codes will be provided soon.
 
 Currently, the programs, Monte Carlo NVT, NPT and zPT can be compiled with this command: 
 
