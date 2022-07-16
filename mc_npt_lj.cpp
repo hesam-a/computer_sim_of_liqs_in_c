@@ -266,7 +266,7 @@ int main(){
                             total.lap = total.lap + partial_new.lap - partial_old.lap;     // Update total values
                             total.ovr = total.ovr + partial_new.ovr - partial_old.ovr;     // Update total values
 
-                            update2DArray(n, 3,r_i,ri,r);                                  // Update position
+                            update2DArray(3,atm,ri,r);                                  // Update position
                             moves = moves + 1;                                             // Increment move counter
                         }
                     }
