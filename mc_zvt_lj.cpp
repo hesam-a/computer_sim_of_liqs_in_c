@@ -281,7 +281,7 @@ int main(){
                             total.vir = total.vir + partial_new.vir - partial_old.vir;     // Update total vir
                             total.lap = total.lap + partial_new.lap - partial_old.lap;     // Update total lap
                             total.ovr = total.ovr + partial_new.ovr - partial_old.ovr;     // Update total ovr 
-                            update2DArray(n, 3,r_i,ri,r);                                  // Update position		
+                            update2DArray(3,atm,ri,r);                                  // Update position		
                             m_acc = m_acc + 1;                                             // Increment move counter
 			}
 		    }
