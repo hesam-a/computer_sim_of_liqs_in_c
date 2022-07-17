@@ -154,6 +154,8 @@ void random_rotate_quaternion (double angle_max, double* old, double* e);
 
 bool metropolis (double delta );
 
+void update2DArrayZVT(int m, int n, double* ri, double* rj, double** A);
+
 void update2DArray(int n, int atom, double* ri, double** A);
 
 void update3DArray(int m,int n, int atom, double** ri, double*** A);
