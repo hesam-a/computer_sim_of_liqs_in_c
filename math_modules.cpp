@@ -1087,6 +1087,17 @@ bool metropolis (double delta ){
     }
 }
 
+void update2DArrayZVT(int m, int n, double* ri, double* rj, double** A){
+
+    for (int i{0};i<m;++i){
+        for(int j{0};j<n;++j){
+            if (ri[j] == A[i][j]){
+                A[i][j] = rj[j];
+            }
+        }
+    }
+}
+
 void update2DArray(int m, int atom, double* ri, double** A){
 
     for (int i{0};i<m;++i)
