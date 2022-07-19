@@ -165,7 +165,7 @@ int main(){
 
     // Preliminary calculations (n,r,total are taken from the calling program)
 
-    const char* file = "cnf.inp";
+    const char* file = "cnff.inp";
 
 // Read in initial configuration
     std::ifstream input(file);
