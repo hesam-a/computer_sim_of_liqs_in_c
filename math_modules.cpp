@@ -81,7 +81,7 @@ void free2DArray(int m,double** array) {
     for (int i{0}; i<m; ++i)
         delete [] array[i];
 
-	delete [] array;
+    delete [] array;
 }
 
 // deacllocate the memory of a 3D matrix
@@ -183,11 +183,10 @@ void rand5DArray(int p,int q,int m, int n,int s, double***** arr) {
     }
 }
 
-
 void zeroVec(int m, double* arr) {
-
-    for (int i=0;i<m;i++)
-        arr[i] = 0.0;
+    
+    for (int i{0};i<m;i++)
+	arr[i] = 0.0;
 }
 
 void zeroMatrix(int m,int n, double** arr) {
@@ -233,19 +232,19 @@ void sum2DArrays(int m, int n,double** A, double* sum,int axis) {
 
     assert(axis==0 or axis==1);
 
-    if (axis = 0){ // column-wise sum
+    if (axis == 0){ // column-wise sum
 	for (int i=0;i<m;i++) {
 	    sum[i] = 0.0;
 	    for (int j=0;j<n;j++) {
-            sum[i] += A[i][j];
+                sum[i] += A[i][j];
 	    }
 	}
     }
-    else if (axis = 1){ // row-wise sum
+    else if (axis == 1){ // row-wise sum
 	for (int i=0;i<m;i++) {
 	    sum[i] = 0.0;
 	    for (int j=0;j<n;j++) {
-            sum[j] += A[j][i];
+                sum[j] += A[j][i];
 	    }
 	}
     }
@@ -317,9 +316,8 @@ void scalar5DArrayMultip(int p,int q, int m, int n, int s, double b, double*****
 
 void rint1D(int m,double* A){
 
-    for (int i=0;i<m;i++) {
-            A[i] -= round(A[i]);
-    }
+    for (int i=0;i<m;i++)
+        A[i] -= round(A[i]);
 }
 
 void rint2D(int m,int n,double** A){
@@ -333,17 +331,15 @@ void rint2D(int m,int n,double** A){
 
 void sqrt1DArray(int m, double*A, double* sq ){
 
-    for (int i{0}; i<m;++i){
+    for (int i{0}; i<m;++i)
 	sq[i] = sqrt(A[i]);
-    }
 }
 
 
 void subtract1DArrays(int m, double* A, double* B, double* C) {
 
-    for (int i=0;i<m;i++) {
-            C[i] = A[i] - B[i];
-    }
+    for (int i=0;i<m;i++)
+        C[i] = A[i] - B[i];
 }
 
 void subtract2DArrays(int m,int n, double** A, double** B, double** C) {
@@ -357,19 +353,18 @@ void subtract2DArrays(int m,int n, double** A, double** B, double** C) {
 
 void scalar1DArraySubtract(int m, double p, double* A) {
 
-    for (int i=0;i<m;i++) {
+    for (int i=0;i<m;i++)
         A[i] -= p;
-    }
 }
 
 void scalar1DArrayDivision(int m,double p, double* A, double* product) {
 
-    for (int i=0;i<m;i++) {
+    for (int i=0;i<m;i++)
             product[i] = A[i] / p;
-    }
 }
 
 void scalar2DArraySubtract(int m,int n, double p, double** A) {
+
     for (int i=0;i<m;i++) {
         for (int j=0;j<n;j++) {
             A[i][j] -= p;
@@ -378,6 +373,7 @@ void scalar2DArraySubtract(int m,int n, double p, double** A) {
 }
 
 void scalar2DArrayDivision(int m,int n,double p, double** A) {
+
     for (int i=0;i<m;i++) {
         for (int j=0;j<n;j++) {
             A[i][j] /= p;
@@ -386,6 +382,7 @@ void scalar2DArrayDivision(int m,int n,double p, double** A) {
 }
 
 void scalar3DArrayDivision(int m,int n,int r, double p, double*** A) {
+
     for (int i=0;i<m;i++) {
         for (int j=0;j<n;j++) {
             for (int k=0;k<r;k++) {
@@ -396,6 +393,7 @@ void scalar3DArrayDivision(int m,int n,int r, double p, double*** A) {
 }
 
 void scalar4DArrayDivision(int p,int q, int m,int n, double b, double**** A) {
+
     for (int i=0;i<p;i++) {
         for (int j=0;j<q;j++) {
             for (int k=0;k<m;k++) {
@@ -408,6 +406,7 @@ void scalar4DArrayDivision(int p,int q, int m,int n, double b, double**** A) {
 }
 
 void scalar5DArrayDivision(int p,int q, int m,int n, int s, double b, double***** A) {
+
     for (int i=0;i<p;i++) {
         for (int j=0;j<q;j++) {
             for (int k=0;k<m;k++) {
@@ -485,23 +484,16 @@ void print5DArray(int p, int q, int m, int n, int s, double***** A){
 }
 
 // outer function 
-double** outer2D(int nCols, double* A, double* B){
-
-    double** C = allocate2DArray(nCols,nCols);
+void outer2D(int nCols, double* A, double* B, double** C){
 
     for (int i{0};i<nCols;++i){
 	for (int j{0};j<nCols;++j){
 		C[i][j] = A[i] * B[j] ;
 	}
     }
-    return C;
-    free2DArray(nCols,C);
-
 }
 
-double*** outer3D(int nRows, int nCols, int n3rd, double* A, double* B, double* C){
-
-    double*** D = allocate3DArray(nRows,nCols,n3rd);
+void outer3D(int nRows, int nCols, int n3rd, double* A, double* B, double* C, double*** D){
 	
     for (int i{0};i<nRows;++i){
 	for (int j{0};j<nCols;++j){
@@ -510,14 +502,10 @@ double*** outer3D(int nRows, int nCols, int n3rd, double* A, double* B, double* 
 	    }
 	}
     }
-    return D;
-    free3DArray(nRows,nCols,D);
 }
 
 
-double**** outer4D(int nRows, int nCols, int n3rd, int n4th, double* A, double* B, double* C, double* D){
-
-    double**** E = allocate4DArray(nRows,nCols,n3rd,n4th);
+void outer4D(int nRows, int nCols, int n3rd, int n4th, double* A, double* B, double* C, double* D, double**** E){
 	
     for (int i{0};i<nRows;++i){
 	for (int j{0};j<nCols;++j){
@@ -528,14 +516,10 @@ double**** outer4D(int nRows, int nCols, int n3rd, int n4th, double* A, double* 
 	    }
 	}
     }
-    return E;
-    free4DArray(nRows,nCols,n3rd,E);
 }
 
 
-double***** outer5D(int nRows, int nCols, int n3rd, int n4th, int n5th, double* A, double* B, double* C, double* D, double* E){
-
-    double***** F = allocate5DArray(nRows,nCols,n3rd,n4th,n5th);
+void outer5D(int nRows, int nCols, int n3rd, int n4th, int n5th, double* A, double* B, double* C, double* D, double* E, double***** F){
 	
     for (int i{0};i<nRows;++i){
 	for (int j{0};j<nCols;++j){
@@ -548,45 +532,37 @@ double***** outer5D(int nRows, int nCols, int n3rd, int n4th, int n5th, double* 
 	    }
 	}
     }
-
-    return F;
-    free5DArray(nRows,nCols,n3rd,n4th,F);
 }
 
-double** t2_tensor (double* mat,double r3){
+void t2_tensor (double* mat,double r3, double** t2){
 /* Returns second-rank 3x3 interaction tensor.
     Supplied arguments should be the unit vector from 2 to 1 and
     the third power of the modulus of that vector.*/
 
-    int nCols=3;
-   
-    double** A  = allocate2DArray(nCols,nCols);
-    double** t2 = allocate2DArray(nCols,nCols);
+    int nCols  = 3;
+    double** A = allocate2DArray(nCols,nCols);
  
-    scalar2DArrayMultip(nCols,nCols,3.,outer2D(nCols, mat, mat),t2);
+    outer2D(nCols,mat,mat,t2);
+
+    scalar2DArrayMultip(nCols,nCols,3.,t2,t2);
 
     identMatrix(nCols,nCols,A);
    
-    subtract2DArrays(nCols, nCols, t2, A,t2);
+    subtract2DArrays(nCols,nCols, t2, A, t2);
     
     scalar2DArrayDivision(nCols,nCols, r3, t2);
      
     free2DArray(nCols,A);
-
-    return t2;
-    free2DArray(nCols,t2);
 }
 
-double*** t3_tensor(double *mat3, double r4){
+void t3_tensor(double *mat3, double r4, double*** t3){
 /*  returns third-rank 3x3x3 interaction tensor (note positive sign).
     Supplied arguments should be the unit vector from 2 to 1 and
     the fourth power of the modulus of that vector. */
 	
-    int nCols=3;
+    int nCols = 3;
 
-    double*** t3 = allocate3DArray(nCols,nCols,nCols);
-
-    t3 = outer3D(nCols,nCols,nCols,mat3,mat3,mat3);
+    outer3D(nCols,nCols,nCols,mat3,mat3,mat3,t3);
 
     scalar3DArrayMultip(nCols,nCols,nCols,15.,t3,t3);
 
@@ -601,25 +577,19 @@ double*** t3_tensor(double *mat3, double r4){
              t3[j][i][i] = t3[j][i][i] - 3.0 * mat3[j];
 	}
     }
-
     scalar3DArrayDivision(nCols,nCols,nCols, r4,t3);
-
-    return t3;
-    free3DArray(nCols,nCols,t3);
 
 }
 
-double**** t4_tensor(double* mat4, double r5){
+void t4_tensor(double* mat4, double r5, double**** t4){
     /*Returns fourth-rank 3x3x3x3 interaction tensor
     Supplied arguments should be the unit vector from 2 to 1 and
     the fifth power of the modulus of that vector. */	
 
-    int nCols=3;
+    int nCols  = 3;
+    double** A = allocate2DArray(nCols,nCols);
 
-    double**** t4 = allocate4DArray(nCols,nCols,nCols,nCols);
-    double**   A  = allocate2DArray(nCols,nCols);
-
-    t4 = outer4D(nCols,nCols,nCols,nCols,mat4,mat4,mat4,mat4);
+    outer4D(nCols,nCols,nCols,nCols,mat4,mat4,mat4,mat4,t4);
     scalar4DArrayMultip(nCols,nCols,nCols,nCols,105.,t4);
 
     identMatrix(nCols,nCols,A);
@@ -641,23 +611,19 @@ double**** t4_tensor(double* mat4, double r5){
 
     scalar4DArrayDivision(nCols,nCols,nCols,nCols,r5,t4);
 
-    return t4;
-    free4DArray(nCols,nCols,nCols,t4);
     free2DArray(nCols,A);
 }
 
 
-double***** t5_tensor(double* mat5, double r6){
-/*    Returns fifth-rank 3x3x3x3x3 interaction tensor
+void t5_tensor(double* mat5, double r6, double***** t5){
+/*  Returns fifth-rank 3x3x3x3x3 interaction tensor
     Supplied arguments should be the unit vector from 2 to 1 and
     the fifth power of the modulus of that vector. */	
 
-    int nCols=3;
+    int nCols  = 3;
+    double** A = allocate2DArray(nCols,nCols);
 
-    double***** t5 = allocate5DArray(nCols,nCols,nCols,nCols,nCols);
-    double**    A  = allocate2DArray(nCols,nCols);
-
-    t5 = outer5D(nCols,nCols,nCols,nCols,nCols,mat5,mat5,mat5,mat5,mat5);
+    outer5D(nCols,nCols,nCols,nCols,nCols,mat5,mat5,mat5,mat5,mat5,t5);
     scalar5DArrayMultip(nCols,nCols,nCols,nCols,nCols,945.,t5);
 
     identMatrix(nCols,nCols,A);
@@ -685,20 +651,16 @@ double***** t5_tensor(double* mat5, double r6){
 	}
     }
     scalar5DArrayDivision(nCols,nCols,nCols,nCols,nCols,r6,t5);
-    return t5;
-    free5DArray(nCols,nCols,nCols,nCols,t5);
+
     free2DArray(nCols,A);
 }
 
-double* skew(double** vec){
+void skew(double** vec, double* b){
 /*  Returns contraction of supplied 3x3 matrix with Levi-Civita tensor.*/
-    double* b = new double[3];
+
     b[0] = vec[1][2] - vec[2][1];
     b[1] = vec[2][0] - vec[0][2];
     b[2] = vec[0][1] - vec[1][0];
-
-    return b;
-    delete [] b;
 }
 
 
@@ -706,9 +668,9 @@ double dotProduct1D(int n,double* a){
 
     double product{1.0};
     
-    for (int i{0}; i<n; i++){
+    for (int i{0}; i<n; i++)
 	product *= a[i];
-    }
+
     return product;
 }
 
@@ -716,32 +678,28 @@ double dotProduct2D(int n,double* a, double* b){
 
     double product{0.0};
     
-    for (int i{0}; i<n; i++){
+    for (int i{0}; i<n; i++)
 	product = product + (a[i] * b[i]);
-    }
+
     return product;
 }
 
 
-double* crossProduct(double* a, double* b){
-
-    double* product = new double [3];
+void crossProduct(double* a, double* b, double* product){
 
     product[0] = a[1]*b[2] - a[2]*b[1];
     product[1] = a[2]*b[0] - a[0]*b[2];
     product[2] = a[0]*b[1] - a[1]*b[0];
 
-    return product;
-    delete [] product;
 }
 
 double elementSum1D(int m, double* a){
     
     double product{0.};
 
-    for (int i{0};i<m;++i){
-         product += a[i];
-    }
+    for (int i{0};i<m;++i)
+        product += a[i];
+
     return product;
 }
 
@@ -759,9 +717,8 @@ double elementSum2D(int m,int n, double** a){
 
 void elementWise1DProduct(int m, double* a, double* b, double* product){
 
-    for (int i{0};i<m;++i){
+    for (int i{0};i<m;++i)
          product[i] = a[i] * b[i];
-    }
 }
 
 void elementWise2DProduct(int m, int n, double** a, double** b, double** product){
@@ -784,16 +741,15 @@ double contract_i_i (int n,double* a, double* b){
 }
 
 
-double* contract_ij_j (double** a, double* b){
+void contract_ij_j (double** a, double* b, double* product){
 /*  Returns a first-rank contraction offirst-rank tensor
     with a first-rank tensor. */
-    double* product = new double[3];
+
     for(int i{0};i<3;++i){
 	for (int j{0};j<3;++j){
 	    product[i] = product[i] + a[i][j] *  b[j];
 	}
-    }    return product;
-    delete [] product;
+    }   
 }	
 
 
@@ -815,97 +771,77 @@ double contract_ij_ij (double** a, double** b){
 
 }
 
-double** contract_ik_jk (double** a, double** b){
+void contract_ik_jk (double** a, double** b, double** c){
 /*  Returns a second-rank contraction of a second-rank tensor
     with another second-rank tensor. */
 
-    double** D = allocate2DArray(3,3);
-
     for (int i{0};i<3;++i){
 	for (int j{0};j<3;++j){
 	    for (int k{0};k<3;++k){
-		    D[i][j] = D[i][j] + a[i][k] * b[j][k];
+		    c[i][j] = c[i][j] + a[i][k] * b[j][k];
 	    }
 	}
     }
-    return D;
-    free2DArray(3,D);
 }
 
 
-double** contract_ijk_k (double*** a, double* b){
+void contract_ijk_k (double*** a, double* b, double** c){
 /*  Returns a second-rank contraction of a third-rank tensor
     and a first-rank tensor. */
 
-    double** D = allocate2DArray(3,3);
-
     for (int i{0};i<3;++i){
 	for (int j{0};j<3;++j){
 	    for (int k{0};k<3;++k){
-                D[i][j] =  D[i][j] + a[i][j][k] * b[k];
+                c[i][j] =  c[i][j] + a[i][j][k] * b[k];
 	    }
 	}
     }
-    return D;
-    free2DArray(3,D);
 }
 
-double* contract_ijk_jk (double*** a, double** b){
+void contract_ijk_jk (double*** a, double** b, double* c){
 /*  Returns a second-rank contraction of a fourth-rank tensor
     and a second-rank tensor */
 
-    double* D = new double[3];
-
     for (int i{0};i<3;++i){
 	for (int j{0};j<3;++j){
 	    for (int k{0};k<3;++k){
-                D[i] =  D[i] + a[i][j][k] * b[j][k];
+                c[i] =  c[i] + a[i][j][k] * b[j][k];
 	    }
 	}
     }
-    return D;
-    delete [] D;
 }
 
-double** contract_ijkl_kl(double**** a, double** b){
+void contract_ijkl_kl(double**** a, double** b, double** c){
 /*  Returns a second-rank contraction of a fourth-rank tensor
     and a second-rank tensor. */
-
-    double** D = allocate2DArray(3,3);
 
     for (int i{0};i<3;++i){
 	for (int j{0};j<3;++j){
 	    for (int k{0};k<3;++k){
 	        for (int l{0};l<3;++l){
-                    D[i][j] =  D[i][j] + a[i][j][k][l] * b[k][l];
+                    c[i][j] =  c[i][j] + a[i][j][k][l] * b[k][l];
 		}
 	    }
 	}
     }
-    free2DArray(3,D);
-    return D;
 }
 
 
-double*** contract_ijklm_lm(double***** a, double** b){
+void contract_ijklm_lm(double***** a, double** b, double*** c){
 /*  Returns a third-rank contraction of a fifth-rank tensor
     and a second-rank tensor. */
-
-    double*** D = allocate3DArray(3,3,3);
 
     for (int i{0};i<3;++i){
 	for (int j{0};j<3;++j){
 	    for (int k{0};k<3;++k){
 	        for (int l{0};l<3;++l){
 	            for (int m{0};m<3;++m){
-                        D[i][j][k] = D[i][j][k] + a[i][j][k][l][m] * b[l][m];
+                        c[i][j][k] = c[i][j][k] + a[i][j][k][l][m] * b[l][m];
 		    }
 		}
 	    }
 	}
     }
-    return D;
-    free3DArray(3,3,D);
 }
 
 void random_vector(double* rand_vec){
@@ -1049,7 +985,7 @@ void random_quaternion(double* randq){
         scalar1DArrayMultip(2,2.0,zeta,zeta);
         scalar1DArraySubtract(2,1.0,zeta);   // Two uniform random numbers between -1 and 1
 	elementWise1DProduct(2,zeta, zeta,zeta2);
-	norm1 = elementSum1D(2, zeta2);      // Squared magnitude
+	norm2 = elementSum1D(2, zeta2);      // Squared magnitude
         if (norm2 < 1.0)                     // Test for within unit disk
             break;
     }
