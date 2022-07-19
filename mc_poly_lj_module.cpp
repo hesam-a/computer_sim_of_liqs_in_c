@@ -85,15 +85,12 @@ void potential_1 (PotentialType &partial,int mm, double r_cut, double diameter, 
     Note that this is the force-shifted LJ potential with a linear smoothing term
     S Mossa, E La Nave, HE Stanley, C Donati, F Sciortino, P Tartaglia, Phys Rev E, 65, 041205 (2002) */
 
-    int nna = 3 ; //number of bonds in a molecule
-
 
     double rij_sq,sr2,sr6,sr12,pot,vir,lap,rmag,virab;
     bool   ovr;
     double sr2_ovr       = 1.77;      // Overlap threshold (pot > 100)
     double rm_cut_box    = ( r_cut + diameter ) / box; // Molecular cutoff in box=1 units
     double rm_cut_box_sq = pow(rm_cut_box,2);
-    double box_sq        = pow(box,2);
     double r_cut_sq      = pow(r_cut,2);
     int ndim = 3;
     assert (rm_cut_box<0.5); //rm_cut/box too large
@@ -175,7 +172,6 @@ void potential (PotentialType &total, int mm, double box,double r_cut, double di
     Actual calculation performed by function potential_1 */
 
     int ndim = 3 ;
-    int nna = 3 ; //number of bonds in a molecule
 
     total.pot = 0.0;
     total.vir = 0.0;
@@ -228,7 +224,6 @@ void potential (PotentialType &total, int mm, double box,double r_cut, double di
         total.vir = total.vir + part.vir;
         total.ovr = total.ovr + part.ovr;
         total.lap = total.lap + part.lap;
-	std::cout << "total.vir: " << total.vir << '\n';
 
 	m -= 1;
 
