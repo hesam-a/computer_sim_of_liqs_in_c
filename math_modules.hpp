@@ -30,6 +30,8 @@ void rand4DArray(int p,int q,int m, int n, double ****arr);
 
 void rand5DArray(int p,int q,int m, int n,int s, double *****arr);
 
+void zeroVec(int m, double* arr);
+
 void zeroMatrix (int m,int n,double** arr);
 
 void identMatrix(int m,int n,double** arr);
