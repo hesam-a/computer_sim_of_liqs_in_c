@@ -183,6 +183,13 @@ void rand5DArray(int p,int q,int m, int n,int s, double***** arr) {
     }
 }
 
+
+void zeroVec(int m, double* arr) {
+
+    for (int i=0;i<m;i++)
+        arr[i] = 0.0;
+}
+
 void zeroMatrix(int m,int n, double** arr) {
 
     for (int i=0;i<m;i++) {
