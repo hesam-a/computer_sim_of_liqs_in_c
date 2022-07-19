@@ -159,7 +159,7 @@ void potential (PotentialType &total, int mm, double box, double r_cut, double**
 double force_sq (int mm,double box, double r_cut, double** r){
 //   Calculates total squared force.
 
-    double rij_sq,sr2,sr6,sr12,pot,vir,lap;
+    double rij_sq,sr2,sr6,sr12;
     double r_cut_box    = r_cut / box;
     double r_cut_box_sq = pow(r_cut_box,2);
     double box_sq       = pow(box,2);
