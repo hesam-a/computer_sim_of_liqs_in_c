@@ -19,7 +19,6 @@ ITLIB       = -L/usr/lib/ # directory where the required libraries are
 INCLUDE_PATH = -I./ ${ITINCLUDE}
 LDFLAGS      = ${ITLIB}
 WARN         = -Wno-deprecated
-#CPPFLAGS     = -ffast-math -funroll-loops ${WARN} ${INCLUDE_PATH}
 DEFINES      = -Wall
 
 .cpp.o: ; ${CC} ${DEFINES} ${INCLUDE_PATH} ${WARN} -g -c $*.cpp
