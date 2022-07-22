@@ -5,7 +5,7 @@ H.A is writing the codes ONLY for the purpose of learning the physics of the top
 
 So far it is written for the t_tensor program (chapter one) that is used to calculate the electrostatic interactions between two linear atoms, and NVT, NPT and zVT (Metropolis) Monte Carlo programs for atoms and NVT (Metropolis) Monte Carlo using quaternion for molecules (chapter four), all for Leonard-Jones particles.
 
-There two ways provided for the compilation of the programs. First, via Makefile which compiles all libraries (generates *.o files) and compiles the main programs one by one (comment should be removed for the intended program). Second, via compileall.sh to compile them all at once without generating the *.o files.
+There are two ways provided for the compilation of the programs. First, via Makefile which compiles all libraries (generates *.o files) and compiles the main programs one by one (comment should be removed for the intended program). Second, via compileall.sh to compile them all at once without generating the *.o files.
 
 In case the boost library is not available in the user's c header files library, it can be installed with this command:
 
