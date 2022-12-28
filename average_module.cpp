@@ -10,7 +10,6 @@
 #include <functional>
 #include "boost/format.hpp"
 #include "./math_module.hpp" 
-#include "./read_atoms.hpp"
 
 // Calculation of run averages with output to stdout.
 
