@@ -174,8 +174,8 @@ double hessian (int mm,double box, double r_cut, double** r, double** f){
                 for (int k{0};k<3;++k){
 		            fij[k] = f[i][k] - f[j][k];         // Difference in forces
                 }
-                ff   = dotProduct2D(3,fij,fij)
-                rf   = dotProduct2D(3,rij,fij)
+                ff   = dotProduct2D(3,fij,fij);
+                rf   = dotProduct2D(3,rij,fij);
                 sr2  = 1.0 / rij_sq;
                 sr6  = pow(sr2,3);
                 sr8  = sr6 * sr2;
@@ -187,5 +187,5 @@ double hessian (int mm,double box, double r_cut, double** r, double** f){
         }
     }
   
-    return hes
+    return hes;
 }
