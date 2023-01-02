@@ -336,7 +336,7 @@ void run_end (std::vector<VariableType> vars, BlockVar &blk_var, std::clock_t ti
     std::cout << "Run ends \n";
     std::cout << '\n';
 
-    time_stamp(true, ti)
+    time_stamp(true, ti);
     std::cout << '\n';
 
     bool need_header = true;
