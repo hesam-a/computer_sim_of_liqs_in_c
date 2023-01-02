@@ -11,6 +11,23 @@
 #include "./averages_module.hpp"
 #include "./config_io_module.hpp"
 
+/*  Takes in a configuration of atoms (positions, velocities)
+    Cubic periodic boundary conditions
+    Conducts molecular dynamics using BAOAB algorithm of BJ Leimkuhler and C Matthews
+    Appl. Math. Res. eXpress 2013, 34–56 (2013); J. Chem. Phys. 138, 174102 (2013)
+    Uses no special neighbour lists
+
+    Reads several variables and options from standard input using JSON format
+    Leave input empty "{}" to accept supplied defaults
+
+    Positions r are divided by box length after reading in and we assume mass=1 throughout
+    However, input configuration, output configuration, most calculations, and all results 
+    are given in simulation units defined by the model
+    For example, for Lennard-Jones, sigma = 1, epsilon = 1
+
+    Despite the program name, there is nothing here specific to Lennard-Jones
+    The model is defined in md_lj_module*/
+
 #define nblock        10
 #define nstep         1000
 #define temperature   1.0
@@ -34,7 +51,7 @@ std::vector<VariableType> calc_variables(PotentialType tot, double** r, int n, d
     double vol = pow(box,3);                        //  Volume
     double rho = n / vol;                           //  Density
     double kin = 0.5*                               //  Kinetic energy
-    double fsq = pow(force (n, box, r_cut, r),2);   //  Total squared force from md_lj_module
+    double fsq = pow(force (tot, n, box, r_cut, r),2);   //  Total squared force from md_lj_module
     // std::cout << " ---- force:   " << fsq << " ---- \n";
 
     // Initial energy and overlap check
@@ -108,7 +125,7 @@ std::vector<VariableType> calc_variables(PotentialType tot, double** r, int n, d
 
 }
 
-double** a_propagator(double time, int n, double** r, double box, double** vel){
+void a_propagator(double time, int n, double box, double** r, double** vel){
 /*    A: drift step propagator.
     t is the time over which to propagate (typically dt/2). */
 
@@ -116,6 +133,40 @@ double** a_propagator(double time, int n, double** r, double box, double** vel){
     sum2DArrays(n,3,vel,r);                // Positions in box=1 units
     rint2D(n,3,r);                         // Periodic boundaries
 }
+
+void b_propagator(potentialType tot, double time, int n, double box, double** vel, double** r, double** f){
+/*  B: kick step propagator.
+    t is the time over which to propagate (typically dt/2).
+    v is accessed from the calling program. */
+    f = force (tot, n, box, r_cut, r);
+    scalar2DArrayMultip(n,3,t,f);    // t * force
+    matMultip(n,3,vel,f,vel);    // t * force
+    sum2DArrays(n,3,vel,vel);
+}
+
+void o_propagator ( double t, double** vel, int n ){
+/* O: friction and random contributions propagator.
+
+    t is the time over which to propagate (typically dt).
+    v, n, temperature, and gamma are accessed from the calling program. */
+
+    double** rnd;
+    rand2DArray(n,3,rnd);
+    double x = gamma*t
+    double c;
+    if (x > 0.0001)
+        c = 1-exp(-2*x);
+    else 
+        c = -2/3*pow(x,4)+4/3*pow(x,3)-2.0*pow(x,2)+2.0*x;
+    
+    matMultip(n,3,c,c);
+    scalar2DArrayMultip(n,3,exp(-x),vel);
+    matMultip(n,3,sqrt(temperature),c);
+    scalar2DArrayMultip(n,3,c,rnd);
+    sum2DArrays(n,3,rnd,vel);
+}
+
+
 
 int main(){
 
@@ -169,7 +220,7 @@ int main(){
     std::cout << '\n';
     printf("%16s %42d   \n", "Number of blocks",            nblock);
     printf("%25s %33d   \n", "Number of steps per block",   nstep);
-    printf("%25s %33d   \n", "Potential cutoff distance",   rcut);
+    printf("%25s %33d   \n", "Potential cutoff distance",   r_cut);
     printf("%20s %36.6f \n", "Time Step",                   dt);
     printf("%20s %36.6f \n", "Friction coeffcient",         gamma);
     printf("%20s %37.6f \n", "Specified temperature",       temperature);
