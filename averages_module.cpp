@@ -10,7 +10,7 @@
 #include <ctime>
 #include <functional>
 #include "boost/format.hpp"
-#include "./math_module.hpp" 
+#include "./maths_module.hpp" 
 #include "./config_io_module.hpp"
 
 // Calculation of run averages with output to stdout.
