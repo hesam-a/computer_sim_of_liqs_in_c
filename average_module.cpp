@@ -7,9 +7,11 @@
 #include <tuple>
 #include <cassert>
 #include <algorithm>
+#include <ctime>
 #include <functional>
 #include "boost/format.hpp"
 #include "./math_module.hpp" 
+#include "./config_io_module.hpp"
 
 // Calculation of run averages with output to stdout.
 
@@ -42,17 +44,17 @@ class VariableType{
 class BlockVar{
 
     public:
-	    double blk_nrm = 0.0;
-	    double run_nrm = 0.0;
-
-	    double* run_avg = new double[11];
-	    double* run_err = new double[11]; 
-	    double* blk_avg = new double[11];
-	    double* blk_msd = new double[11];
-	    double* values  = new double[11];
-	    double* addd    = new double[11];
-	    bool*   mask    = new bool[11];
-	    int*    methodd = new int[11];
+        double blk_nrm = 0.0;
+        double run_nrm = 0.0;
+        
+        double* run_avg = new double[12];
+        double* run_err = new double[12]; 
+        double* blk_avg = new double[12];
+        double* blk_msd = new double[12];
+        double* values  = new double[12];
+        double* addd    = new double[12];
+        bool*   mask    = new bool[12];
+        int*    methodd = new int[12];
 };
 
 
@@ -65,17 +67,16 @@ void time_stamp(bool end, std::clock_t ti){
     tim = localtime(&timer);
 
     std::cout << '\n';
-    printf("Date:   %27d/%d/%2d \n",1900+tim->tm_year,tim->tm_mon,tim->tm_mday);
-    printf("Time:   %26d:%d:%2d \n",tim->tm_hour,tim->tm_min,tim->tm_sec);
+    printf("Date:   %46d/%.2d/%.2d \n",1900+tim->tm_year,tim->tm_mon,tim->tm_mday);
+    printf("Time:   %46d:%.2d:%.2d \n",tim->tm_hour,tim->tm_min,tim->tm_sec);
 
     std::clock_t tf = std::clock();
     double time_elapsed = (tf-ti) / CLOCKS_PER_SEC;
 
-    if (end)
-       printf("CPU time: %30.2f \n", time_elapsed);
+    if (end) 
+       printf("CPU time: %50.2f \n", time_elapsed);
 
 }
-
 
 std::vector<std::string> word_splitter(std::string str){
 //   A function for splitting the words. 
@@ -101,7 +102,8 @@ std::vector<std::string> word_splitter(std::string str){
 void run_begin (std::vector<VariableType> vars, BlockVar &blk_var, std::clock_t ti){ 
 //  Set up averaging variable based on supplied list of names & other attributes.
 
-    int n_avg = vars.size();
+    n_avg = vars.size();
+    // std::cout << " --- vars.size: " << n_avg << " --- \n";
 
     bool need_header = true;
     for (auto variable: vars){
@@ -110,7 +112,7 @@ void run_begin (std::vector<VariableType> vars, BlockVar &blk_var, std::clock_t 
 		std::cout << "Initial values"<< "\n";
                 need_header = false;
 	    }
-            printf("%10s %29.6f \n",variable.nam,variable.val);
+            printf("%8s %51.6f \n",variable.nam,variable.val);
 	}
     }
 
@@ -150,8 +152,7 @@ void run_begin (std::vector<VariableType> vars, BlockVar &blk_var, std::clock_t 
     for (int i{0}; i<n_avg ;++i)
 	    blk_var.run_err[i] = 0.0;
 
-    time_stamp(false, ti)
-
+    time_stamp(false, ti);
 
     //Write headings
     std::cout << '\n';
@@ -182,7 +183,8 @@ void blk_begin(int n_avg, BlockVar &blk_var){
 void blk_add (std::vector<VariableType> vars, BlockVar &blk_var){ 
 //    Increment block-average variable.
  
-    int n_avg = vars.size();
+    //n_avg = vars.size();
+
     double* values2= new double[n_avg]; 
 
     if(!(vars.size() == n_avg)){
@@ -195,9 +197,9 @@ void blk_add (std::vector<VariableType> vars, BlockVar &blk_var){
     for(std::size_t i{0};i<n_avg;++i)
 	values2[i] = 0.0;
 
-    blk_var.blk_avg = sum1DArrays(n_avg,blk_var.blk_avg,blk_var.values);
-    values2         = elementWise1DProduct(n_avg,blk_var.values,blk_var.values);
-    blk_var.blk_msd = sum1DArrays(n_avg,blk_var.blk_msd,values2);
+    sum1DArrays(n_avg,blk_var.blk_avg,blk_var.values, blk_var.blk_avg);
+    elementWise1DProduct(n_avg,blk_var.values,blk_var.values, values2);
+    sum1DArrays(n_avg,blk_var.blk_msd,values2, blk_var.blk_msd);
 
     blk_var.blk_nrm = blk_var.blk_nrm + 1.0;
 
@@ -207,8 +209,8 @@ void blk_add (std::vector<VariableType> vars, BlockVar &blk_var){
 void blk_end (int blk, int n_avg, BlockVar &blk_var){
 //  Write out averages at end of every block.
 
-    double* constraint = new double[11];
-    double* blk_avg2   = new double[11];
+    double* constraint = new double[12];
+    double* blk_avg2   = new double[12];
 
     for (int i{0}; i< n_avg;++i)
 	    blk_avg2[i] = 0.0;
@@ -219,9 +221,10 @@ void blk_end (int blk, int n_avg, BlockVar &blk_var){
     assert (blk_var.blk_nrm>0.5);
 //    std::cout << "Block accumulation error \n";
 
-    blk_var.blk_avg = scalar1DArrayDivision(n_avg, blk_var.blk_nrm,blk_var.blk_avg);
-    blk_var.blk_msd = scalar1DArrayDivision(n_avg, blk_var.blk_nrm,blk_var.blk_msd);
-    
+    scalar1DArrayDivision(n_avg, blk_var.blk_nrm, blk_var.blk_avg, blk_var.blk_avg);
+    scalar1DArrayDivision(n_avg, blk_var.blk_nrm, blk_var.blk_msd, blk_var.blk_msd);
+
+   
     // Replace blk_avg by mean-squared deviations plus optional constant where required
 
     for (int i{0};i<n_avg;++i){ 
@@ -235,10 +238,10 @@ void blk_end (int blk, int n_avg, BlockVar &blk_var){
 	    blk_var.mask[i] = false;	
     }
 
-    std::cout << '\n';
-    blk_avg2     = elementWise1DProduct(n_avg,blk_var.blk_avg,blk_var.blk_avg);
-    constraint   = subtract1DArrays(n_avg,blk_var.blk_msd, blk_avg2);
-    constraint   = sum1DArrays(n_avg,blk_var.addd, constraint);
+
+    elementWise1DProduct(n_avg,blk_var.blk_avg,blk_var.blk_avg,blk_avg2);
+    subtract1DArrays(n_avg,blk_var.blk_msd, blk_avg2, constraint);
+    sum1DArrays(n_avg,blk_var.addd, constraint, constraint);
 
     for(int i{0};i<n_avg;++i){
 	if (blk_var.mask[i]){
@@ -254,8 +257,9 @@ void blk_end (int blk, int n_avg, BlockVar &blk_var){
     //    }
     //}
 
-    blk_var.run_avg = sum1DArrays(n_avg, blk_var.run_avg,blk_var.blk_avg);
-    blk_var.run_err = sum1DArrays(n_avg, blk_var.run_err,blk_avg2);
+
+    sum1DArrays(n_avg, blk_var.run_avg,blk_var.blk_avg,blk_var.run_avg );
+    sum1DArrays(n_avg, blk_var.run_err,blk_avg2, blk_var.run_err);
     blk_var.run_nrm = blk_var.run_nrm + 1.0;        // Increment run normalizer
 
     std::vector<double> block_variables;
@@ -277,7 +281,6 @@ void blk_end (int blk, int n_avg, BlockVar &blk_var){
 void run_end (std::vector<VariableType> vars, BlockVar &blk_var, std::clock_t ti){ 
 //  Write out averages and error estimates at end of run.
 
-    int n_avg = vars.size();
     int line_width = col_width + n_avg * ( col_width + 1 );
 
     double* run_avg2    = new double[n_avg];
@@ -302,16 +305,17 @@ void run_end (std::vector<VariableType> vars, BlockVar &blk_var, std::clock_t ti
     for(int i=0;i<n_avg;++i)
         blk_var.run_err[i] = blk_var.run_err[i] / blk_var.run_nrm;
  
-
-    run_avg2        = elementWise1DProduct(n_avg,blk_var.run_avg,blk_var.run_avg);
-    blk_var.run_err = subtract1DArrays(n_avg,blk_var.run_err, run_avg2);             // Compute fluctuations of block averages
+    elementWise1DProduct(n_avg,blk_var.run_avg,blk_var.run_avg, run_avg2);
+    subtract1DArrays(n_avg,blk_var.run_err, run_avg2, blk_var.run_err);             // Compute fluctuations of block averages
 
     // Normalize and get estimated errors guarding against roundoff
-    constraint2 = scalar1DArrayDivision(n_avg, blk_var.run_nrm,blk_var.run_err);
+    scalar1DArrayDivision(n_avg, blk_var.run_nrm,blk_var.run_err,constraint2);
+
     for (int i{0};i<n_avg;++i)
 	    constraint2[i] = abs(constraint2[i]);
 
-    constraint2 = sqrt1DArray(n_avg,constraint2);
+    sqrt1DArray(n_avg,constraint2,constraint2 );
+
     for(int i{0};i<n_avg;++i){
         if (blk_var.run_err[i]>0.0){
             blk_var.run_err[i] = constraint2[i];
@@ -336,7 +340,7 @@ void run_end (std::vector<VariableType> vars, BlockVar &blk_var, std::clock_t ti
     std::cout << "Run ends \n";
     std::cout << '\n';
 
-    time_stamp(true, ti);
+    time_stamp(true,ti);
     std::cout << '\n';
 
     bool need_header = true;
@@ -346,7 +350,7 @@ void run_end (std::vector<VariableType> vars, BlockVar &blk_var, std::clock_t ti
 		std::cout << "Final values"<< "\n";
                 need_header = false;
 	    }
-            printf("%10s %29.6f \n",variable.nam,variable.val);
+            printf("%8s %51.6f \n",variable.nam,variable.val);
 	}
     }
 
