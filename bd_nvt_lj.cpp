@@ -226,14 +226,8 @@ int main(){
 
     // Initial forces, potential, etc plus overlap check
     PotentialType total;
-    force (total,n, box, r_cut, r, f);
-
-    assert (!total.ovr); 
-    std::cout << "No overlap in initial configuration! \n";
 
     BlockVar blk_var;
-    
-    run_begin (calc_variables(total, r, n, box, vel, f), blk_var, ti);
 
     std::cout << '\n';
     std::cout << "bd_nvt_lj \n";
@@ -260,6 +254,11 @@ int main(){
     printf("%7s   %50.6f \n", "Density", n/pow(box,3));
     std::cout << '\n'; 
 
+    force (total,n, box, r_cut, r, f);
+
+    assert (!total.ovr); 
+    std::cout << "No overlap in initial configuration! \n";
+	
     int n_avg = calc_variables(total, r, n, box, vel, f).size();
 
     // Initialize arrays for averaging and write column headings
