@@ -4,7 +4,7 @@
 #include <string>
 #include <ctime>
 #include <vector>
-#include "./math_module.hpp" 
+#include "./maths_module.hpp" 
 
 // Options for averaging methods
 #define avg  0
