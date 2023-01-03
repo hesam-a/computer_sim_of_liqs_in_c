@@ -35,13 +35,13 @@ std::vector<VariableType> calc_variables(PotentialType tot, double** r, int n, d
     // Preliminary calculations (n,v,f,total are taken from the calling program)
     double vol = pow(box,3);                        //  Volume
     double rho = n / vol;                           //  Density
-    double** f_sq;
-    double** vel_sq;
-    matMultip(n,3,vel,vel,vel_sq);
+    double** f_sq = allocate2DArray(n,3);
+    double** vel_sq = allocate2DArray(n,3);
+    elementWise2DProduct(n,3,vel,vel,vel_sq);
     double vel_sum = elementSum2D(n,3, vel_sq);
     double kin = 0.5 * vel_sum;                     //  Kinetic energy    
     force (tot, n, box, r_cut, r, f);              
-    matMultip(n,3,f,f,f_sq);                         //  Total squared force from md_lj_module
+    elementWise2DProduct(n,3,f,f,f_sq);                         //  Total squared force from md_lj_module
     double fsq = elementSum2D(n,3, f_sq);
 
     // std::cout << " ---- force:   " << fsq << " ---- \n";
@@ -147,7 +147,7 @@ void b_propagator(PotentialType tot, double time, int n, double box, double** ve
     v is accessed from the calling program. */
     force (tot, n, box, r_cut, r, f);
     scalar2DArrayMultip(n,3,time,f,f);    // t * force
-    matMultip(n,3,vel,f,vel);             // t * force
+    elementWise2DProduct(n,3,vel,f,vel);             // t * force
     sum2DArrays(n,3,vel,vel);
 }
 
@@ -157,7 +157,7 @@ void o_propagator ( double time, double** vel, int n ){
     t is the time over which to propagate (typically dt).
     v, n, temperature, and gamma are accessed from the calling program. */
 
-    double** rnd;
+    double** rnd = allocate2DArray(n,3);
     rand2DArray(n,3,rnd);
     double x = gamma*time;
     double c;
