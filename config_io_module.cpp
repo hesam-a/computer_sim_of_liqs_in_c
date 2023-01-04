@@ -13,7 +13,7 @@
 #define line_begin "%15s" 
 #define coord_dist "%15.8f"
 
-double** read_cnf_atoms(const char* filename,double** coord){
+double** read_cnf_atoms(std::string filename,double** coord){
 //  Read in atomic configuration.
 
     std::ifstream input(filename);
@@ -32,7 +32,7 @@ double** read_cnf_atoms(const char* filename,double** coord){
     return coord;
 }
 
-void read_cnf_mols(const char* filename, bool quaternion, bool with_v, double** coord, double** orient, double** vel, double** angvel){
+void read_cnf_mols(std::string filename, bool quaternion, bool with_v, double** coord, double** orient, double** vel, double** angvel){
 //  Read in molecular configuration.
 
     std::ifstream input(filename);
