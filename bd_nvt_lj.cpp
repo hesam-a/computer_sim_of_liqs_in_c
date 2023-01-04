@@ -14,8 +14,9 @@
 #include "./averages_module.hpp"
 #include "./config_io_module.hpp"
 
+// Brownian dynamics, NVT ensemble.
 
-#define nblock        8
+#define nblock        10
 #define nstep         1000
 #define temperature   1.0
 #define r_cut         2.5
@@ -44,10 +45,8 @@ std::vector<VariableType> calc_variables(PotentialType tot, double** r, int n, d
     double kin      = 0.5 * vel_sum;                     //  Kinetic energy    
 
     force (tot, n, box, r_cut, r, f);              
-    elementWise2DProduct(n,3,f,f,f_sq);             //  Total squared force from md_lj_module
+    elementWise2DProduct(n,3,f,f,f_sq);                  //  Total squared force from md_lj_module
     double fsq = elementSum2D(n,3, f_sq);
-
-//    std::cout << " ---- force squared:   " << fsq << " ---- \n";
 
     // Internal energy (cut-and-shifted) per atom
     // Total KE plus total cut-and-shifted PE divided by N
@@ -141,8 +140,8 @@ void a_propagator(double t, int n, double box, double** r, double** vel){
 
     double** vel_p = allocate2DArray(n,3);
     scalar2DArrayMultip(n,3,t/box,vel,vel_p);    // (t/box)*velocity
-    sum2DArrays(n,3,vel_p,r);                // Positions in box=1 units
-    rint2D(n,3,r);                           // Periodic boundaries
+    sum2DArrays(n,3,vel_p,r);                    // Positions in box=1 units
+    rint2D(n,3,r);                               // Periodic boundaries
 
     free2DArray(n,vel_p);
 }
@@ -151,9 +150,9 @@ void b_propagator(double t, int n, double box, double** r, double** vel, double*
 /*  B: kick step propagator.
     t is the time over which to propagate (typically dt/2).
     v is accessed from the calling program. */
+
     double** f_p = allocate2DArray(n,3);
     scalar2DArrayMultip(n,3,t,f,f_p);         // t * force
-    //elementWise2DProduct(n,3,vel,f_p,vel);  // 
     sum2DArrays(n,3,f_p,vel);
 
     free2DArray(n,f_p);
@@ -165,13 +164,14 @@ void o_propagator ( double t, int n, double** vel ){
     t is the time over which to propagate (typically dt).
     v, n, temperature, and gamma are accessed from the calling program. */
 
-    double   x = gamma*t;
-    double  c1 = 2.0;
-    double  c2 = -2.0;
-    double  c3 = 4.0/3.0;
-    double  c4 = -2.0/3.0;
+    double     x = gamma*t;
+    double    c1 = 2.0;
+    double    c2 = -2.0;
+    double    c3 = 4.0/3.0;
+    double    c4 = -2.0/3.0;
+    double    c;
     double** rnd = allocate2DArray(n,3);
-    double c;
+
     if (x > 0.0001)
         c = 1-exp(-2*x);
     else 
@@ -180,10 +180,8 @@ void o_propagator ( double t, int n, double** vel ){
     
     c = sqrt(c);
     rand2DArray(n,3,rnd);
-    //std::cout << " ----- velocity  ------\n";
-    //print2DArray(n,3,vel);
-    scalar2DArrayMultip(n,3,c*sqrt(temperature),rnd,rnd);
     scalar2DArrayMultip(n,3,exp(-x),vel,vel);
+    scalar2DArrayMultip(n,3,c*sqrt(temperature),rnd,rnd);
     sum2DArrays(n,3,rnd,vel);
 
     free2DArray(n,rnd);
@@ -209,13 +207,11 @@ int main(){
     Despite the program name, there is nothing here specific to Lennard-Jones
     The model is defined in md_lj_module. */
 
-//    srand (time(NULL));
-
     // initial time for calculating the processing time
     std::clock_t ti = std::clock();
 
     // Preliminary calculations (n,r,total are taken from the calling program)
-    const char* file = "cnff.inp";
+    const char* file = "cnf_vel.inp";
 
     // Read in initial configuration
     std::ifstream input(file);
@@ -227,13 +223,11 @@ int main(){
     input >> box;
     input.close();
 
-    int na   = 3;
-    int ndim = 3;
     double** r      = allocate2DArray(n,3); // position
     double** f      = allocate2DArray(n,3); // force
-    double** e      = allocate2DArray(n,4);
+    double** e      = allocate2DArray(n,4); // just satisfy the "read_cnf_mols" function
     double** vel    = allocate2DArray(n,3); // velocity
-    double** angvel = allocate2DArray(n,3);
+    double** angvel = allocate2DArray(n,3); // just satisfy the "read_cnf_mols" function
     bool quaternion = false;
     bool with_v     = true;
 
@@ -290,7 +284,7 @@ int main(){
 	blk_begin(n_avg,blk_var);
 
         for (int stp{0}; stp<nstep;++stp){                               // Loop over steps    
-
+	    
  	    b_propagator ( dt/2, n, box, r, vel, f );    // B kick half-step
             a_propagator ( dt/2, n, box, r, vel );       // A drift half-step
             o_propagator ( dt,   n, vel );               // O random velocities and friction step
@@ -310,7 +304,7 @@ int main(){
         blk_end ( blk, n_avg, blk_var);                         // Output block averages
         std::stringstream ss;
         ss << std::setfill('0') << std::setw(3) << std::to_string(blk+1);
-        std::string sav_tag(ss.str());                      // Number configuration by block
+        std::string sav_tag(ss.str());                         // Number configuration by block
         double** out_r = allocate2DArray(n,3);
         scalar2DArrayMultip(n,3,box,r,out_r);
         //write_cnf_mols ("cnf."+sav_tag, n, box, quaternion, with_v, out_r, e, vel, angvel );    // Save configuration
