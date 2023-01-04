@@ -9,7 +9,7 @@
 //
 //    public:
 //
-//        int natom;       // Number of atoms
+//        int natom;            // Number of atoms
 //        double box_size;      // Simulation box length (assumed cubic)
 //        double** coord; 
 //
@@ -18,8 +18,11 @@
 //};
 
 
-double** read_cnf_atoms(const char* filename,double** coord);
+double** read_cnf_atoms(std::string filename,double** coord);
 
-void read_cnf_mols(const char* filename, bool quaternion, bool with_v, double** coord, double** orient, double** vel, double** angvel);
+void read_cnf_mols(std::string filename, bool quaternion, bool with_v, double** coord, double** orient, double** vel, double** angvel);
 
 void write_cnf_atoms (std::string filename, int nn, double box, double** coord);
+
+void write_cnf_mols(std::string filename, int nn, double box, bool quaternion, bool with_v, double** coord, double** orient, double** vel, double** angvel);
+
