@@ -7,9 +7,18 @@
 #include <stdlib.h>
 #include <cstring>
 #include <cassert>
+#include <random>
 
 // This is a math module for some functions used in the programs. Although the current version is completely working for the programs,
 // some functions might need slight modifications.
+
+
+// random device class instance, source of 'true' randomness for initializing random seed
+std::random_device rd;
+
+// Mersenne twister PRNG, initialized with seed from previous random device instance
+std::mt19937 gen(rd());
+
 
 double** allocate2DArray(int m,int n) {
 //    double** array = new double*[m];
@@ -136,12 +145,19 @@ void rand1DArray(int m, double* arr) {
 
 void rand2DArray(int m,int n, double** arr) {
 
+// a function for generating a random 2D array with mean 0.0 and stdev 1.0
+
+    // instance of class std::normal_distribution with specific mean and stddev
+    std::normal_distribution<float> d(0, 1);
+
     for (int i=0;i<m;i++) {
         for (int j=0;j<n;j++) {
-            arr[i][j] = (double) rand()/RAND_MAX;
+        //    arr[i][j] = (double) rand()/RAND_MAX;
+            arr[i][j] = d(gen);
         }
     }
 }
+
 
 void rand3DArray(int p,int q,int r, double*** arr) {
 
