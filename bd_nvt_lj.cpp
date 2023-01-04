@@ -113,8 +113,8 @@ std::vector<VariableType> calc_variables(PotentialType tot, double** r, int n, d
     variables.push_back(c_s);
     variables.push_back(c_f);
 
-    delete [] f_sq;
-    delete [] vel_sq;
+    free2DArray(n,f_sq);
+    free2DArray(n,vel_sq);
 
     return variables;
 
@@ -144,7 +144,7 @@ void a_propagator(double t, int n, double box, double** r, double** vel){
     sum2DArrays(n,3,vel_p,r);                // Positions in box=1 units
     rint2D(n,3,r);                           // Periodic boundaries
 
-    delete [] vel_p;
+    free2DArray(n,vel_p);
 }
 
 void b_propagator(double t, int n, double box, double** r, double** vel, double** f){
@@ -152,11 +152,11 @@ void b_propagator(double t, int n, double box, double** r, double** vel, double*
     t is the time over which to propagate (typically dt/2).
     v is accessed from the calling program. */
     double** f_p = allocate2DArray(n,3);
-    scalar2DArrayMultip(n,3,t,f,f_p);    // t * force
+    scalar2DArrayMultip(n,3,t,f,f_p);         // t * force
     //elementWise2DProduct(n,3,vel,f_p,vel);  // 
     sum2DArrays(n,3,f_p,vel);
 
-    delete [] f_p;
+    free2DArray(n,f_p);
 }
 
 void o_propagator ( double t, int n, double** vel ){
@@ -186,7 +186,7 @@ void o_propagator ( double t, int n, double** vel ){
     scalar2DArrayMultip(n,3,exp(-x),vel,vel);
     sum2DArrays(n,3,rnd,vel);
 
-    delete [] rnd;
+    free2DArray(n,rnd);
 }
 
 
@@ -330,5 +330,9 @@ int main(){
 
     conclusion();
     free2DArray(n,r);
+    free2DArray(n,f); 
+    free2DArray(n,e);
+    free2DArray(n,vel); 
+    free2DArray(n,angvel);
 
 }
