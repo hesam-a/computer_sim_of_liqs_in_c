@@ -58,7 +58,9 @@ void subtract2DArrays(int m,int n, double** A, double** B, double** C);
 
 void sum1DArrays(int m, double* A, double* B, double* sum);
 
-void sum2DArrays(int m, int n,double** A, double* sum,int axis);
+void sum2DArrays(int m, int n, double** A, double** sum);
+
+void matVecSum(int m, int n,double** A, double* sum,int axis);
 
 double max1DArray(int m, double* arr);
 
