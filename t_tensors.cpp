@@ -7,7 +7,7 @@
 #include <time.h>
 #include <numeric>
 #include <stdlib.h>
-#include "./math_module.hpp"
+#include "./maths_module.hpp"
 
 
 // Default parameters
