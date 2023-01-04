@@ -6,7 +6,7 @@
 #include <numeric>
 #include <stdlib.h>
 #include <iterator>
-#include "./math_module.hpp"
+#include "./maths_module.hpp"
 
 class PotentialType{
 
