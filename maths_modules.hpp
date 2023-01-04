@@ -30,13 +30,13 @@ void rand4DArray(int p,int q,int m, int n, double ****arr);
 
 void rand5DArray(int p,int q,int m, int n,int s, double *****arr);
 
-void zeroVec(int m, double* arr);
-
 void zeroMatrix (int m,int n,double** arr);
+
+void zeroVec(int m, double* arr);
 
 void identMatrix(int m,int n,double** arr);
 
-void matMultip(int m, int n, double** A, double** B, double** C);
+void matMultip(int m, int n, int l, double** A, double** B, double** C);
 
 void scalar1DArrayMultip(int m,double p, double* A, double* arr );
 
@@ -86,23 +86,23 @@ void print5DArray(int p, int q, int m, int n, int s, double***** A);
 
 // outer functions
 
-double**    outer2D(int nCols, double* A, double* B);
+void outer2D(int nCols, double* A, double* B, double** C);
 
-double***   outer3D(int nRows, int nCols, int n3rd, double* A, double* B, double* C);
+void outer3D(int nRows, int nCols, int n3rd, double* A, double* B, double* C, double*** D);
 
-double****  outer4D(int nRows, int nCols, int n3rd, int n4th, double* A, double* B, double* C, double* D);
+void outer4D(int nRows, int nCols, int n3rd, int n4th, double* A, double* B, double* C, double* D, double**** E);
 
-double***** outer5D(int nRows, int nCols, int n3rd, int n4th, int n5th, double* A, double* B, double* C, double* D, double* E);
+void outer5D(int nRows, int nCols, int n3rd, int n4th, int n5th, double* A, double* B, double* C, double* D, double* E, double***** F);
 
-double** t2_tensor (double* mat,double r3);
+void t2_tensor (double* mat,double r3, double** t2);
 
-double*** t3_tensor(double *mat3, double r4);
+void t3_tensor(double *mat3, double r4, double*** t3);
 
-double**** t4_tensor(double* mat4, double r5);
+void t4_tensor(double* mat4, double r5,double**** t4);
 
-double***** t5_tensor(double* mat5, double r6);
+void t5_tensor(double* mat5, double r6, double***** t5);
 
-double* skew(double** vec);
+void skew(double** vec, double* b);
 
 double dotProduct1D(int n,double* a);
 
@@ -116,23 +116,23 @@ double elementSum1D(int m, double* a);
 
 double elementSum2D(int m, int n, double** a);
 
-double* crossProduct(double* a, double* b);
+void crossProduct(double* a, double* b, double* product);
 
 double contract_i_i (int n,double* a, double* b);
 
-double* contract_ij_j (double** a, double* b);
+void contract_ij_j (double** a, double* b,double* product);
 
 double contract_ij_ij (double** a, double** b);
 
-double** contract_ik_jk (double** a, double** b);
+void contract_ik_jk (double** a, double** b, double** c);
 
-double** contract_ijk_k (double*** a, double* b);
+void contract_ijk_k (double*** a, double* b, double** c);
 
-double* contract_ijk_jk (double*** a, double** b);
+void contract_ijk_jk (double*** a, double** b,double* c);
 
-double** contract_ijkl_kl(double**** a, double** b);
+void contract_ijkl_kl(double**** a, double** b, double** c);
 
-double*** contract_ijklm_lm(double***** a, double** b);
+void contract_ijklm_lm(double***** a, double** b, double*** c);
 
 void random_vector(double* rand_vec);
 
@@ -156,9 +156,9 @@ void random_rotate_quaternion (double angle_max, double* old, double* e);
 
 bool metropolis (double delta );
 
-void update2DArrayZVT(int m, int n, double* ri, double* rj, double** A);
-
 void update2DArray(int n, int atom, double* ri, double** A);
+
+void update2DArrayZVT(int m, int n, double* ri, double* rj, double** A);
 
 void update3DArray(int m,int n, int atom, double** ri, double*** A);
 
