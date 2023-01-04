@@ -6,7 +6,7 @@
 #include <iomanip>
 #include <cassert>
 #include "./lrc_module.hpp"
-#include "./math_module.hpp"
+#include "./maths_module.hpp"
 #include "./mc_lj_module.hpp"
 #include "./averages_module.hpp"
 #include "./config_io_module.hpp"
