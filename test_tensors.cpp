@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
-#include "./math_module.hpp"
+#include "./maths_module.hpp"
 
 
 
