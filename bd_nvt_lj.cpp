@@ -1,11 +1,13 @@
 #include <iostream>
 #include <cmath>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string>
 #include <vector>
 #include <ctime>
 #include <cassert>
 #include <iomanip>
+#include <time.h>
 #include "./lrc_module.hpp"
 #include "./maths_module.hpp"
 #include "./md_lj_module.hpp"
@@ -13,7 +15,7 @@
 #include "./config_io_module.hpp"
 
 
-#define nblock        10
+#define nblock        8
 #define nstep         1000
 #define temperature   1.0
 #define r_cut         2.5
@@ -33,18 +35,19 @@ std::vector<VariableType> calc_variables(PotentialType tot, double** r, int n, d
 
 
     // Preliminary calculations (n,v,f,total are taken from the calling program)
-    double vol = pow(box,3);                        //  Volume
-    double rho = n / vol;                           //  Density
-    double** f_sq = allocate2DArray(n,3);
+    double vol      = pow(box,3);                        //  Volume
+    double rho      = n / vol;                           //  Density
+    double** f_sq   = allocate2DArray(n,3) ;
     double** vel_sq = allocate2DArray(n,3);
     elementWise2DProduct(n,3,vel,vel,vel_sq);
-    double vel_sum = elementSum2D(n,3, vel_sq);
-    double kin = 0.5 * vel_sum;                     //  Kinetic energy    
+    double vel_sum  = elementSum2D(n,3, vel_sq);
+    double kin      = 0.5 * vel_sum;                     //  Kinetic energy    
+
     force (tot, n, box, r_cut, r, f);              
-    elementWise2DProduct(n,3,f,f,f_sq);                         //  Total squared force from md_lj_module
+    elementWise2DProduct(n,3,f,f,f_sq);             //  Total squared force from md_lj_module
     double fsq = elementSum2D(n,3, f_sq);
 
-    // std::cout << " ---- force:   " << fsq << " ---- \n";
+//    std::cout << " ---- force squared:   " << fsq << " ---- \n";
 
     // Internal energy (cut-and-shifted) per atom
     // Total KE plus total cut-and-shifted PE divided by N
@@ -56,7 +59,7 @@ std::vector<VariableType> calc_variables(PotentialType tot, double** r, int n, d
     // LRC plus total KE plus total cut (but not shifted) PE divided by N
     VariableType e_f;
     e_f.nam = "E/N full";
-    e_f.val = potential_lrc(rho,r_cut) + ((kin+tot.cut)/n);
+    e_f.val = potential_lrc(rho,r_cut) + (kin+tot.cut)/n;
 
     // Pressure (cut-and-shifted)
     // Ideal gas contribution plus total virial divided by V
@@ -102,8 +105,8 @@ std::vector<VariableType> calc_variables(PotentialType tot, double** r, int n, d
     std::vector<VariableType> variables;
 
     variables.push_back(e_s);
-    variables.push_back(e_f);
     variables.push_back(p_s);
+    variables.push_back(e_f);
     variables.push_back(p_f);
     variables.push_back(t_k);
     variables.push_back(t_c);
@@ -132,44 +135,57 @@ void deletePointer(std::vector<VariableType> vars, BlockVar blk_var){
 
 }
 
-void a_propagator(double time, int n, double box, double** r, double** vel){
+void a_propagator(double t, int n, double box, double** r, double** vel){
 /*    A: drift step propagator.
     t is the time over which to propagate (typically dt/2). */
 
-    scalar2DArrayMultip(n,3,time/box,vel,vel);    // (t/box)*velocity
-    sum2DArrays(n,3,vel,r);                // Positions in box=1 units
-    rint2D(n,3,r);                         // Periodic boundaries
+    double** vel_p = allocate2DArray(n,3);
+    scalar2DArrayMultip(n,3,t/box,vel,vel_p);    // (t/box)*velocity
+    sum2DArrays(n,3,vel_p,r);                // Positions in box=1 units
+    rint2D(n,3,r);                           // Periodic boundaries
+
+    delete [] vel_p;
 }
 
-void b_propagator(PotentialType tot, double time, int n, double box, double** vel, double** r, double** f){
+void b_propagator(double t, int n, double box, double** r, double** vel, double** f){
 /*  B: kick step propagator.
     t is the time over which to propagate (typically dt/2).
     v is accessed from the calling program. */
-    force (tot, n, box, r_cut, r, f);
-    scalar2DArrayMultip(n,3,time,f,f);    // t * force
-    elementWise2DProduct(n,3,vel,f,vel);             // t * force
-    sum2DArrays(n,3,vel,vel);
+    double** f_p = allocate2DArray(n,3);
+    scalar2DArrayMultip(n,3,t,f,f_p);    // t * force
+    //elementWise2DProduct(n,3,vel,f_p,vel);  // 
+    sum2DArrays(n,3,f_p,vel);
+
+    delete [] f_p;
 }
 
-void o_propagator ( double time, double** vel, int n ){
+void o_propagator ( double t, int n, double** vel ){
 /* O: friction and random contributions propagator.
 
     t is the time over which to propagate (typically dt).
     v, n, temperature, and gamma are accessed from the calling program. */
 
+    double   x = gamma*t;
+    double  c1 = 2.0;
+    double  c2 = -2.0;
+    double  c3 = 4.0/3.0;
+    double  c4 = -2.0/3.0;
     double** rnd = allocate2DArray(n,3);
-    rand2DArray(n,3,rnd);
-    double x = gamma*time;
     double c;
     if (x > 0.0001)
         c = 1-exp(-2*x);
     else 
-        c = -2/3*pow(x,4)+4/3*pow(x,3)-2.0*pow(x,2)+2.0*x;
+        c = x * ( c1 + x * ( c2 + x * ( c3 + x * c4 ) ) );
+//        c = -2/3*pow(x,4)+4/3*pow(x,3)-2.0*pow(x,2)+2.0*x;
     
     c = sqrt(c);
-    scalar2DArrayMultip(n,3,exp(-x),vel,vel);
+    rand2DArray(n,3,rnd);
+    //std::cout << " ----- velocity  ------\n";
+    //print2DArray(n,3,vel);
     scalar2DArrayMultip(n,3,c*sqrt(temperature),rnd,rnd);
+    scalar2DArrayMultip(n,3,exp(-x),vel,vel);
     sum2DArrays(n,3,rnd,vel);
+
     delete [] rnd;
 }
 
@@ -193,11 +209,13 @@ int main(){
     Despite the program name, there is nothing here specific to Lennard-Jones
     The model is defined in md_lj_module. */
 
+//    srand (time(NULL));
+
     // initial time for calculating the processing time
     std::clock_t ti = std::clock();
 
     // Preliminary calculations (n,r,total are taken from the calling program)
-    const char* file = "cnf.inp";
+    const char* file = "cnff.inp";
 
     // Read in initial configuration
     std::ifstream input(file);
@@ -224,11 +242,7 @@ int main(){
     scalar2DArrayDivision(n,3,box,r);    // Convert positions to box units
     rint2D(n,3, r);                      // Periodic boundaries
 
-    // Initial forces, potential, etc plus overlap check
-    PotentialType total;
-
-    BlockVar blk_var;
-
+    
     std::cout << '\n';
     std::cout << "bd_nvt_lj \n";
     std::cout << "Brownian dynamics, constant-NVT ensemble \n";
@@ -242,45 +256,52 @@ int main(){
     printf("%16s %42d   \n", "Number of blocks",            nblock);
     printf("%25s %33d   \n", "Number of steps per block",   nstep);
     printf("%25s %33f   \n", "Potential cutoff distance",   r_cut);
-    printf("%20s %36.6f \n", "Time Step",                   dt);
-    printf("%20s %36.6f \n", "Friction coeffcient",         gamma);
+    printf("%9s  %48.6f \n", "Time Step",                   dt);
+    printf("%19s %39.6f \n", "Friction coeffcient",         gamma);
     printf("%20s %37.6f \n", "Specified temperature",       temperature);
-    printf("%7s  %50.6f \n", "Ideal diffusion coeff",       temperature/gamma);
+    printf("%7s  %36.6f \n", "Ideal diffusion coeff",       temperature/gamma);
     std::cout << '\n'; 
 
     std::cout << '\n';
-    printf("%10s  %39d   \n", "Number of particles",n);
-    printf("%10s  %48.6f \n", "Box length", box);
-    printf("%7s   %50.6f \n", "Density", n/pow(box,3));
+    printf("%10s  %38d   \n", "Number of particles",n);
+    printf("%10s  %47.6f \n", "Box length", box);
+    printf("%7s   %49.6f \n", "Density", n/pow(box,3));
     std::cout << '\n'; 
 
-    force (total,n, box, r_cut, r, f);
+    BlockVar blk_var;
+
+    // Initial forces, potential, etc plus overlap check
+    PotentialType total;
+
+    force (total, n, box, r_cut, r, f);
 
     assert (!total.ovr); 
     std::cout << "No overlap in initial configuration! \n";
-	
+    std::cout << '\n';
+
     int n_avg = calc_variables(total, r, n, box, vel, f).size();
 
     // Initialize arrays for averaging and write column headings
     run_begin (calc_variables(total, r, n, box, vel, f), blk_var, ti);
 
+
     for (int blk{0}; blk < nblock;++blk){                                // Loop over blocks
 
-	    blk_begin(n_avg,blk_var);
+	blk_begin(n_avg,blk_var);
 
         for (int stp{0}; stp<nstep;++stp){                               // Loop over steps    
 
- 	    b_propagator(total, dt/2, n, box, vel, r, f);// B kick half-step
-            a_propagator ( dt/2, n, box, r, vel );      // A drift half-step
-            o_propagator ( dt, vel,  n );               // O random velocities and friction step
-            a_propagator ( dt/2, n, box, r, vel );      // A drift half-step
+ 	    b_propagator ( dt/2, n, box, r, vel, f );    // B kick half-step
+            a_propagator ( dt/2, n, box, r, vel );       // A drift half-step
+            o_propagator ( dt,   n, vel );               // O random velocities and friction step
+            a_propagator ( dt/2, n, box, r, vel );       // A drift half-step
 
-            force (total,n, box, r_cut, r, f);
+            force (total, n, box, r_cut, r, f);
 
             assert (!total.ovr); 
-            std::cout << "No overlap in configuration! \n";
+            //std::cout << "No overlap in configuration! \n";
 
-            a_propagator ( dt/2, n, box, r, vel ); // A drift half-step
+            b_propagator ( dt/2, n, box, r, vel, f ); // A drift half-step
 
             blk_add (calc_variables(total, r, n, box, vel, f),blk_var);
 
@@ -292,7 +313,7 @@ int main(){
         std::string sav_tag(ss.str());                      // Number configuration by block
         double** out_r = allocate2DArray(n,3);
         scalar2DArrayMultip(n,3,box,r,out_r);
-        write_cnf_atoms ("cnf."+sav_tag, n, box,out_r );    // Save configuration
+        //write_cnf_mols ("cnf."+sav_tag, n, box, quaternion, with_v, out_r, e, vel, angvel );    // Save configuration
         free2DArray(n,out_r);
     }
     run_end (calc_variables(total, r, n, box, vel, f), blk_var, ti);
@@ -303,7 +324,7 @@ int main(){
 
     double** out_r = allocate2DArray(n,3);
     scalar2DArrayMultip(n,3,box,r,out_r);
-    write_cnf_atoms ("cnf.out", n, box,out_r );            // Save configuration
+    //write_cnf_mols ("cnf.out", n, box, quaternion, with_v, out_r, e, vel, angvel );    // Save configuration
     free2DArray(n,out_r);
     deletePointer(calc_variables(total, r, n, box, vel, f), blk_var);
 
