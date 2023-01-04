@@ -92,7 +92,7 @@ int main(){
     
     elementWise2DProduct(3,3,db,db,db2);
     double* db_sum = new double[3];
-    sum2DArrays(3,3,db2,db_sum,1);
+    matVecSum(3,3,db2,db_sum,1);
     double max = max1DArray(3,db_sum);
     double diameter = 2.0 * sqrt(max); // Molecular diameter
 
