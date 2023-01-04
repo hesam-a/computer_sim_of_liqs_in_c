@@ -136,7 +136,7 @@ int main(){
     std::clock_t ti = std::clock();
 
     // Preliminary calculations (n,r,total are taken from the calling program)
-    const char* file = "cnff.inp";
+    const char* file = "cnf.inp";
 
     // Read in initial configuration
     std::ifstream input(file);
