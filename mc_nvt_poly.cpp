@@ -97,7 +97,7 @@ int main(){
     double diameter = 2.0 * sqrt(max); // Molecular diameter
 
     // Preliminary calculations (n,r,total are taken from the calling program)
-    const char* file = "cnf_1.inp";
+    const char* file = "cnf_poly.inp";
 
     // Read in initial configuration
     std::ifstream input(file);
