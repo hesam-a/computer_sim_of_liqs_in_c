@@ -8,7 +8,7 @@
 #include <cassert>
 #include <stdarg.h>
 #include "boost/format.hpp"
-#include "./math_module.hpp"
+#include "./maths_module.hpp"
 
 #define line_begin "%15s" 
 #define coord_dist "%15.8f"
