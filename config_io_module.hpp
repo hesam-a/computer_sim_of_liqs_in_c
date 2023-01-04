@@ -3,7 +3,7 @@
 #include <cstdio>
 #include <string>
 #include <stdio.h>
-#include "./math_module.hpp"
+#include "./maths_module.hpp"
 
 //class Molecule {
 //
