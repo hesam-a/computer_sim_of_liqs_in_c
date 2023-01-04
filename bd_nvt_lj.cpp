@@ -307,7 +307,7 @@ int main(){
         std::string sav_tag(ss.str());                         // Number configuration by block
         double** out_r = allocate2DArray(n,3);
         scalar2DArrayMultip(n,3,box,r,out_r);
-        //write_cnf_mols ("cnf."+sav_tag, n, box, quaternion, with_v, out_r, e, vel, angvel );    // Save configuration
+        write_cnf_mols ("cnf."+sav_tag, n, box, quaternion, with_v, out_r, e, vel, angvel );    // Save configuration
         free2DArray(n,out_r);
     }
     run_end (calc_variables(total, r, n, box, vel, f), blk_var, ti);
@@ -318,7 +318,7 @@ int main(){
 
     double** out_r = allocate2DArray(n,3);
     scalar2DArrayMultip(n,3,box,r,out_r);
-    //write_cnf_mols ("cnf.out", n, box, quaternion, with_v, out_r, e, vel, angvel );    // Save configuration
+    write_cnf_mols ("cnf.out", n, box, quaternion, with_v, out_r, e, vel, angvel );    // Save configuration
     free2DArray(n,out_r);
     deletePointer(calc_variables(total, r, n, box, vel, f), blk_var);
 
